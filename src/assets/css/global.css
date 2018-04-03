@@ -1,0 +1,18 @@
+*{
+	box-sizing:border-box;
+}
+body{
+	touch-action: manipulation; /* IE11+ 禁止双击缩放，关于移动端300ms延迟：https://github.com/ftlabs/fastclick */  
+    -ms-touch-action: manipulation; /* IE10+ 禁止双击缩放 */
+    overflow-x: hidden;
+	font-family: "Microsoft YaHei", Arial, Helvetica, sans-serif, "\5B8B\4F53";
+}
+a{
+	text-decoration: none;
+	color: inherit;
+	-webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+.mint-toast{
+    z-index: 3000 !important;
+}
