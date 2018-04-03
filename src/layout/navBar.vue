@@ -47,7 +47,7 @@ export default {
         .nav-item {
             text-align: center;
             flex: 1;
-            padding: toRem(8) 0;
+            padding: toRem(14) 0 toRem(11);
             .nav-item-route {
                 display: block;
                 color: #999;
@@ -55,9 +55,9 @@ export default {
                     color: $appColor;
                 }
                 .nav-item-icon {
-                    width: toRem(24);
-                    height: toRem(24);
-                    margin: 0 auto toRem(4);
+                    width: toRem(22);
+                    height: toRem(22);
+                    margin: 0 auto toRem(5);
                     img {
                         display: block;
                         width: 100%;
@@ -65,7 +65,7 @@ export default {
                     }
                 }
                 .nav-item-label {
-                    font-size: toRem(12);
+                    font-size: toRem(10);
                     color: inherit;
                     line-height: 1;
                 }
