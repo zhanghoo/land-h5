@@ -3,25 +3,19 @@
         <ul class="nav">
             <li class='nav-item'>
                 <router-link class="nav-item-route" :to="{name: 'moment'}">
-                    <div class="nav-item-icon">
-
-                    </div>
+                    <div class="nav-item-icon my-icon-i18n"></div>
                     <div class="nav-item-label">动态</div>
                 </router-link>
             </li>
             <li class='nav-item'>
                 <router-link class="nav-item-route" :to="{name: 'home'}">
-                    <div class="nav-item-icon">
-
-                    </div>
+                    <div class="nav-item-icon my-icon-build"></div>
                     <div class="nav-item-label">地产大师</div>
                 </router-link>
             </li>
             <li class='nav-item'>
                 <router-link class="nav-item-route" :to="{name: 'mine'}">
-                    <div class="nav-item-icon">
-
-                    </div>
+                    <div class="nav-item-icon my-icon-mine"></div>
                     <div class="nav-item-label">我的</div>
                 </router-link>
             </li>
@@ -47,7 +41,7 @@ export default {
         .nav-item {
             text-align: center;
             flex: 1;
-            padding: toRem(14) 0 toRem(11);
+            padding: toRem(6) 0 toRem(5);
             .nav-item-route {
                 display: block;
                 color: #999;
@@ -55,14 +49,8 @@ export default {
                     color: $appColor;
                 }
                 .nav-item-icon {
-                    width: toRem(22);
-                    height: toRem(22);
-                    margin: 0 auto toRem(5);
-                    img {
-                        display: block;
-                        width: 100%;
-                        height: 100%;
-                    }
+                    font-size: toRem(24);
+                    margin: 0 auto toRem(2);
                 }
                 .nav-item-label {
                     font-size: toRem(10);

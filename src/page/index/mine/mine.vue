@@ -1,13 +1,13 @@
 <template>
     <div id="mine">
-        <div class="mine-info">
+        <router-link class="mine-info" :to="{name: 'myInfo'}">
             <div class="avatar"></div>
             <div class="info">
                 <p class="name">曹万贯</p>
-                <label-tag :label-text="'地产大亨'"></label-tag>
+                <mt-button class="info-label" plain type="primary">地产大亨</mt-button>
             </div>
-            <div class="to"></div>
-        </div>
+            <div class="my-icon-more" ></div>
+        </router-link>
         <div class="mine-count">
             <ul class="count-list">
                 <li class="count-item">
@@ -55,13 +55,14 @@
                 </li>
             </ul>
         </div>
+
+        <!-- 子页面 -->
+        <router-view/>
     </div>
 </template>
 <script>
-import labelTag from '@/layout/labelTag'
 export default {
     name: 'mine',
-    components: { labelTag },
     data() {
         return {
 
@@ -101,10 +102,16 @@ export default {
                 font-size: toRem(18);
                 line-height: 1;
             }
+            .info-label{
+                font-size: toRem(9);
+                height: inherit;
+                padding: toRem(3.5) toRem(6.5);
+            }
         }
-        .to {
-            width: toRem(5);
-            height: toRem(9);
+        .my-icon-more{
+            font-size: toRem(14)
+            font-weight: bold;
+            color: #999;
         }
     }
     .mine-count {

@@ -1,6 +1,6 @@
 <template>
     <div id="detail">
-        详情页
+        详情页示例
     </div>
 </template>
 <script>

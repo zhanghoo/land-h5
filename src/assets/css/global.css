@@ -19,3 +19,11 @@ a{
 .mint-toast{
     z-index: 3000 !important;
 }
+
+[class*=" my-icon-"], [class^=my-icon-] {
+    font-family:"iconfont" !important;
+    font-size: inherit;
+    font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

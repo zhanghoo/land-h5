@@ -7,6 +7,7 @@ const index = () => import('@/page/index/index')
 const moment = () => import('@/page/index/moment/moment')
 const home = () => import('@/page/index/home/home')
 const mine = () => import('@/page/index/mine/mine')
+const myInfo = () => import('@/page/index/mine/children/myInfo')
 const detail = () => import('@/page/detail/detail')
 
 export default new Router({
@@ -41,7 +42,14 @@ export default new Router({
                 {
                     name: 'mine',
                     path: 'mine',
-                    component: mine
+                    component: mine,
+                    children: [
+                        {
+                            name: 'myInfo',
+                            path: 'myInfo',
+                            component: myInfo
+                        }
+                    ]
                 }
             ]
         },
