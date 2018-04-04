@@ -1,7 +1,9 @@
 <template>
     <div id="index">
         <!-- 内容视口 -->
-        <router-view></router-view>
+        <keep-alive include="moment">
+            <router-view></router-view>
+        </keep-alive>
         <!-- 底部导航条 -->
         <nav-bar></nav-bar>
     </div>

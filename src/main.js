@@ -15,7 +15,7 @@ import 'mint-ui/lib/style.css'
 import VueProgressBar from 'vue-progressbar'
 
 // 数据模拟
-// import '@/mock'
+import '@/mock'
 
 // 自定义全局过滤
 // import filters from './filters'

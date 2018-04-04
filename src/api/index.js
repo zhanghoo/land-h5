@@ -1,7 +1,8 @@
-import { request, instance } from '@/utils/request'
+// import { request, instance } from '@/utils/request'
+import { request } from '@/utils/request'
 
-// 获取token
-// export function getToken({ username, password }) {
-//     let res = request('/login', 'POST', { username, password })
-//     return res
-// }
+// 获取动态列表
+export function getMomentList() {
+    let res = request('/momentList', 'GET')
+    return res
+}
