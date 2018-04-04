@@ -37,5 +37,8 @@ export default {
             transform scale(0.75)
         }
     }
+    .__cov-progress {
+        background-color: $appColor!important;
+    }
 }
 </style>
