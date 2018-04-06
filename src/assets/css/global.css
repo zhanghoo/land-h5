@@ -27,3 +27,25 @@ a{
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
+
+.my-icon-jianhang {
+    color: #003b90;
+}
+.my-icon-nonghang {
+    color: #008566;
+}
+.my-icon-jiaohang {
+    color: #1d2088;
+}
+.my-icon-zhonghang {
+    color: #b81c22;
+}
+.my-icon-gonghang {
+    color: #e60012;
+}
+.my-icon-youzheng {
+    color: #007f3e;
+}
+.my-icon-zhaohang {
+    color: #a61f23;
+}

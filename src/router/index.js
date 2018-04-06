@@ -8,9 +8,13 @@ const moment = () => import('@/page/index/moment/moment')
 const home = () => import('@/page/index/home/home')
 const mine = () => import('@/page/index/mine/mine')
 const myInfo = () => import('@/page/index/mine/children/myInfo')
+const mineGold = () => import('@/page/index/mine/children/mineGold')
+const mineScore = () => import('@/page/index/mine/children/mineScore')
 const partInRecord = () => import('@/page/index/mine/children/partInRecord')
 const recharge = () => import('@/page/index/mine/children/recharge')
 const withdrawCash = () => import('@/page/index/mine/children/withdrawCash')
+const withdrawCashNext = () => import('@/page/index/mine/children/withdrawCash/next')
+const withdrawCashAdd = () => import('@/page/index/mine/children/withdrawCash/add')
 const feedback = () => import('@/page/index/mine/children/feedback')
 const idAuth = () => import('@/page/index/mine/children/idAuth')
 const detail = () => import('@/page/detail/detail')
@@ -55,6 +59,16 @@ export default new Router({
                             component: myInfo
                         },
                         {
+                            name: 'mineGold',
+                            path: 'mineGold',
+                            component: mineGold
+                        },
+                        {
+                            name: 'mineScore',
+                            path: 'mineScore',
+                            component: mineScore
+                        },
+                        {
                             name: 'partInRecord',
                             path: 'partInRecord',
                             component: partInRecord
@@ -67,7 +81,19 @@ export default new Router({
                         {
                             name: 'withdrawCash',
                             path: 'withdrawCash',
-                            component: withdrawCash
+                            component: withdrawCash,
+                            children: [
+                                {
+                                    name: 'next',
+                                    path: 'next',
+                                    component: withdrawCashNext
+                                },
+                                {
+                                    name: 'add',
+                                    path: 'add',
+                                    component: withdrawCashAdd
+                                }
+                            ]
                         },
                         {
                             name: 'feedback',
