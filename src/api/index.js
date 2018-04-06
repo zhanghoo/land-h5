@@ -6,3 +6,9 @@ export function getMomentList() {
     let res = request('/momentList', 'GET')
     return res
 }
+
+// 获取动态详情
+export function getMomentDetail(id) {
+    let res = request('/momentDetail', 'GET', {'id': id})
+    return res
+}

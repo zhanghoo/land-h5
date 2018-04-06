@@ -18,6 +18,8 @@ const withdrawCashAdd = () => import('@/page/index/mine/children/withdrawCash/ad
 const feedback = () => import('@/page/index/mine/children/feedback')
 const idAuth = () => import('@/page/index/mine/children/idAuth')
 const detail = () => import('@/page/detail/detail')
+const momentDetail = () => import('@/page/detail/momentDetail')
+const publish = () => import('@/page/detail/publish')
 
 export default new Router({
     scrollBehavior(to, from, savedPosition) {
@@ -113,6 +115,16 @@ export default new Router({
             name: 'detail',
             path: 'detail',
             component: detail
+        },
+        {
+            name: 'momentDetail',
+            path: '/momentDetail',
+            component: momentDetail
+        },
+        {
+            name: 'publish',
+            path: '/publish',
+            component: publish
         }
     ]
 })

@@ -28,6 +28,34 @@ a{
     -moz-osx-font-smoothing: grayscale;
 }
 
+.bounce-enter-active {
+  animation: bounce-in .2s;
+}
+.bounce-leave-active {
+  animation: bounce-out .2s;
+}
+@keyframes bounce-in {
+  0% {
+      opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.7);
+  }
+  100% {
+      opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+}
+@keyframes bounce-out {
+  0% {
+      opacity: 1;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+  100% {
+      opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.9);
+  }
+}
+
+
 .my-icon-jianhang {
     color: #003b90;
 }
