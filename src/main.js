@@ -28,7 +28,7 @@ Vue.prototype.$toast = Toast
 Vue.prototype.$msgBox = MessageBox
 Vue.prototype.$indicator = Indicator
 Vue.use(VueProgressBar, {
-    color: 'rgb(143, 255, 199)',
+    color: '#369BFF',
     failedColor: 'red',
     height: '2px'
 })

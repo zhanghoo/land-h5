@@ -1,7 +1,9 @@
 <template>
     <div id="app">
         <!-- 内容视口 -->
-        <router-view></router-view>
+        <keep-alive include="index">
+            <router-view></router-view>
+        </keep-alive>
         <!-- 页面加载进度条 -->
         <vue-progress-bar></vue-progress-bar>
     </div>
@@ -36,9 +38,6 @@ export default {
             font-size toRem(12)
             transform scale(0.75)
         }
-    }
-    .__cov-progress {
-        background-color: $appColor!important;
     }
 }
 </style>

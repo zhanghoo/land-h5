@@ -10,28 +10,28 @@
             <div class="item-content">
                 <!-- 封面 -->
                 <template v-if="item.mode === 'cover'">
-                    <div class="content-cover">
+                    <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'id': item.id}}" tag="div">
                         <img :src="item.coveImg">
-                    </div>
+                    </router-link>
                 </template>
                 <!-- 需支付 -->
                 <template v-if="item.mode === 'pay'">
-                    <div class="content-pay">查看需支付{{item.price}}大师币</div>
+                    <div class="content-pay" @click="$emit('watch', item)">查看需支付{{item.price}}大师币</div>
                 </template>
                 <!-- 概览 -->
                 <template v-if="item.mode === 'overview'">
-                    <div class="content-overview">
+                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'id': item.id}}" tag="div">
                         <div class="overview-title">{{item.subTitle}}</div>
                         <div class="overview-adress">
                             <i class="my-icon-adress"></i>{{item.adress}}</div>
                         <div class="overview-label" v-if="item.subLabel">
                             <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
                         </div>
-                    </div>
+                    </router-link>
                 </template>
             </div>
             <div class="item-info">
-                <i class="my-icon-zan" :class="{'active': item.activeZan}" @click="addZan(item)"> {{item.zan}}</i>
+                <i class="my-icon-zan" :class="{'active': item.activeZan}" @click="addZan(item)"> {{item.zan || 0}}</i>
                 <span class="info-time">{{item.time}}</span>
             </div>
         </li>
