@@ -1,0 +1,244 @@
+<template>
+    <div id="mineGold">
+        <div class="m-gold-count">
+            <p class="count">当前大师币：<span class="num">1500</span></p>
+            <p class="btn"><mt-button type="primary" @click="clickPresent">转赠</mt-button></p>
+        </div>
+        <ul class="m-gold-list">
+            <li class="m-gold-item">
+                <div class="m-gold-item-record">
+                    <div class="sir-desc">充值</div>
+                    <div class="sir-date">2018-04-06 10:48</div>
+                </div>
+                <div class="m-gold-item-num">+200</div>
+            </li>
+            <li class="m-gold-item">
+                <div class="m-gold-item-record">
+                    <div class="sir-desc">被点赞</div>
+                    <div class="sir-date">2018-04-06 10:48</div>
+                </div>
+                <div class="m-gold-item-num">+20</div>
+            </li>
+            <li class="m-gold-item">
+                <div class="m-gold-item-record">
+                    <div class="sir-desc">提现</div>
+                    <div class="sir-date">2018-04-06 10:48</div>
+                </div>
+                <div class="m-gold-item-num">-50</div>
+            </li>
+            <li class="m-gold-item">
+                <div class="m-gold-item-record">
+                    <div class="sir-desc">充值</div>
+                    <div class="sir-date">2018-04-06 10:48</div>
+                </div>
+                <div class="m-gold-item-num">+200</div>
+            </li>
+            <li class="m-gold-item">
+                <div class="m-gold-item-record">
+                    <div class="sir-desc">点赞</div>
+                    <div class="sir-date">2018-04-06 10:48</div>
+                </div>
+                <div class="m-gold-item-num">-20</div>
+            </li>
+        </ul>
+        <mt-popup
+            v-model="popupVisible"
+            class="mp-popup">
+            <div class="mine-present">
+                <div class="mine-present-title">转增他人
+                    <span class="mp-icon my-icon-baocuo" @click="clickPresent"></span>
+                </div>
+                <div class="mine-present-content">
+                    <p class="mpc-input"><mt-field label="对方账户"></mt-field></p>
+                    <p class="mpc-input"><mt-field label="转增大师币"></mt-field></p>
+                    <p class="mpc-btn"><mt-button type="primary" @click="doPresent">确认转赠</mt-button></p>
+                </div>
+            </div>
+        </mt-popup>
+        <mt-popup
+            v-model="tipVisible"
+            class="tip-popup"
+            >
+            <div class="mine-present-tip">
+                <div class="mpt-icon my-icon-chenggong"></div>
+                <div class="mpt-text">转增成功</div>
+            </div>
+        </mt-popup>
+    </div>
+</template>
+<script>
+export default {
+    name: 'mineGold',
+    data() {
+        return {
+            popupVisible: false,
+            tipVisible: false
+        }
+    },
+    computed: {
+
+    },
+    methods: {
+        clickPresent() {
+            this.popupVisible = !this.popupVisible
+        },
+        doPresent() {
+            this.popupVisible = false
+            this.clickTip()
+        },
+        clickTip() {
+            this.tipVisible = !this.tipVisible
+        }
+    },
+    mounted() {
+
+    }
+}
+</script>
+<style lang='stylus'>
+#mineGold {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 200;
+    background: $appBg;
+    .m-gold-count {
+        display: flex;
+        padding: toRem(6.5) toRem(19);
+        color: #666;
+        justify-content: space-between;
+        align-items: center;
+        background: $panelBg;
+        border-1px-bottom($borderColor);
+        .count {
+            font-size: toRem(14);
+            .num {
+                color: $appColor;
+            }
+        }
+        .btn {
+            button {
+                position: relative;
+                top: toRem(-2);
+                padding: toRem(9) toRem(18);
+                width: auto;
+                height: auto;
+                font-size: toRem(12);
+                line-height: 1;
+                background: $appColor;
+            }
+        }
+    }
+    .m-gold-list {
+        padding: 0 toRem(18);
+        background: $panelBg;
+        .m-gold-item {
+            padding: toRem(14) 0;
+            display: flex;
+            justify-content: space-between;
+            .m-gold-item-record {
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                text-align: left;
+                .sir-desc {
+                    font-size: toRem(15);
+                    color: #333;
+                }
+                .sir-date {
+                    margin-top: toRem(12);
+                    font-size: toRem(10);
+                    color: #ccc;
+                }
+            }
+            .m-gold-item-num {
+                display: flex;
+                align-items: center;
+                font-size: toRem(15);
+                text-align: right;
+                color: $appColor;
+            }
+            & + .m-gold-item {
+                border-1px-top($borderColor);
+            }
+        }
+    }
+    .mp-popup {
+        width: auto;
+        border-radius: toRem(10);
+        .mine-present {
+            width: toRem(300);
+            height: auto;
+            .mine-present-title {
+                position: relative;
+                height: toRem(40);
+                line-height: toRem(40);
+                color: #aaa;
+                font-size: toRem(18);
+                text-align: center;
+                border-1px-bottom($borderColor);
+                .mp-icon {
+                    position: absolute;
+                    right: toRem(10);
+                }
+            }
+            .mine-present-content {
+                padding: toRem(10);
+                .mpc-input {
+                    padding: 0 toRem(18);
+                    font-size: toRem(15);
+                    color: #333;
+                    .mint-cell {
+                        background-image: none;
+                    }
+                    .mint-cell-wrapper {
+                        background-image: none;
+                        .mint-cell-title {
+                            width: toRem(85);
+                            font-size: toRem(15);
+                            color: #333;
+                        }
+                        .mint-cell-value {
+                            padding: toRem(9) toRem(10);
+                            border: toRem(1) solid $borderColor;
+                            border-radius: toRem(2);
+                            .mint-field-core {
+                                font-size: toRem(14);
+                                line-height: toRem(11);
+                            }
+                        }
+                    }
+                }
+                .mpc-btn {
+                    margin-top: toRem(8);
+                    .mint-button {
+                        width: 100%;
+                        height: toRem(48);
+                        line-height: toRem(48);
+                        font-size: toRem(16);
+                    }
+                }
+            }
+        }
+    }
+    .tip-popup {
+        width: toRem(182);
+        height: toRem(104);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        border-radius: toRem(3);
+        .mpt-icon {
+            font-size: toRem(36);
+            color: $appColor;
+        }
+        .mpt-text {
+            margin-top: toRem(8);
+            font-size: toRem(15);
+        }
+    }
+}
+</style>

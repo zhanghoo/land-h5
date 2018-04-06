@@ -13,16 +13,16 @@
         <div class="mine-count">
             <ul class="count-list">
                 <li class="count-item">
-                    <div class="count-item-a">
+                    <router-link class="count-item-a" :to="{name: 'mineGold'}">
                         <span class="count-item-num">1500</span>
                         <span class="count-item-text">大师币</span>
-                    </div>
+                    </router-link>
                 </li>
                 <li class="count-item">
-                    <div class="count-item-a">
+                    <router-link class="count-item-a" :to="{name: 'mineScore'}">
                         <span class="count-item-num">56543</span>
                         <span class="count-item-text">大师积分</span>
-                    </div>
+                    </router-link>
                 </li>
                 <li class="count-item">
                     <router-link class="count-item-a" :to="{name: 'partInRecord'}">
@@ -138,6 +138,8 @@ export default {
                 line-height: 1;
             }
             .info-label{
+                position: relative;
+                top: toRem(-10);
                 font-size: toRem(9);
                 height: inherit;
                 padding: toRem(3.5) toRem(6.5);
