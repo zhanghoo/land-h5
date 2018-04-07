@@ -1,7 +1,7 @@
 <template>
     <div id="idAuth">
         <p class="desc">地产行业相关人士身份验证成功后可获得
-            <span class="icon my-icon-tongqian"></span>
+            <span class="icon my-icon-qianbi"></span>
             <span class="num">1000</span>
         </p>
         <div class="button">
