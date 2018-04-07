@@ -5,7 +5,7 @@
             <mt-field class="publish-content" placeholder="分享点好东西..." type="textarea" rows="3" v-model="content"></mt-field>
             <div class="publish-upload">
                 <input id="upload" type="file" accept="image/*" capture="camera" @change="upload($event)">
-                <label class="upload-btn" for="upload">+</label>
+                <label class="upload-btn my-icon-add1" for="upload"></label>
             </div>
             <div class=piblish-voice>
                 <i class="my-icon-add"></i>
@@ -80,7 +80,7 @@ export default {
             .upload-btn {
                 color: #e0e0e0;
                 width: toRem(55);
-                height: toRem(55);
+                min-height: toRem(55);
                 font-size: toRem(27.5);
                 text-align: center;
                 padding: toRem(13.5);

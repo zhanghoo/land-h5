@@ -1,35 +1,73 @@
 <template>
     <div id="myInfo">
         <div class="avatar">
-            <img class="avatar-img" src="~@/assets/img/avatar.jpg">
+            <div class="avatar-wrapper">
+                <img class="avatar-img" v-if="user.avatar" :src="avatar_preview">
+                <input id="upload" type="file" accept="image/*" capture="camera" @change="upload($event)" style="display: none;">
+                <label class="upload-btn" for="upload"></label>
+            </div>
             <div class="avatar-label">点击图标，更换头像</div>
         </div>
         <div class="username">
-            <div class="icon my-icon-name" ></div>
+            <div class="icon my-icon-name"></div>
             <span class="text">昵称</span>
-            <input class="input" type="text" name="" value="曹万贯">
+            <input class="input" type="text" v-model="username">
         </div>
         <div class="button">
-            <mt-button>确认修改</mt-button>
+            <mt-button @click="changeUserInfo">确认修改</mt-button>
         </div>
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
+import { postUserInfo } from '@/api'
 export default {
     name: 'myInfo',
     data() {
         return {
-
+            avatar_preview: '',
+            avatar: '',
+            username: ''
         }
     },
     computed: {
-
+        ...mapState([
+            'user'
+        ])
     },
     methods: {
-
+        upload(ev) {
+            this.avatar = ev.target.files[0]
+            var reader = new FileReader()
+            reader.readAsDataURL(this.avatar)
+            reader.onload = (e) => {
+                this.avatar_preview = e.target.result
+            }
+            console.log(this.avatar)
+        },
+        changeUserInfo() {
+            if (!this.avatar) {
+                this.$toast('请上传头像')
+            } else if (!this.username) {
+                this.$toast('昵称不能为空')
+            } else {
+                let params = {
+                    userid: this.user.user_id,
+                    username: this.username,
+                    avatar: this.avatar
+                }
+                console.log(params)
+                postUserInfo(params).then(res => {
+                    if (res && res.code === 0) {
+                        this.$toast('修改成功')
+                    }
+                })
+            }
+        }
     },
     mounted() {
-
+        this.avatar_preview = this.user.avatar
+        this.username = this.user.nick_name
     }
 }
 </script>
@@ -42,16 +80,30 @@ export default {
     left: 0;
     z-index: 200;
     background: $appBg;
-    .avatar{
+    .avatar {
         margin-top: toRem(20);
-        .avatar-img{
+        .avatar-wrapper {
+            position: relative;
             display: block;
             width: toRem(70);
             height: toRem(70);
             border-radius: 100%;
+            overflow: hidden;
             margin: 0 auto toRem(12);
+            .avatar-img {
+                display: block;
+                width: 100%;
+                height: 100%;
+            }
+            label {
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+            }
         }
-        .avatar-label{
+        .avatar-label {
             font-size: toRem(12);
             color: #999;
             text-align: center;
@@ -66,8 +118,7 @@ export default {
         border-radius: toRem(3);
         background: $panelBg;
         font-size: toRem(14);
-        ver
-        .icon {
+        ver, .icon {
             margin-left: toRem(18);
         }
         .text {

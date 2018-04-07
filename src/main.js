@@ -37,6 +37,17 @@ Vue.use(VueProgressBar, {
 //     Vue.filter(key, filters[key])
 // })
 
+// 全局路由登录验证
+router.beforeEach((to, from, next) => {
+    if (store.state.user) {
+        next()
+    } else {
+        store.dispatch('get_userInfo').then(res => {
+            next()
+        })
+    }
+})
+
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

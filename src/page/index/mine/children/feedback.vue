@@ -1,25 +1,32 @@
 <template>
     <div id="feedback">
-        <mt-field placeholder="请输入您想反馈的内容" type="textarea" rows="6"></mt-field>
-        <div class="button"><mt-button>提交</mt-button></div>
+        <mt-field placeholder="请输入您想反馈的内容" type="textarea" rows="6" v-model="content"></mt-field>
+        <div class="button">
+            <mt-button @click="postFeddBackContent">提交</mt-button>
+        </div>
     </div>
 </template>
 <script>
+import { postFeedBack } from '@/api'
 export default {
     name: 'feedback',
     data() {
         return {
-
+            content: ''
         }
     },
-    computed: {
-
-    },
     methods: {
-
-    },
-    mounted() {
-
+        postFeddBackContent() {
+            if (!this.content) {
+                this.$toast('请填写反馈信息')
+            } else {
+                postFeedBack(this.content).then(res => {
+                    if (res) {
+                        this.$toast('提交成功')
+                    }
+                })
+            }
+        }
     }
 }
 </script>
