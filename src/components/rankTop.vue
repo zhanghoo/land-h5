@@ -2,22 +2,18 @@
     <div class="rank-top" :style="{ 'transform': boxScale }">
         <div class="ribbon-box bottom">
             <div class="ribbon-c">
-                <div class="ribbon-l"
-                     :style="{ 'border-top-color': color, 'border-bottom-color': color}"></div>
-                <div class="ribbon-r"
-                     :style="{ 'border-top-color': color, 'border-bottom-color': color}"></div>
+                <div class="ribbon-l" :style="{ 'border-top-color': color, 'border-bottom-color': color}"></div>
+                <div class="ribbon-r" :style="{ 'border-top-color': color, 'border-bottom-color': color}"></div>
             </div>
         </div>
         <div class="rt-user">
             <img class="rtu-avatar" :src="avatar">
         </div>
-        <div class="rt-huangguan my-icon-huangguan"
-             :style="{ color: color }">
+        <div class="rt-huangguan my-icon-huangguan" :style="{ color: color }">
             <span class="rank-no">{{rankNo}}</span>
         </div>
         <div class="ribbon-box">
-            <div class="ribbon-c"
-                 :style="{ 'border-top-color': color }">
+            <div class="ribbon-c" :style="{ 'border-top-color': color }">
                 <div class="ribbon-c-l"></div>
                 <div class="ribbon-c-r"></div>
                 <p class="ribbon-desc">{{desc}}</p>
@@ -135,7 +131,7 @@ export default {
                 position: absolute;
                 top: toRem(-23);
                 left: toRem(-21);
-                width: toRem(17)
+                width: toRem(17);
                 border-width: toRem(8) toRem(5);
                 border-style: solid;
                 border-color: #C6C6C6 transparent #C6C6C6 transparent;
@@ -144,7 +140,7 @@ export default {
                 position: absolute;
                 top: toRem(-23);
                 right: toRem(-21);
-                width: toRem(17)
+                width: toRem(17);
                 border-width: toRem(8) toRem(5);
                 border-style: solid;
                 border-color: #C6C6C6 transparent #C6C6C6 transparent;
@@ -154,7 +150,7 @@ export default {
                 font-size: toRem(10);
                 color: #fff;
                 top: toRem(-17);
-                left: toRem(-12)
+                left: toRem(-12);
                 width: toRem(61.5);
                 line-height: toRem(17);
                 white-space: nowrap;

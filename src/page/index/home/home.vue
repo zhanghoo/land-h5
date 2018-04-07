@@ -3,27 +3,32 @@
         <div class="home-top">
             <div class="home-title">
                 <p class="ht-line"></p>
-                <p>排行榜<span class="en">HOT</span></p>
+                <p>排行榜
+                    <span class="en">HOT</span>
+                </p>
                 <p class="ht-line"></p>
             </div>
             <div class="home-rank">
-                <div class="home-rank-item">
-                    <rank-top :color="'#BDAFAE'" :rank-no="2" :scale="0.95"></rank-top>
-                    <span class="home-rank-name">曹万贯</span>
-                    <span class="home-rank-num">36547</span>
+                <div class="home-rank-item" v-if="rankList[1]">
+                    <rank-top :color="'#C6C6C6'" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name"></rank-top>
+                    <span class="home-rank-name">{{rankList[1].nick_name}}</span>
+                    <span class="home-rank-num">{{rankList[1].master_score}}</span>
                 </div>
-                <div class="home-rank-item">
-                    <rank-top :color="'#FCD107'" :rank-no="1" :scale="1.05"></rank-top>
-                    <span class="home-rank-name">曹万贯</span>
-                    <span class="home-rank-num">36547</span>
+                <div class="home-rank-item" v-if="rankList[0]">
+                    <rank-top :color="'#FCD107'" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
+                    <span class="home-rank-name">{{rankList[0].nick_name}}</span>
+                    <span class="home-rank-num">{{rankList[0].master_score}}</span>
                 </div>
-                <div class="home-rank-item">
-                    <rank-top :color="'#804621'" :rank-no="3" :scale="0.95"></rank-top>
-                    <span class="home-rank-name">曹万贯</span>
-                    <span class="home-rank-num">36547</span>
+                <div class="home-rank-item" v-if="rankList[2]">
+                    <rank-top :color="'#804621'" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
+                    <span class="home-rank-name">{{rankList[2].nick_name}}</span>
+                    <span class="home-rank-num">{{rankList[2].master_score}}</span>
                 </div>
             </div>
-            <div class="home-msg"><span class="hm-icon my-icon-broadcast"></span>地产大师禁止任何形式的违规行为，请广大用户共同维护地产大师的良好形象。</div>
+            <div class="home-msg">
+                <div class="hm-icon" v-for="(item, index) in systemNews" :key="index">
+                    <i class="my-icon-broadcast"></i>{{item.content}}</div>
+            </div>
         </div>
         <div class="home-menu">
             <div class="home-menu-item home-menu-evaluate">
@@ -41,7 +46,9 @@
         </div>
         <block-slot :title-icon="true" class="publish-newest-list">
             <span slot="title">最新地产公布</span>
-            <span slot="more">查看更多<span class="my-icon-more"></span></span>
+            <span slot="more">查看更多
+                <span class="my-icon-more"></span>
+            </span>
             <div slot="conent">
                 <div class="block-slot-item">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</div>
                 <div class="block-slot-item">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 5号地块</div>
@@ -50,19 +57,25 @@
         </block-slot>
         <block-slot :title-icon="true" class="winner-newest-list">
             <span slot="title">最近优胜名单</span>
-            <span slot="more">查看更多<span class="my-icon-more"></span></span>
+            <span slot="more">查看更多
+                <span class="my-icon-more"></span>
+            </span>
             <div slot="conent">
                 <div class="block-slot-item">
                     <div class="bsi-panel">
                         <div class="bsi-panel-l">
                             <p class="bsi-title">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</p>
                             <p class="bsi-type">商用</p>
-                            <p class="bsi-price">成交楼面价<span class="bsi-price-num">4000元/m²</span></p>
-                            <p class="bsi-price">预估楼面价<span class="bsi-price-num">4000元/m²</span></p>
+                            <p class="bsi-price">成交楼面价
+                                <span class="bsi-price-num">4000元/m²</span>
+                            </p>
+                            <p class="bsi-price">预估楼面价
+                                <span class="bsi-price-num">4000元/m²</span>
+                            </p>
                         </div>
                         <div class="bsi-panel-c">
                             <div class="bsi-user-avatar">
-                                <div class="bsi-avatar"><img  src="~@/assets/img/avatar.jpg"></div>
+                                <div class="bsi-avatar"><img src="~@/assets/img/avatar.jpg"></div>
                                 <img class="bsi-win" src="~@/assets/img/win@2x.png">
                             </div>
                             <p class="bsi-user-name">曹万贯</p>
@@ -78,12 +91,16 @@
                         <div class="bsi-panel-l">
                             <p class="bsi-title">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</p>
                             <p class="bsi-type">商用</p>
-                            <p class="bsi-price">成交楼面价<span class="bsi-price-num">4000元/m²</span></p>
-                            <p class="bsi-price">预估楼面价<span class="bsi-price-num">4000元/m²</span></p>
+                            <p class="bsi-price">成交楼面价
+                                <span class="bsi-price-num">4000元/m²</span>
+                            </p>
+                            <p class="bsi-price">预估楼面价
+                                <span class="bsi-price-num">4000元/m²</span>
+                            </p>
                         </div>
                         <div class="bsi-panel-c">
                             <div class="bsi-user-avatar">
-                                <div class="bsi-avatar"><img  src="~@/assets/img/avatar.jpg"></div>
+                                <div class="bsi-avatar"><img src="~@/assets/img/avatar.jpg"></div>
                                 <img class="bsi-win" src="~@/assets/img/win@2x.png">
                             </div>
                             <p class="bsi-user-name">曹万贯</p>
@@ -101,22 +118,38 @@
 <script>
 import rankTop from '@/components/rankTop'
 import blockSlot from '@/components/blockSlot'
+import { getRankList, getSystemNews } from '@/api'
 export default {
     name: 'home',
     components: { rankTop, blockSlot },
     data() {
         return {
-
+            rankList: '',
+            systemNews: ''
         }
     },
     computed: {
 
     },
     methods: {
-
+        getRankList_data() {
+            getRankList().then(res => {
+                if (res && res.Data) {
+                    this.rankList = res.Data
+                }
+            })
+        },
+        getSystemNews_data() {
+            getSystemNews().then(res => {
+                if (res && res.Data) {
+                    this.systemNews = res.Data
+                }
+            })
+        }
     },
     mounted() {
-
+        this.getRankList_data()
+        this.getSystemNews_data()
     }
 }
 </script>
@@ -178,8 +211,11 @@ export default {
             color: #333;
             text-ellipsis();
             .hm-icon {
-                margin-right: toRem(9);
+                margin-bottom: toRem(6);
                 color: $appColor;
+                i {
+                    margin-right: toRem(9);
+                }
             }
         }
     }
@@ -192,7 +228,7 @@ export default {
         background: $panelBg;
         .home-menu-item {
             flex: 1;
-            padding: toRem(9)
+            padding: toRem(9);
             .home-menu-link {
                 display: flex;
                 flex-direction: column;

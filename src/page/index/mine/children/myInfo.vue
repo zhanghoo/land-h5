@@ -43,7 +43,6 @@ export default {
             reader.onload = (e) => {
                 this.avatar_preview = e.target.result
             }
-            console.log(this.avatar)
         },
         changeUserInfo() {
             if (!this.avatar) {

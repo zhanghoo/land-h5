@@ -139,7 +139,7 @@ export default {
             }
             .info-label {
                 position: relative;
-                top: toRem(-10);
+                top: toRem(-2);
                 font-size: toRem(9);
                 height: inherit;
                 padding: toRem(3.5) toRem(6.5);
