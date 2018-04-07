@@ -1,64 +1,41 @@
 <template>
     <div id="mineGold">
         <div class="m-gold-count">
-            <p class="count">当前大师币：<span class="num">1500</span></p>
-            <p class="btn"><mt-button type="primary" @click="clickPresent">转赠</mt-button></p>
+            <p class="count">当前大师币：
+                <span class="num">1500</span>
+            </p>
+            <p class="btn">
+                <mt-button type="primary" @click="popupVisible = !popupVisible">转赠</mt-button>
+            </p>
         </div>
         <ul class="m-gold-list">
-            <li class="m-gold-item">
+            <li class="m-gold-item" v-for="(item, index) in coinRecord" :key="index">
                 <div class="m-gold-item-record">
-                    <div class="sir-desc">充值</div>
-                    <div class="sir-date">2018-04-06 10:48</div>
+                    <div class="sir-desc">{{item.action}}</div>
+                    <div class="sir-date">{{item.act_time}}</div>
                 </div>
-                <div class="m-gold-item-num">+200</div>
-            </li>
-            <li class="m-gold-item">
-                <div class="m-gold-item-record">
-                    <div class="sir-desc">被点赞</div>
-                    <div class="sir-date">2018-04-06 10:48</div>
-                </div>
-                <div class="m-gold-item-num">+20</div>
-            </li>
-            <li class="m-gold-item">
-                <div class="m-gold-item-record">
-                    <div class="sir-desc">提现</div>
-                    <div class="sir-date">2018-04-06 10:48</div>
-                </div>
-                <div class="m-gold-item-num">-50</div>
-            </li>
-            <li class="m-gold-item">
-                <div class="m-gold-item-record">
-                    <div class="sir-desc">充值</div>
-                    <div class="sir-date">2018-04-06 10:48</div>
-                </div>
-                <div class="m-gold-item-num">+200</div>
-            </li>
-            <li class="m-gold-item">
-                <div class="m-gold-item-record">
-                    <div class="sir-desc">点赞</div>
-                    <div class="sir-date">2018-04-06 10:48</div>
-                </div>
-                <div class="m-gold-item-num">-20</div>
+                <div class="m-gold-item-num">{{item.type === '1'? '+' : '-'}}{{item.coin_num}}</div>
             </li>
         </ul>
-        <mt-popup
-            v-model="popupVisible"
-            class="mp-popup">
+        <mt-popup v-model="popupVisible" class="mp-popup">
             <div class="mine-present">
                 <div class="mine-present-title">转增他人
-                    <span class="mp-icon my-icon-baocuo" @click="clickPresent"></span>
+                    <span class="mp-icon my-icon-baocuo" @click="popupVisible = !popupVisible"></span>
                 </div>
                 <div class="mine-present-content">
-                    <p class="mpc-input"><mt-field label="对方账户"></mt-field></p>
-                    <p class="mpc-input"><mt-field label="转增大师币"></mt-field></p>
-                    <p class="mpc-btn"><mt-button type="primary" @click="doPresent">确认转赠</mt-button></p>
+                    <p class="mpc-input">
+                        <mt-field label="对方账户" v-model="presentUserid"></mt-field>
+                    </p>
+                    <p class="mpc-input">
+                        <mt-field label="转增大师币" v-model="presentNumber" type="number"></mt-field>
+                    </p>
+                    <p class="mpc-btn">
+                        <mt-button type="primary" @click="confirmPresent">确认转赠</mt-button>
+                    </p>
                 </div>
             </div>
         </mt-popup>
-        <mt-popup
-            v-model="tipVisible"
-            class="tip-popup"
-            >
+        <mt-popup v-model="tipVisible" class="tip-popup">
             <div class="mine-present-tip">
                 <div class="mpt-icon my-icon-chenggong"></div>
                 <div class="mpt-text">转增成功</div>
@@ -67,31 +44,47 @@
     </div>
 </template>
 <script>
+import { getCoinRecord, postSendCoin } from '@/api'
 export default {
     name: 'mineGold',
     data() {
         return {
             popupVisible: false,
-            tipVisible: false
+            tipVisible: false,
+            coinRecord: '',
+            presentUserid: '',
+            presentNumber: ''
         }
     },
-    computed: {
-
-    },
     methods: {
-        clickPresent() {
-            this.popupVisible = !this.popupVisible
+        // 获取记录
+        getCoinRecord_data() {
+            getCoinRecord(this.$store.state.user.user_id).then(res => {
+                if (res && res.Data && res.Data.record) {
+                    this.coinRecord = res.Data.record
+                }
+            })
         },
-        doPresent() {
-            this.popupVisible = false
-            this.clickTip()
-        },
-        clickTip() {
-            this.tipVisible = !this.tipVisible
+        // 确认转赠
+        confirmPresent() {
+            if (!this.presentUserid || !this.presentNumber) {
+                this.$toast('请填写信息')
+            } else {
+                let params = {
+                    presentUserid: this.presentUserid,
+                    presentNumber: this.presentNumber
+                }
+                postSendCoin(params).then(res => {
+                    if (res) {
+                        this.popupVisible = !this.popupVisible
+                        this.tipVisible = !this.tipVisible
+                    }
+                })
+            }
         }
     },
     mounted() {
-
+        this.getCoinRecord_data()
     }
 }
 </script>

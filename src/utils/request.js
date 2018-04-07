@@ -4,7 +4,7 @@ import { Toast, Indicator } from 'mint-ui'
 
 // 创建axios实例
 export const instance = axios.create({
-    baseURL: process.env.BASE_API,
+    // baseURL: process.env.BASE_API,
     timeout: 10 * 1000
 })
 
