@@ -58,11 +58,11 @@ export default {
         },
         // 支付查看内容
         confirmWatch() {
-            if (this.$store.state.user.money > this.payToWatchItem.price) {
-                this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
-                this.$toast(`-${this.payToWatchItem.price}大师币`)
+            // if (this.$store.state.user.money > this.payToWatchItem.price) {.
+                // this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
+                // this.$toast(`-${this.payToWatchItem.price}大师币`)
                 this.$router.push({ path: '/momentDetail', query: { 'id': this.payToWatchItem.id } })
-            }
+            // }
             this.payMsgBox = false
         }
     },

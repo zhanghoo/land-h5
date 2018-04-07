@@ -1,61 +1,24 @@
 <template>
     <div id="partInRecord">
         <mt-navbar class="page-part" v-model="selected">
-            <mt-tab-item id="1">全部</mt-tab-item>
-            <mt-tab-item id="2">待公布</mt-tab-item>
-            <mt-tab-item id="3">估价成功</mt-tab-item>
+            <mt-tab-item id="all">全部</mt-tab-item>
+            <mt-tab-item id="wait">待公布</mt-tab-item>
+            <mt-tab-item id="success">估价成功</mt-tab-item>
         </mt-navbar>
         <div class="page-infinite-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
-            <ul class="record-list">
-                <li class="record-item" v-show="selected == '1' || selected == '2'">
+            <ul class="record-list" v-if="record">
+                <li class="record-item" v-for="item in filterRecord" :key="item.id">
                     <div class="record-item-panel">
                         <div class="record-head">
-                            <span class="rh-address">江干区（丁桥单元JG040513335364513523992）</span>
-                            <span class="rh-status">待公布</span>
+                            <span class="rh-address">{{item.name}}</span>
+                            <span class="rh-status" v-if="item.estatus === '0'">待公布</span>
+                            <span class="rh-status" v-else-if="item.estatus === '1'">估价成功</span>
+                            <span class="rh-status" v-else-if="item.estatus === '2'">估价失败</span>
                         </div>
                         <div class="record-content">
                             <p>投注大师币：200</p>
-                            <p>预估成交楼面价: 4000元/m²</p>
-                            <p>估计时间：2018-3-6 09:03:28</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="record-item" v-show="selected == '1'">
-                    <div class="record-item-panel">
-                        <div class="record-head">
-                            <span class="rh-address">江干区（丁桥单元JG040513335364513523992）</span>
-                            <span class="rh-status">已关闭</span>
-                        </div>
-                        <div class="record-content">
-                            <p>投注大师币：200</p>
-                            <p>预估成交楼面价: 4000元/m²</p>
-                            <p>估计时间：2018-3-6 09:03:28</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="record-item" v-show="selected == '1'">
-                    <div class="record-item-panel">
-                        <div class="record-head">
-                            <span class="rh-address">江干区（丁桥单元JG040513335364513523992）</span>
-                            <span class="rh-status">估价失败</span>
-                        </div>
-                        <div class="record-content">
-                            <p>投注大师币：200</p>
-                            <p>预估成交楼面价: 4000元/m²</p>
-                            <p>估计时间：2018-3-6 09:03:28</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="record-item" v-show="selected == '1' || selected == '3'">
-                    <div class="record-item-panel">
-                        <div class="record-head">
-                            <span class="rh-address">江干区（丁桥单元JG040513335364513523992）</span>
-                            <span class="rh-status">估价成功</span>
-                        </div>
-                        <div class="record-content">
-                            <p>投注大师币：200</p>
-                            <p>预估成交楼面价: 4000元/m²</p>
-                            <p>估计时间：2018-3-6 09:03:28</p>
+                            <p>预估成交楼面价: {{item.evaluate_num}}/m²</p>
+                            <p>估计时间：{{item.evaluate_time}}</p>
                         </div>
                     </div>
                 </li>
@@ -64,24 +27,48 @@
     </div>
 </template>
 <script>
+import { getEvaluateRecord } from '@/api'
 export default {
     name: 'partInRecord',
     data() {
         return {
-            selected: '1',
+            selected: 'all',
+            record: '',
+            filterRecord: '',
             wrapperHeight: 0
         }
     },
-    created() {
-
-    },
-    computed: {
-
+    watch: {
+        selected(val) {
+            this.filterRecord_data(val)
+        }
     },
     methods: {
-
+        getEvaluateRecord_data() {
+            getEvaluateRecord().then(res => {
+                if (res && res.Data) {
+                    this.filterRecord = this.record = res.Data
+                }
+            })
+        },
+        filterRecord_data(type) {
+            let selectType = type
+            switch (selectType) {
+                case 'wait': selectType = '0'
+                    break
+                case 'success': selectType = '1'
+                    break
+                default: selectType = ''
+            }
+            if (selectType) {
+                this.filterRecord = this.record.filter(item => item.estatus === selectType)
+            } else {
+                this.filterRecord = this.record
+            }
+        }
     },
     mounted() {
+        this.getEvaluateRecord_data()
         this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top
     }
 }
@@ -121,7 +108,7 @@ export default {
         overflow: scroll;
     }
     .record-list {
-       .record-item {
+        .record-item {
             margin-bottom: toRem(5);
             .record-item-panel {
                 padding: 0 toRem(18);
