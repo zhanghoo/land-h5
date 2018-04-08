@@ -22,13 +22,13 @@ const transactionDetail = () => import('@/page/detail/transactionDetail')
 const landDetail = () => import('@/page/detail/transaction/landDetail')
 const landInformation = () => import('@/page/detail/transaction/landInformation')
 const momentDetail = () => import('@/page/detail/momentDetail')
-const msgDetail = () => import('@/page/detail/msgDetail')
 const rankList = () => import('@/page/detail/rankList')
 const landEevaluate = () => import('@/page/detail/landEevaluate')
 const announcement = () => import('@/page/detail/announcement')
 const releaseList = () => import('@/page/detail/releaseList')
 const winnerList = () => import('@/page/detail/winnerList')
 const publish = () => import('@/page/detail/publish')
+const systemNews = () => import('@/page/detail/systemNews')
 
 export default new Router({
     scrollBehavior(to, from, savedPosition) {
@@ -148,11 +148,6 @@ export default new Router({
             component: momentDetail
         },
         {
-            name: 'msgDetail',
-            path: '/msgDetail',
-            component: msgDetail
-        },
-        {
             name: 'rankList',
             path: '/rankList',
             component: rankList
@@ -181,6 +176,11 @@ export default new Router({
             name: 'publish',
             path: '/publish',
             component: publish
+        },
+        {
+            name: 'systemNews',
+            path: '/systemNews',
+            component: systemNews
         }
     ]
 })
