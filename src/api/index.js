@@ -76,8 +76,8 @@ export function getSystemNews() {
 }
 
 // 用户主页
-export function getUserPage() {
-    let res = request('/api/home/system/HomePage', 'POST')
+export function getUserMoment() {
+    let res = request('/api/home/system/userHomePage', 'POST')
     return res
 }
 

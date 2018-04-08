@@ -1,15 +1,17 @@
 <template>
     <div id="mine">
-        <router-link class="mine-info" :to="{name: 'myInfo'}">
-            <div class="avatar">
-                <img class="avatar-img" v-if="user.avatar" :src="user.avatar">
-            </div>
-            <div class="info">
-                <p class="name">{{user.nick_name}}</p>
-                <mt-button class="info-label" plain type="primary">地产大亨</mt-button>
-            </div>
-            <div class="my-icon-more"></div>
-        </router-link>
+        <div class="mine-info">
+            <router-link class="info-wrapper" :to="{name: 'userDetail'}" tag="div">
+                <div class="avatar">
+                    <img class="avatar-img" v-if="user.avatar" :src="user.avatar">
+                </div>
+                <div class="info">
+                    <p class="name">{{user.nick_name}}</p>
+                    <mt-button class="info-label" plain type="primary">地产大亨</mt-button>
+                </div>
+            </router-link>
+            <router-link class="my-icon-more" :to="{name: 'myInfo'}"></router-link>
+        </div>
         <div class="mine-count">
             <ul class="count-list">
                 <li class="count-item">
@@ -118,37 +120,44 @@ export default {
         align-items: center;
         border-1px-bottom(#e6e6e6);
         background: $panelBg;
-        .avatar {
-            width: toRem(64);
-            height: toRem(64);
-            border-radius: 100%;
-            overflow: hidden;
-            background: #eee;
-            .avatar-img {
-                width: 100%;
-                height: 100%;
+        .info-wrapper {
+            display: flex;
+            align-items: center;
+            .avatar {
+                width: toRem(64);
+                height: toRem(64);
+                border-radius: 100%;
+                overflow: hidden;
+                background: #eee;
+                .avatar-img {
+                    width: 100%;
+                    height: 100%;
+                }
             }
-        }
-        .info {
-            flex: 1;
-            padding-left: toRem(18.5);
-            .name {
-                margin: toRem(8.5) 0 toRem(12);
-                font-size: toRem(18);
-                line-height: 1;
-            }
-            .info-label {
-                position: relative;
-                top: toRem(-2);
-                font-size: toRem(9);
-                height: inherit;
-                padding: toRem(3.5) toRem(6.5);
+            .info {
+                flex: 1;
+                padding-left: toRem(18.5);
+                .name {
+                    margin: toRem(8.5) 0 toRem(12);
+                    font-size: toRem(18);
+                    line-height: 1;
+                }
+                .info-label {
+                    position: relative;
+                    top: toRem(-2);
+                    font-size: toRem(9);
+                    height: inherit;
+                    padding: toRem(3.5) toRem(6.5);
+                }
             }
         }
         .my-icon-more {
             font-size: toRem(14);
             font-weight: bold;
             color: #999;
+            margin-left auto;
+            padding toRem(20)
+            padding-right 0
         }
     }
     .mine-count {
