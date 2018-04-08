@@ -28,7 +28,7 @@
             <div class="home-msg">
                 <ul class="home-msg-list">
                     <li class="home-msg-item" v-for="(item, index) in systemNews" :key="index">
-                        <router-link :to="{name: 'msgDetail'}">
+                        <router-link :to="{name: 'systemNews', params: {json: item}}">
                             <i class="hm-icon my-icon-broadcast"></i>{{item.content}}
                         </router-link>
                     </li>

@@ -25,7 +25,7 @@
         </div>
         <div class="charge-list" v-if="chargeVisible">
             <div class="list-label">大师币：
-                <span class="label-numer">50</span>
+                <span class="label-numer">{{moneyActive}}</span>
             </div>
             <div class="list-money">
                 <span class="money-btn" v-for="(item, index) in moneyBtnList" :key="index" :class="{'active': item === moneyActive}" @click="moneyActive = item">{{item}}</span>
