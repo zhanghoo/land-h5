@@ -18,9 +18,9 @@ const withdrawCashAdd = () => import('@/page/index/mine/children/withdrawCash/ad
 const feedback = () => import('@/page/index/mine/children/feedback')
 const idAuth = () => import('@/page/index/mine/children/idAuth')
 const detail = () => import('@/page/detail/detail')
+const landDetail = () => import('@/page/detail/landDetail')
 const transactionDetail = () => import('@/page/detail/transactionDetail')
-const landDetail = () => import('@/page/detail/transaction/landDetail')
-const landInformation = () => import('@/page/detail/transaction/landInformation')
+const dealInformation = () => import('@/page/detail/transaction/dealInformation')
 const momentDetail = () => import('@/page/detail/momentDetail')
 const rankList = () => import('@/page/detail/rankList')
 const landEevaluate = () => import('@/page/detail/landEevaluate')
@@ -127,20 +127,20 @@ export default new Router({
         },
         {
             name: 'transactionDetail',
-            path: 'transactionDetail',
+            path: '/transactionDetail',
             component: transactionDetail,
             children: [
                 {
-                    name: 'landDetail',
-                    path: 'landDetail',
-                    component: landDetail
-                },
-                {
-                    name: 'landInformation',
-                    path: 'landInformation',
-                    component: landInformation
+                    name: 'dealInformation',
+                    path: 'dealInformation',
+                    component: dealInformation
                 }
             ]
+        },
+        {
+            name: 'landDetail',
+            path: '/landDetail',
+            component: landDetail
         },
         {
             name: 'momentDetail',

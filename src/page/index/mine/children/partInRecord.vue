@@ -7,6 +7,19 @@
         </mt-navbar>
         <div class="page-infinite-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
             <ul class="record-list" v-if="record">
+                <li class="record-item">
+                    <div class="record-item-panel" @click="$router.push({name: 'transactionDetail'})">
+                        <div class="record-head">
+                            <span class="rh-address">纯前端数据-测试用跳到交易详情页</span>
+                            <span class="rh-status">****</span>
+                        </div>
+                        <div class="record-content">
+                            <p>投注大师币：200</p>
+                            <p>预估成交楼面价: 4000/m²</p>
+                            <p>估计时间：2018-04-04 14:14:09</p>
+                        </div>
+                    </div>
+                </li>
                 <li class="record-item" v-for="item in filterRecord" :key="item.id">
                     <div class="record-item-panel">
                         <div class="record-head">
