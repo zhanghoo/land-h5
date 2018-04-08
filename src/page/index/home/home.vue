@@ -9,44 +9,49 @@
                 <p class="ht-line"></p>
             </div>
             <div class="home-rank">
-                <div class="home-rank-item" v-if="rankList[1]">
-                    <rank-top :color="'#C6C6C6'" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name"></rank-top>
+                <div class="home-rank-item" v-if="rankList[1]" @click="$router.push({name: 'rankList'})">
+                    <rank-top :color="'#C6C6C6'" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name" @click="$router.push({name: 'rankList'})"></rank-top>
                     <span class="home-rank-name">{{rankList[1].nick_name}}</span>
                     <span class="home-rank-num">{{rankList[1].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[0]">
+                <div class="home-rank-item" v-if="rankList[0]" @click="$router.push({name: 'rankList'})">
                     <rank-top :color="'#FCD107'" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
                     <span class="home-rank-name">{{rankList[0].nick_name}}</span>
                     <span class="home-rank-num">{{rankList[0].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[2]">
+                <div class="home-rank-item" v-if="rankList[2]" @click="$router.push({name: 'rankList'})">
                     <rank-top :color="'#804621'" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
                     <span class="home-rank-name">{{rankList[2].nick_name}}</span>
                     <span class="home-rank-num">{{rankList[2].master_score}}</span>
                 </div>
             </div>
             <div class="home-msg">
-                <div class="hm-icon" v-for="(item, index) in systemNews" :key="index">
-                    <i class="my-icon-broadcast"></i>{{item.content}}</div>
+                <ul class="home-msg-list">
+                    <li class="home-msg-item" v-for="(item, index) in systemNews" :key="index">
+                        <router-link :to="{name: 'msgDetail'}">
+                            <i class="hm-icon my-icon-broadcast"></i>{{item.content}}
+                        </router-link>
+                    </li>
+                </ul>
             </div>
         </div>
         <div class="home-menu">
             <div class="home-menu-item home-menu-evaluate">
                 <div class="home-menu-link">
-                    <span class="hml-t">地产估价</span>
-                    <span class="hml-b">地产大师之路</span>
+                    <span class="hml-t" @click="$router.push({name: 'landEevaluate'})">地产估价</span>
+                    <span class="hml-b" @click="$router.push({name: 'landEevaluate'})">地产大师之路</span>
                 </div>
             </div>
             <div class="home-menu-item home-menu-notice">
                 <div class="home-menu-link">
-                    <span class="hml-t">成交公告</span>
-                    <span class="hml-b">成交公布随时看</span>
+                    <span class="hml-t" @click="$router.push({name: 'announcement'})">成交公告</span>
+                    <span class="hml-b" @click="$router.push({name: 'announcement'})">成交公布随时看</span>
                 </div>
             </div>
         </div>
         <block-slot :title-icon="true" class="publish-newest-list">
             <span slot="title">最新地产公布</span>
-            <span slot="more">查看更多
+            <span slot="more" @click="$router.push({name: 'releaseList'})">查看更多
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
@@ -57,7 +62,7 @@
         </block-slot>
         <block-slot :title-icon="true" class="winner-newest-list">
             <span slot="title">最近优胜名单</span>
-            <span slot="more">查看更多
+            <span slot="more" @click="$router.push({name: 'winnerList'})">查看更多
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
@@ -211,11 +216,8 @@ export default {
             color: #333;
             text-ellipsis();
             .hm-icon {
-                margin-bottom: toRem(6);
+                margin-right: toRem(9);
                 color: $appColor;
-                i {
-                    margin-right: toRem(9);
-                }
             }
         }
     }
