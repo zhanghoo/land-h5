@@ -1,5 +1,5 @@
 <template>
-    <ul class="monent-list">
+    <ul class="moment-list">
         <li class="list-item" v-for="(item,index) in json" :key="index">
             <div class="item-user">
                 <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
@@ -15,8 +15,8 @@
                     </router-link>
                 </template>
                 <!-- 需支付 -->
-                <template v-if="item.mode === 'pay'">
-                    <div class="content-pay" @click="$emit('watch', item)">查看需支付{{item.price}}大师币</div>
+                <template v-if="item.is_pay === '1'">
+                    <div class="content-pay" @click="$emit('watch', item)">查看需支付{{item.money}}大师币</div>
                 </template>
                 <!-- 概览 -->
                 <template v-if="item.mode === 'overview'">
@@ -31,15 +31,15 @@
                 </template>
             </div>
             <div class="item-info">
-                <i class="my-icon-zan" :class="{'active': item.activeZan}" @click="addZan(item)"> {{item.zan || 0}}</i>
-                <span class="info-time">{{item.time}}</span>
+                <i class="my-icon-zan" :class="{'active': item.activeZan}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                <span class="info-time">{{item.pub_time}}</span>
             </div>
         </li>
     </ul>
 </template>
 <script>
 export default {
-    name: 'monentList',
+    name: 'momentList',
     props: {
         json: {
             type: Array
@@ -49,9 +49,9 @@ export default {
         addZan(item) {
             item.activeZan = !item.activeZan
             if (item.activeZan) {
-                item.zan++
+                item.lnum++
             } else {
-                item.zan--
+                item.lnum--
             }
         }
     }
@@ -60,7 +60,7 @@ export default {
 <style lang='stylus'>
 $mainText = #333;
 $subText = #666;
-.monent-list {
+.moment-list {
     margin: 0;
     .list-item {
         padding: toRem(15) toRem(18) toRem(12);
@@ -88,7 +88,7 @@ $subText = #666;
             margin-bottom: toRem(10);
         }
         .item-content {
-            margin-bottom: toRem(10);
+            margin-bottom: toRem(12);
             .content-cover {
                 height: toRem(180);
                 overflow: hidden;

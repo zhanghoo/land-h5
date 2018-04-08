@@ -29,6 +29,7 @@ const releaseList = () => import('@/page/detail/releaseList')
 const winnerList = () => import('@/page/detail/winnerList')
 const publish = () => import('@/page/detail/publish')
 const systemNews = () => import('@/page/detail/systemNews')
+const userDetail = () => import('@/page/detail/userDetail')
 
 export default new Router({
     scrollBehavior(to, from, savedPosition) {
@@ -181,6 +182,11 @@ export default new Router({
             name: 'systemNews',
             path: '/systemNews',
             component: systemNews
+        },
+        {
+            name: 'userDetail',
+            path: '/userDetail',
+            component: userDetail
         }
     ]
 })

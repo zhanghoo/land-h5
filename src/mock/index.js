@@ -12,8 +12,8 @@ Mock.mock('http://liansixin.win/momentList', {
             title: '全国成交走势',
             mode: 'cover',
             coveImg: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1522840979045&di=a6354e049eb52ce19c58aadbfb02065c&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fa5c27d1ed21b0ef4fa1c44add7c451da80cb3e49.jpg',
-            time: '2018-3-17 15:00',
-            zan: 2
+            pub_time: '2018-3-17 15:00',
+            lnum: 2
         },
         {
             id: 2,
@@ -22,9 +22,10 @@ Mock.mock('http://liansixin.win/momentList', {
             label: '地产大亨',
             title: '2017江北区地块走势预测',
             mode: 'pay',
-            price: 100,
-            time: '2018-3-17 15:00',
-            zan: 9
+            is_pay: '1',
+            money: 100,
+            pub_time: '2018-3-17 15:00',
+            lnum: 9,
         },
         {
             id: 3,
@@ -36,8 +37,8 @@ Mock.mock('http://liansixin.win/momentList', {
             subTitle: '江干区(丁桥单元JG0405-12地块),杭州储出[2018] 4号地块',
             adress: '浙江 杭州 江干',
             subLabel: ['挂牌', '商用', '460平方米'],
-            time: '2018-3-17 15:00',
-            zan: 0
+            pub_time: '2018-3-17 15:00',
+            lnum: 0
         }
     ]
 })

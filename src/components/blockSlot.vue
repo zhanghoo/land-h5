@@ -6,7 +6,7 @@
                 <slot name="title">标题</slot>
             </div>
             <div class="block-slot-more">
-                <slot name="more">查看更多<span class="my-icon-more"></span></slot>
+                <slot name="more"></slot>
             </div>
         </div>
         <div class="block-slot-body">
