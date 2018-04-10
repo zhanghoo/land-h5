@@ -141,8 +141,15 @@
                         </p>
                     </div>
                 </div>
-                <div v-show="scoreBtnClicked" class="home-golddrop">
-                    <img class="img-golddrop" src="~@/assets/img/golddrop.gif">
+                <div v-show="scoreBtnClicked"
+                     @click="clickInvitation"
+                     class="home-box-open">
+                    <div class="home-box" :class="boxOpen ? 'open' : ''">
+                        <img class="home-box-close-img" src="~@/assets/img/box.png">
+                        <img class="home-box-open-score" src="~@/assets/img/addscore.png">
+                        <img class="home-box-open-img" src="~@/assets/img/boxopen.png">
+                    </div>
+                    <p class="home-box-open-tip">开启宝箱获得积分</p>
                 </div>
             </mt-popup>
         </template>
@@ -161,7 +168,8 @@ export default {
             rankList: '',
             systemNews: '',
             popupVisible: false,
-            scoreBtnClicked: false
+            scoreBtnClicked: false,
+            boxOpen: false
         }
     },
     computed: {
@@ -187,10 +195,15 @@ export default {
             if (!this.scoreBtnClicked) {
                 // 未点击直接隐藏,扣除10积分
                 console.log('未点击签到, 扣除10积分')
+            } else {
             }
         },
         getScore() {
-            this.scoreBtnClicked = true
+            var _self = this
+            _self.scoreBtnClicked = true
+            setTimeout(function() {
+                _self.boxOpen = true
+            }, 1000)
         }
     },
     mounted() {
@@ -364,11 +377,15 @@ export default {
         }
     }
     .h-popup {
-        width: auto;
+        width: 100%;
         border-radius: toRem(10);
+        background: transparent;
         .home-get-score {
+            margin: 0 auto;
             width: toRem(300);
             height: auto;
+            background: $panelBg;
+            border-radius: toRem(10);
             .home-get-score-title {
                 position: relative;
                 height: toRem(40);
@@ -412,13 +429,50 @@ export default {
                 }
             }
         }
-        .home-golddrop {
+        .home-box-open {
             position: relative;
-            .img-golddrop {
-                position: absolute;
-                top: 30%;
-                left: 50%;
-                transform: translateX(-50%) translateY(-50%);
+            width: 100%;
+            .home-box {
+                position: relative;
+                margin: 0 auto;
+                text-align: center;
+                width: 100%;
+                .home-box-close-img {
+                    position: absolute;
+                    left: 50%;
+                    bottom: toRem(39);
+                    width: toRem(114);
+                    transform: translateX(-50%);
+                }
+                .home-box-open-score {
+                    position: absolute;
+                    top: 26%;
+                    left: 37%;
+                    width: toRem(69);
+                    visibility: hidden;
+                }
+                .home-box-open-img {
+                    margin-bottom: toRem(39);
+                    width: toRem(145);
+                    visibility: hidden;
+                }
+                &.open {
+                    .home-box-close-img {
+                        visibility: hidden;
+                    }
+                    .home-box-open-score,
+                    .home-box-open-img {
+                        visibility: visible;
+                    }
+                }
+            }
+            .home-box-open-tip {
+                width: 100%;
+                font-size: toRem(29);
+                line-height: 1;
+                color: $appColor;
+                text-align: center;
+                font-weight: 700;
             }
         }
     }

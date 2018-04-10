@@ -96,7 +96,8 @@
                             <div slot="conent">
                                 <div class="block-slot-item">
                                     <div class="bs-col">4000元/m²</div>
-                                    <div class="bs-col">200
+                                    <div class="bs-col">
+                                        <span>200</span>
                                         <span class="icon my-icon-qianbi"></span>
                                     </div>
                                     <div class="bs-col">2018-3-16 15:03:28</div>
@@ -180,6 +181,10 @@
             </transition>
             <div class="pay-msgbox-modal" v-show="payMsgBox" @click="payMsgBox = false"></div>
         </div>
+        <!-- 金币掉落 -->
+        <div v-if="goldDrop" class="gold-drop-box">
+            <img class="home-box-close-img" src="~@/assets/img/golddrop.gif">
+        </div>
     </div>
 </template>
 <script>
@@ -191,14 +196,15 @@ export default {
     components: { blockSlot, momentList },
     data() {
         return {
-            active: 'tabContainer1', // 当前显示面板内容,tabContainer1=概况,tabContainer2=详情
-            selected: 'summarize', // 当前显示的标题,summarize=概况,details=详情
+            active: 'tabContainer2', // 当前显示面板内容,tabContainer1=概况,tabContainer2=详情
+            selected: 'details', // 当前显示的标题,summarize=概况,details=详情
             type: 0, // 0地块1房产
             partIn: true, // 是否参与true->参与false->未参与
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮
             popupVisible: false,
             evaluatePrice: null,
             operation: 0, // 点击的是哪个按钮,0=第一次估价,1=再次估价,2=修改估价
+            goldDrop: false, // 金币掉落,第一估计和再次估价的时候为true
             momentJson: [],
             payMsgBox: false,
             payToWatchItem: ''
@@ -218,6 +224,9 @@ export default {
         clickInvitation(operation) {
             this.operation = !operation ? 3 : operation
             this.popupVisible = !this.popupVisible
+            if (this.operation === 0 || this.operation === 1) {
+                // this.goldDrop = true
+            }
         },
         // 获取动态列表
         getMomentList_data() {
@@ -584,6 +593,23 @@ export default {
             background: #000;
             z-index: 3001;
             transition: all 0.2s;
+        }
+    }
+    .gold-drop-box {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        background: #000;
+        z-index: 4000;
+        .home-box-close-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: toRem(390);
+            transform: translateX(-50%) translateY(-50%);
         }
     }
 }
