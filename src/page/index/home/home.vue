@@ -50,19 +50,19 @@
             </div>
         </div>
         <block-slot :title-icon="true" class="publish-newest-list">
-            <span slot="title">最新地产公布</span>
-            <span slot="more" @click="$router.push({name: 'releaseList'})">查看更多
+            <span slot="title">最新地产发布</span>
+            <span slot="more" @click="$router.push({name: 'landEevaluate'})">查看更多
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
-                <div class="block-slot-item">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</div>
-                <div class="block-slot-item">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 5号地块</div>
-                <div class="block-slot-item">江干区（丁桥单元JG0405-13地块），杭州储出[2018] 6号地块</div>
+                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</div>
+                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 5号地块</div>
+                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-13地块），杭州储出[2018] 6号地块</div>
             </div>
         </block-slot>
         <block-slot :title-icon="true" class="winner-newest-list">
             <span slot="title">最近优胜名单</span>
-            <span slot="more" @click="$router.push({name: 'winnerList'})">查看更多
+            <span slot="more" @click="$router.push({name: 'announcement'})">查看更多
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
@@ -272,6 +272,13 @@ export default {
             line-height: 1;
             color: #333;
             text-ellipsis();
+            .home-msg-list {
+                height: toRem(15);
+                overflow: hidden;
+                .home-msg-item {
+                    height: toRem(15);
+                }
+            }
             .hm-icon {
                 margin-right: toRem(9);
                 color: $appColor;
@@ -302,7 +309,7 @@ export default {
                 }
             }
             & + .home-menu-item {
-                border-1px-right($borderColor);
+                border-1px-left($borderColor);
             }
         }
     }
