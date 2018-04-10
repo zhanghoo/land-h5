@@ -50,19 +50,19 @@
             </div>
         </div>
         <block-slot :title-icon="true" class="publish-newest-list">
-            <span slot="title">最新地产公布</span>
-            <span slot="more" @click="$router.push({name: 'releaseList'})">查看更多
+            <span slot="title">最新地产发布</span>
+            <span slot="more" @click="$router.push({name: 'landEevaluate'})">查看更多
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
-                <div class="block-slot-item">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</div>
-                <div class="block-slot-item">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 5号地块</div>
-                <div class="block-slot-item">江干区（丁桥单元JG0405-13地块），杭州储出[2018] 6号地块</div>
+                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</div>
+                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 5号地块</div>
+                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-13地块），杭州储出[2018] 6号地块</div>
             </div>
         </block-slot>
         <block-slot :title-icon="true" class="winner-newest-list">
             <span slot="title">最近优胜名单</span>
-            <span slot="more" @click="$router.push({name: 'winnerList'})">查看更多
+            <span slot="more" @click="$router.push({name: 'announcement'})">查看更多
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
@@ -118,6 +118,41 @@
                 </div>
             </div>
         </block-slot>
+        <template v-if="firstIn">
+            <mt-popup v-model="popupVisible"
+                      popup-transition="popup-fade"
+                      class="h-popup"
+                      :closeOnClickModal="false">
+                <div v-if="!scoreBtnClicked" class="home-get-score">
+                    <div class="home-get-score-title">每日签到
+                        <span class="hg-icon my-icon-baocuo" @click="clickInvitation"></span>
+                    </div>
+                    <div class="home-get-score-content">
+                        <div class="hgsc-gold">
+                            <p class="hgsc-golds">
+                                <span class="icon my-icon-qianbi"></span>
+                                <span class="icon my-icon-qianbi"></span>
+                                <span class="icon my-icon-qianbi"></span>
+                            </p>
+                            <p class="hgsc-gold-tip">10大师积分</p>
+                        </div>
+                        <p class="hgsc-btn">
+                            <mt-button type="primary" @click="getScore">确认领取</mt-button>
+                        </p>
+                    </div>
+                </div>
+                <div v-show="scoreBtnClicked"
+                     @click="clickInvitation"
+                     class="home-box-open">
+                    <div class="home-box" :class="boxOpen ? 'open' : ''">
+                        <img class="home-box-close-img" src="~@/assets/img/box.png">
+                        <img class="home-box-open-score" src="~@/assets/img/addscore.png">
+                        <img class="home-box-open-img" src="~@/assets/img/boxopen.png">
+                    </div>
+                    <p class="home-box-open-tip">开启宝箱获得积分</p>
+                </div>
+            </mt-popup>
+        </template>
     </div>
 </template>
 <script>
@@ -129,8 +164,12 @@ export default {
     components: { rankTop, blockSlot },
     data() {
         return {
+            firstIn: true, // firstIn每日第一进入链接
             rankList: '',
-            systemNews: ''
+            systemNews: '',
+            popupVisible: false,
+            scoreBtnClicked: false,
+            boxOpen: false
         }
     },
     computed: {
@@ -150,9 +189,27 @@ export default {
                     this.systemNews = res.Data
                 }
             })
+        },
+        clickInvitation() {
+            this.popupVisible = !this.popupVisible
+            if (!this.scoreBtnClicked) {
+                // 未点击直接隐藏,扣除10积分
+                console.log('未点击签到, 扣除10积分')
+            } else {
+            }
+        },
+        getScore() {
+            var _self = this
+            _self.scoreBtnClicked = true
+            setTimeout(function() {
+                _self.boxOpen = true
+            }, 1000)
         }
     },
     mounted() {
+        if (this.firstIn) {
+            this.popupVisible = true
+        }
         this.getRankList_data()
         this.getSystemNews_data()
     }
@@ -215,6 +272,13 @@ export default {
             line-height: 1;
             color: #333;
             text-ellipsis();
+            .home-msg-list {
+                height: toRem(15);
+                overflow: hidden;
+                .home-msg-item {
+                    height: toRem(15);
+                }
+            }
             .hm-icon {
                 margin-right: toRem(9);
                 color: $appColor;
@@ -245,7 +309,7 @@ export default {
                 }
             }
             & + .home-menu-item {
-                border-1px-right($borderColor);
+                border-1px-left($borderColor);
             }
         }
     }
@@ -316,6 +380,106 @@ export default {
                 display: flex;
                 align-items: center;
                 margin-right: toRem(8);
+            }
+        }
+    }
+    .h-popup {
+        width: 100%;
+        border-radius: toRem(10);
+        background: transparent;
+        .home-get-score {
+            margin: 0 auto;
+            width: toRem(300);
+            height: auto;
+            background: $panelBg;
+            border-radius: toRem(10);
+            .home-get-score-title {
+                position: relative;
+                height: toRem(40);
+                line-height: toRem(40);
+                color: #aaa;
+                font-size: toRem(18);
+                text-align: center;
+                border-1px-bottom($borderColor);
+                .hg-icon {
+                    position: absolute;
+                    right: toRem(10);
+                }
+            }
+            .home-get-score-content {
+                padding: toRem(10);
+                .hgsc-gold {
+                    padding: toRem(15) 0;
+                    flex-vertical-center();
+                    .hgsc-golds {
+                        width: 100%;
+                        text-align: center;
+                        font-size: toRem(40);
+                        .icon {
+                            margin: 0 toRem(-10);
+                        }
+                    }
+                    .hgsc-gold-tip {
+                        margin-top: toRem(12);
+                        font-size: toRem(18);
+                        line-height: 1;
+                    }
+                }
+                .hgsc-btn {
+                    margin-top: toRem(8);
+                    .mint-button {
+                        width: 100%;
+                        height: toRem(48);
+                        line-height: toRem(48);
+                        font-size: toRem(16);
+                    }
+                }
+            }
+        }
+        .home-box-open {
+            position: relative;
+            width: 100%;
+            .home-box {
+                position: relative;
+                margin: 0 auto;
+                text-align: center;
+                width: 100%;
+                .home-box-close-img {
+                    position: absolute;
+                    left: 50%;
+                    bottom: toRem(39);
+                    width: toRem(114);
+                    transform: translateX(-50%);
+                }
+                .home-box-open-score {
+                    position: absolute;
+                    top: 26%;
+                    left: 37%;
+                    width: toRem(69);
+                    visibility: hidden;
+                }
+                .home-box-open-img {
+                    margin-bottom: toRem(39);
+                    width: toRem(145);
+                    visibility: hidden;
+                }
+                &.open {
+                    .home-box-close-img {
+                        visibility: hidden;
+                    }
+                    .home-box-open-score,
+                    .home-box-open-img {
+                        visibility: visible;
+                    }
+                }
+            }
+            .home-box-open-tip {
+                width: 100%;
+                font-size: toRem(29);
+                line-height: 1;
+                color: $appColor;
+                text-align: center;
+                font-weight: 700;
             }
         }
     }
