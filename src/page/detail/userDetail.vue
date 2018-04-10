@@ -106,7 +106,6 @@ export default {
             padding: 0;
         }
         .list-item {
-            border-1px-bottom(#e6e6e6);
             .item-info{
                 border-1px-top(#f5f5f5)
             }

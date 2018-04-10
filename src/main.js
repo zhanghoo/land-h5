@@ -13,6 +13,7 @@ import axios from 'axios'
 import MintUI, { MessageBox, Toast, Indicator } from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import VueProgressBar from 'vue-progressbar'
+import VueAMap from 'vue-amap'
 
 // 数据模拟
 import '@/mock'
@@ -31,6 +32,12 @@ Vue.use(VueProgressBar, {
     color: '#369BFF',
     failedColor: 'red',
     height: '2px'
+})
+Vue.use(VueAMap)
+VueAMap.initAMapApiLoader({
+    key: '34c63d21973601f846831188108cc048',
+    // plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+    v: '1.4.4'
 })
 
 // Object.keys(filters).forEach(key => {
