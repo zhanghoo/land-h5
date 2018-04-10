@@ -118,6 +118,34 @@
                 </div>
             </div>
         </block-slot>
+        <template v-if="firstIn">
+            <mt-popup v-model="popupVisible"
+                      popup-transition="popup-fade"
+                      class="h-popup"
+                      :closeOnClickModal="false">
+                <div v-if="!scoreBtnClicked" class="home-get-score">
+                    <div class="home-get-score-title">每日签到
+                        <span class="hg-icon my-icon-baocuo" @click="clickInvitation"></span>
+                    </div>
+                    <div class="home-get-score-content">
+                        <div class="hgsc-gold">
+                            <p class="hgsc-golds">
+                                <span class="icon my-icon-qianbi"></span>
+                                <span class="icon my-icon-qianbi"></span>
+                                <span class="icon my-icon-qianbi"></span>
+                            </p>
+                            <p class="hgsc-gold-tip">10大师积分</p>
+                        </div>
+                        <p class="hgsc-btn">
+                            <mt-button type="primary" @click="getScore">确认领取</mt-button>
+                        </p>
+                    </div>
+                </div>
+                <div v-show="scoreBtnClicked" class="home-golddrop">
+                    <img class="img-golddrop" src="~@/assets/img/golddrop.gif">
+                </div>
+            </mt-popup>
+        </template>
     </div>
 </template>
 <script>
@@ -129,8 +157,11 @@ export default {
     components: { rankTop, blockSlot },
     data() {
         return {
+            firstIn: true, // firstIn每日第一进入链接
             rankList: '',
-            systemNews: ''
+            systemNews: '',
+            popupVisible: false,
+            scoreBtnClicked: false
         }
     },
     computed: {
@@ -150,9 +181,22 @@ export default {
                     this.systemNews = res.Data
                 }
             })
+        },
+        clickInvitation() {
+            this.popupVisible = !this.popupVisible
+            if (!this.scoreBtnClicked) {
+                // 未点击直接隐藏,扣除10积分
+                console.log('未点击签到, 扣除10积分')
+            }
+        },
+        getScore() {
+            this.scoreBtnClicked = true
         }
     },
     mounted() {
+        if (this.firstIn) {
+            this.popupVisible = true
+        }
         this.getRankList_data()
         this.getSystemNews_data()
     }
@@ -316,6 +360,65 @@ export default {
                 display: flex;
                 align-items: center;
                 margin-right: toRem(8);
+            }
+        }
+    }
+    .h-popup {
+        width: auto;
+        border-radius: toRem(10);
+        .home-get-score {
+            width: toRem(300);
+            height: auto;
+            .home-get-score-title {
+                position: relative;
+                height: toRem(40);
+                line-height: toRem(40);
+                color: #aaa;
+                font-size: toRem(18);
+                text-align: center;
+                border-1px-bottom($borderColor);
+                .hg-icon {
+                    position: absolute;
+                    right: toRem(10);
+                }
+            }
+            .home-get-score-content {
+                padding: toRem(10);
+                .hgsc-gold {
+                    padding: toRem(15) 0;
+                    flex-vertical-center();
+                    .hgsc-golds {
+                        width: 100%;
+                        text-align: center;
+                        font-size: toRem(40);
+                        .icon {
+                            margin: 0 toRem(-10);
+                        }
+                    }
+                    .hgsc-gold-tip {
+                        margin-top: toRem(12);
+                        font-size: toRem(18);
+                        line-height: 1;
+                    }
+                }
+                .hgsc-btn {
+                    margin-top: toRem(8);
+                    .mint-button {
+                        width: 100%;
+                        height: toRem(48);
+                        line-height: toRem(48);
+                        font-size: toRem(16);
+                    }
+                }
+            }
+        }
+        .home-golddrop {
+            position: relative;
+            .img-golddrop {
+                position: absolute;
+                top: 30%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
             }
         }
     }
