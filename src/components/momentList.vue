@@ -66,6 +66,7 @@ $subText = #666;
         padding: toRem(15) toRem(18) toRem(12);
         margin-bottom toRem(10)
         background: #fff;
+        border-1px-bottom(#e6e6e6)
         .item-user {
             display: flex;
             align-items: center;

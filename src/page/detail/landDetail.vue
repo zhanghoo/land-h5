@@ -15,7 +15,9 @@
                 <mt-tab-container-item id="tabContainer1">
                     <div class="land-detail-summarize">
                         <div class="lds-shows">
-                            <div class="lds-shows-map" v-if="type === 0" :key="0"></div>
+                            <div class="lds-shows-map" v-if="type === 0" :key="0">
+                                <el-amap vid="amap-vue"></el-amap>
+                            </div>
                             <div class="lds-shows-img" v-else :key="1"></div>
                         </div>
                         <div class="lds-desc">
@@ -29,29 +31,57 @@
                             <span @click="$router.push({name: 'publish'})" class="land-detail-publish">发表评论</span>
                         </div>
                         <div slot="conent">
-                            <div class="block-slot-item">
-                                1
-                            </div>
-                            <div class="block-slot-item">
-                                2
-                            </div>
+                            <moment-list :json="momentJson"></moment-list>
                         </div>
                     </block-slot>
                 </mt-tab-container-item>
                 <mt-tab-container-item id="tabContainer2">
                     <div class="land-detail-info">
                         <div class="ldi-table land-detail-border">
-                            <dl class="ldi-col"><dt>{{landText}}名称</dt><dd>德清低密度独栋别墅</dd></dl>
-                            <dl class="ldi-col"><dt>所在省市</dt><dd>浙江 德清 郭肇村</dd></dl>
-                            <dl class="ldi-col"><dt>板块位置</dt><dd>浙江省德清县阜溪街道郭肇村农耕博物园</dd></dl>
-                            <dl class="ldi-col"><dt>{{landText}}编号</dt><dd>00123</dd></dl>
-                            <dl class="ldi-col"><dt>出让面积</dt><dd>360平方米</dd></dl>
-                            <dl class="ldi-col"><dt>用途</dt><dd>商用</dd></dl>
-                            <dl class="ldi-col"><dt>起始价</dt><dd>2000元／平方米</dd></dl>
-                            <dl class="ldi-col"><dt>容积率</dt><dd>5</dd></dl>
-                            <dl class="ldi-col"><dt>截止时间</dt><dd>2018-3-8</dd></dl>
-                            <dl class="ldi-col"><dt>让出单位</dt><dd>杭州市国土资源局</dd></dl>
-                            <dl class="ldi-col"><dt>让出方式</dt><dd>挂牌</dd></dl>
+                            <dl class="ldi-col">
+                                <dt>{{landText}}名称</dt>
+                                <dd>德清低密度独栋别墅</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>所在省市</dt>
+                                <dd>浙江 德清 郭肇村</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>板块位置</dt>
+                                <dd>浙江省德清县阜溪街道郭肇村农耕博物园</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>{{landText}}编号</dt>
+                                <dd>00123</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>出让面积</dt>
+                                <dd>360平方米</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>用途</dt>
+                                <dd>商用</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>起始价</dt>
+                                <dd>2000元／平方米</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>容积率</dt>
+                                <dd>5</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>截止时间</dt>
+                                <dd>2018-3-8</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>让出单位</dt>
+                                <dd>杭州市国土资源局</dd>
+                            </dl>
+                            <dl class="ldi-col">
+                                <dt>让出方式</dt>
+                                <dd>挂牌</dd>
+                            </dl>
                         </div>
                         <div class="land-price-count land-detail-border">已估价199次，估价后可查看他人估价</div>
                         <div class="land-detail-tip land-detail-border">
@@ -66,7 +96,9 @@
                             <div slot="conent">
                                 <div class="block-slot-item">
                                     <div class="bs-col">4000元/m²</div>
-                                    <div class="bs-col">200<span class="icon my-icon-qianbi"></span></div>
+                                    <div class="bs-col">200
+                                        <span class="icon my-icon-qianbi"></span>
+                                    </div>
                                     <div class="bs-col">2018-3-16 15:03:28</div>
                                 </div>
                             </div>
@@ -107,8 +139,11 @@
                     <mt-popup v-model="popupVisible" class="evaluate-wrap" position="bottom">
                         <div class="land-detail-evaluate">
                             <div class="lde-top" v-show="operation !== 2">
-                                <div class="lde-left"><span class="lde-icon my-icon-qianbi"></span>1088</div>
-                                <div class="lde-right"><span class="lde-add my-icon-add"></span></div>
+                                <div class="lde-left">
+                                    <span class="lde-icon my-icon-qianbi"></span>1088</div>
+                                <div class="lde-right">
+                                    <span class="lde-add my-icon-add"></span>
+                                </div>
                             </div>
                             <div class="lde-bottom">
                                 <mt-field placeholder="预估成交楼面价（元/m²）" type="number" v-model="evaluatePrice" class="">
@@ -127,10 +162,11 @@
 </template>
 <script>
 import blockSlot from '@/components/blockSlot'
-
+import momentList from '@/components/momentList'
+import { getMomentList } from '@/api'
 export default {
     name: 'landDetail',
-    components: { blockSlot },
+    components: { blockSlot, momentList },
     data() {
         return {
             active: 'tabContainer1', // 当前显示面板内容,tabContainer1=概况,tabContainer2=详情
@@ -140,7 +176,8 @@ export default {
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮
             popupVisible: false,
             evaluatePrice: null,
-            operation: 0 // 点击的是哪个按钮,0=第一次估价,1=再次估价,2=修改估价
+            operation: 0, // 点击的是哪个按钮,0=第一次估价,1=再次估价,2=修改估价
+            momentJson: []
         }
     },
     computed: {
@@ -158,20 +195,15 @@ export default {
             this.operation = !operation ? 3 : operation
             this.popupVisible = !this.popupVisible
         },
-        initMap() {
-            /*
-            VueAMap.initAMapApiLoader({
-              key: '34c63d21973601f846831188108cc048',
-              plugin: ['AMap.Scale'],
-              v: '1.4.4'
-            });
-            */
+        getMomentList_data() {
+            getMomentList().then(res => {
+                console.log(res)
+                this.momentJson = res.data
+            })
         }
     },
     mounted() {
-        this.$nextTick(function () {
-            //this.initMap()
-        })
+        this.getMomentList_data()
     }
 }
 </script>
@@ -235,8 +267,7 @@ export default {
                 height: 0;
                 overflow: hidden;
                 background: $appBg;
-                .lds-shows-img,
-                .lds-shows-map {
+                .lds-shows-img, .lds-shows-map {
                     position: absolute;
                     top: 0;
                     left: 0;
@@ -308,8 +339,8 @@ export default {
                     font-size: toRem(12);
                     color: $appColor;
                 }
-                .block-slot-item {
-
+                .block-slot-body {
+                    padding: 0;
                 }
             }
             &.land-detail-price {
