@@ -20,7 +20,7 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import { postUserInfo } from '@/api'
+import { postUserInfo } from '@/api/mine'
 export default {
     name: 'myInfo',
     data() {

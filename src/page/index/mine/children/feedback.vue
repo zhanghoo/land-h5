@@ -7,7 +7,7 @@
     </div>
 </template>
 <script>
-import { postFeedBack } from '@/api'
+import { postFeedBack } from '@/api/mine'
 export default {
     name: 'feedback',
     data() {

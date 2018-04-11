@@ -107,8 +107,6 @@ export default {
         clickInvitation() {
             this.popupVisible = !this.popupVisible
         }
-    },
-    mounted() {
     }
 }
 </script>

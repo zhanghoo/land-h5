@@ -3,26 +3,41 @@
         <div class="search">
             <div class="search-input-wrapper">
                 <i class="my-icon-add"></i>
-                <input class="search-input" type="search" placeholder="搜索地产名称">
+                <form @submit.prevent="getSearchDetail_data">
+                    <input class="search-input" type="search" placeholder="搜索地产名称" v-model="keyWord">
+                </form>
             </div>
-            <div class="search-btn">搜索</div>
+            <div class="search-btn" @click="getSearchDetail_data">搜索</div>
         </div>
         <div class="select">
             <div class="select-action">
-                <div class="action-item action-city">
-                    <span>选择城市</span>
-                    <i class="my-icon-jiantouxia"></i>
+                <div class="action-item action-city" :class="{'active': selectType === 'city' && selectVisible === true}" @click="openSelectList('city')">
+                    <span v-if="citySelected">{{citySelected}}</span>
+                    <span v-else>选择城市</span>
+                    <i class="my-icon-jiantoushang" v-if="selectType === 'city' && selectVisible === true"></i>
+                    <i class="my-icon-jiantouxia" v-else></i>
                 </div>
-                <div class="action-item action-type">
-                    <span>选择类型</span>
-                    <i class="my-icon-jiantoushang"></i>
+                <div class="action-item action-type" :class="{'active': selectType === 'type' && selectVisible === true}" @click="openSelectList('type')">
+                    <span v-if="typeSelected">{{typeSelected}}</span>
+                    <span v-else>选择类型</span>
+                    <i class="my-icon-jiantoushang" v-if="selectType === 'type' && selectVisible === true"></i>
+                    <i class="my-icon-jiantouxia" v-else></i>
                 </div>
             </div>
-            <div class="select-list">
-                <div class="list-title">热门城市</div>
-                <div class="list-wrapper">
-                    <div class="list-item" v-for="(item, index) in 10" :key="index">北京</div>
-                </div>
+            <div class="select-list" v-if="selectVisible">
+                <!-- city -->
+                <template v-if="selectType === 'city'">
+                    <div class="list-title">热门城市</div>
+                    <div class="list-wrapper">
+                        <div class="list-item" v-for="(item, index) in 10" :key="index" @click="selected(item)">北京</div>
+                    </div>
+                </template>
+                <!-- type -->
+                <template v-if="selectType === 'type'">
+                    <div class="list-wrapper">
+                        <div class="list-item" v-for="(item, index) in 2" :key="index" @click="selected(item)">北京</div>
+                    </div>
+                </template>
             </div>
         </div>
         <div class="list">
@@ -39,22 +54,53 @@
                 </div>
             </div>
         </div>
-        <div class="v-modal"></div>
+        <div class="v-modal" v-if="selectVisible" @click="selectVisible = false"></div>
     </div>
 </template>
 <script>
+import { getSearchDetail } from '@/api'
 export default {
     name: 'landEevaluate',
     data() {
         return {
-            searchKey: ''
+            keyWord: '',
+            selectVisible: false,
+            selectType: '',
+            cityJson: [],
+            typeJson: [],
+            citySelected: '',
+            typeSelected: ''
         }
     },
-    computed: {
-
-    },
     methods: {
-
+        getSearchDetail_data() {
+            if (this.keyWord) {
+                let params = {
+                    keyWord: this.keyWord,
+                    cityID: this.citySelected || 0,
+                    type: this.typeSelected || 0
+                }
+                getSearchDetail(params).then(res => {
+                    console.log(res)
+                })
+            }
+        },
+        openSelectList(val) {
+            if (this.selectType === val) {
+                this.selectVisible = !this.selectVisible
+            } else {
+                this.selectType = val
+                this.selectVisible = true
+            }
+        },
+        selected(item) {
+            if (this.selectType === 'city') {
+                this.citySelected = item
+            } else if (this.selectType === 'type') {
+                this.typeSelected = item
+            }
+            this.selectVisible = false
+        }
     },
     mounted() {
 
@@ -115,6 +161,9 @@ export default {
                 text-align: center;
                 color: #333;
                 font-size: toRem(14);
+                &.active {
+                    color: $appColor;
+                }
                 i {
                     display: inline-block;
                     font-size: toRem(12);
@@ -141,17 +190,19 @@ export default {
             .list-wrapper {
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
                 flex-wrap: wrap;
                 .list-item {
-                    min-width: 32%;
-                    max-width: 32%;
+                    min-width: 30%;
+                    max-width: 30%;
                     padding: toRem(14) 0;
                     text-align: center;
                     background: #fff;
                     color: #333;
                     font-size: toRem(14);
                     margin-bottom: toRem(10);
+                    &:nth-child(3n-1) {
+                        margin: 0 5% toRem(10);
+                    }
                 }
             }
         }

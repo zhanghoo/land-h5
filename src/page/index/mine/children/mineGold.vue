@@ -44,7 +44,7 @@
     </div>
 </template>
 <script>
-import { getCoinRecord, postSendCoin } from '@/api'
+import { getCoinRecord, postSendCoin } from '@/api/mine'
 export default {
     name: 'mineGold',
     data() {

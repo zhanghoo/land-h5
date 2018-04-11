@@ -16,7 +16,7 @@
                 </template>
                 <!-- 需支付 -->
                 <template v-if="item.is_pay === '1'">
-                    <div class="content-pay" @click="$emit('watch', item)">查看需支付{{item.money}}大师币</div>
+                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
                 </template>
                 <!-- 概览 -->
                 <template v-if="item.mode === 'overview'">
@@ -35,6 +35,28 @@
                 <span class="info-time">{{item.pub_time}}</span>
             </div>
         </li>
+        <!-- 支付弹框 -->
+        <div class="pay-msgbox-wrapper">
+            <transition name="bounce">
+                <div class="pay-msgbox" v-if="payMsgBox">
+                    <div class="pay-msgbox-header">确认支付</div>
+                    <div class="pay-msgbox-content">
+                        <div class="content-message">查看需支付{{payToWatchItem.money}}大师币,是否确认查看?</div>
+                        <div class="content-money">
+                            剩余：
+                            <i class="my-icon-tongqian"></i>
+                            <span class="text">{{$store.state.user.money}}</span>
+                            <router-link :to="{name: 'recharge'}" class="my-icon-add"></router-link>
+                        </div>
+                    </div>
+                    <div class="pay-msgbox-btns">
+                        <div class="pay-msgbox-btn cancle" @click="payMsgBox = false">不看了</div>
+                        <div class="pay-msgbox-btn confirm" @click="confirmWatch">确认查看</div>
+                    </div>
+                </div>
+            </transition>
+            <div class="pay-msgbox-modal" v-show="payMsgBox" @click="payMsgBox = false"></div>
+        </div>
     </ul>
 </template>
 <script>
@@ -45,6 +67,12 @@ export default {
             type: Array
         }
     },
+    data() {
+        return {
+            payMsgBox: false,
+            payToWatchItem: ''
+        }
+    },
     methods: {
         addZan(item) {
             item.activeZan = !item.activeZan
@@ -53,6 +81,20 @@ export default {
             } else {
                 item.lnum--
             }
+        },
+        // 打开支付msgBox
+        openPayMsgBox(item) {
+            this.payMsgBox = true
+            this.payToWatchItem = item
+        },
+        // 支付查看内容
+        confirmWatch() {
+            // if (this.$store.state.user.money > this.payToWatchItem.price) {.
+            // this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
+            // this.$toast(`-${this.payToWatchItem.price}大师币`)
+            this.$router.push({ path: '/momentDetail', query: { 'id': this.payToWatchItem.id } })
+            // }
+            this.payMsgBox = false
         }
     }
 }
@@ -64,9 +106,9 @@ $subText = #666;
     margin: 0;
     .list-item {
         padding: toRem(15) toRem(18) toRem(12);
-        margin-bottom toRem(10)
+        margin-bottom: toRem(10);
         background: #fff;
-        border-1px-bottom(#e6e6e6)
+        border-1px-bottom(#e6e6e6);
         .item-user {
             display: flex;
             align-items: center;
@@ -126,7 +168,7 @@ $subText = #666;
                 .overview-label {
                     font-size: 0;
                     > .label {
-                        margin 0 toRem(5) toRem(4) 0
+                        margin: 0 toRem(5) toRem(4) 0;
                     }
                 }
             }
@@ -135,7 +177,7 @@ $subText = #666;
             display: flex;
             justify-content: space-between;
             padding-top: toRem(12);
-            border-1px-top(#eee)
+            border-1px-top(#eee);
             .my-icon-zan {
                 color: #ccc;
                 font-size: toRem(12);
@@ -149,6 +191,90 @@ $subText = #666;
                 font-size: toRem(12);
                 transform: scale(0.9);
             }
+        }
+    }
+    .pay-msgbox-wrapper {
+        position: absolute;
+        z-index: 3000;
+        .pay-msgbox {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: #fff;
+            width: 80%;
+            border-radius: toRem(5);
+            font-size: toRem(15);
+            overflow: hidden;
+            backface-visibility: hidden;
+            padding: toRem(15) toRem(10);
+            z-index: 3002;
+            transform: translate3d(-50%, -50%, 0);
+            .pay-msgbox-header {
+                font-size: toRem(16);
+                font-weight: 700;
+                color: #666;
+                text-align: center;
+                padding-bottom: toRem(15);
+                border-1px-bottom(#eee);
+            }
+            .pay-msgbox-content {
+                position: relative;
+                color: #000;
+                padding: toRem(25) toRem(10);
+                .content-message {
+                    font-size: toRem(15);
+                    margin-bottom: toRem(10);
+                }
+                .content-money {
+                    .my-icon-tongqian {
+                        color: #f9c546;
+                    }
+                    .text {
+                        color: #666;
+                        margin: 0 toRem(10) 0 toRem(5);
+                    }
+                    .my-icon-add {
+                        color: $appColor;
+                    }
+                }
+            }
+            .pay-msgbox-btns {
+                display: flex;
+                height: 40px;
+                line-height: 40px;
+                justify-content: space-around;
+                .pay-msgbox-btn {
+                    display: block;
+                    background-color: #fff;
+                    flex: 1;
+                    text-align: center;
+                    color: #fff;
+                    border-radius: toRem(5);
+                }
+                .cancle {
+                    width: 50%;
+                    background: #ccc;
+                    margin-right: toRem(5);
+                }
+                .confirm {
+                    width: 50%;
+                    background: $appColor;
+                    margin-left: toRem(5);
+                }
+            }
+        }
+        .pay-msgbox-modal {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.5;
+            background: #000;
+            z-index: 3001;
+            transition: all 0.2s;
         }
     }
 }

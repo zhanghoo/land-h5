@@ -3,16 +3,16 @@
         <div class="land-tab-nav">
             <mt-navbar class="page-land" v-model="selected">
                 <mt-tab-item id="summarize">
-                    <span class="land-tab-btn" @click.prevent="active = 'tabContainer1'">{{landText}}概况</span>
+                    <span class="land-tab-btn">{{landText}}概况</span>
                 </mt-tab-item>
                 <mt-tab-item id="details">
-                    <span class="land-tab-btn" @click.prevent="active = 'tabContainer2'">{{landText}}详情</span>
+                    <span class="land-tab-btn">{{landText}}详情</span>
                 </mt-tab-item>
             </mt-navbar>
         </div>
         <div class="land-tab-container">
-            <mt-tab-container class="page-tabbar-tab-container" v-model="active">
-                <mt-tab-container-item id="tabContainer1">
+            <mt-tab-container class="page-tabbar-tab-container" v-model="selected">
+                <mt-tab-container-item id="summarize">
                     <div class="land-detail-summarize">
                         <div class="lds-shows">
                             <div class="lds-shows-map" v-if="type === 0" :key="0">
@@ -22,7 +22,7 @@
                         </div>
                         <div class="lds-desc">
                             <div class="lds-desc-title">{{landText}}概况</div>
-                            <div class="lds-desc-text">地处东海之滨，杭州湾跨海大桥南岸，东离宁波60公里，北距上海148公里，西至杭州138公里，是长江三角洲经济圈南翼环杭州湾地区上海、杭州、宁波三大都市经济金三角的中心，区位和交通优势十分明显。</div>
+                            <div class="lds-desc-text">{{landAbstractJson.desc}}</div>
                         </div>
                     </div>
                     <block-slot class="land-detail-comments">
@@ -31,59 +31,59 @@
                             <span @click="$router.push({name: 'publish'})" class="land-detail-publish">发表评论</span>
                         </div>
                         <div slot="conent">
-                            <moment-list :json="momentJson" @watch="openPayMsgBox"></moment-list>
+                            <moment-list :json="landAbstractJson.comment"></moment-list>
                         </div>
                     </block-slot>
                 </mt-tab-container-item>
-                <mt-tab-container-item id="tabContainer2">
+                <mt-tab-container-item id="details">
                     <div class="land-detail-info">
                         <div class="ldi-table land-detail-border">
                             <dl class="ldi-col">
                                 <dt>{{landText}}名称</dt>
-                                <dd>德清低密度独栋别墅</dd>
+                                <dd>{{landDetailJson.name}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>所在省市</dt>
-                                <dd>浙江 德清 郭肇村</dd>
+                                <dd>{{landDetailJson.province}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>板块位置</dt>
-                                <dd>浙江省德清县阜溪街道郭肇村农耕博物园</dd>
+                                <dd>{{landDetailJson.location}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>{{landText}}编号</dt>
-                                <dd>00123</dd>
+                                <dd>{{landDetailJson.number}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>出让面积</dt>
-                                <dd>360平方米</dd>
+                                <dd>{{landDetailJson.sarea}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>用途</dt>
-                                <dd>商用</dd>
+                                <dd>{{landDetailJson.purpose}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>起始价</dt>
-                                <dd>2000元／平方米</dd>
+                                <dd>{{landDetailJson.sprice}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>容积率</dt>
-                                <dd>5</dd>
+                                <dd>{{landDetailJson.pratio}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>截止时间</dt>
-                                <dd>2018-3-8</dd>
+                                <dd>{{landDetailJson.deadline}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>让出单位</dt>
-                                <dd>杭州市国土资源局</dd>
+                                <dd>{{landDetailJson.sunit}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>让出方式</dt>
-                                <dd>挂牌</dd>
+                                <dd>{{landDetailJson.stype}}</dd>
                             </dl>
                         </div>
-                        <div class="land-price-count land-detail-border">已估价199次，估价后可查看他人估价</div>
+                        <div class="land-price-count land-detail-border">已估价{{landDetailJson.enum}}次，估价后可查看他人估价</div>
                         <div class="land-detail-tip land-detail-border">
                             <span class="ldt-icon my-icon-guanyuwomen"></span>
                             截止时间前可修改估价
@@ -94,13 +94,13 @@
                             <span slot="title">我的估价</span>
                             <span slot="more"></span>
                             <div slot="conent">
-                                <div class="block-slot-item">
-                                    <div class="bs-col">4000元/m²</div>
+                                <div class="block-slot-item" v-for="(item,index) in landDetailJson.evaluate" :key="index">
+                                    <div class="bs-col">{{item.eprice}}</div>
                                     <div class="bs-col">
-                                        <span>200</span>
+                                        <span>无字段</span>
                                         <span class="icon my-icon-qianbi"></span>
                                     </div>
-                                    <div class="bs-col">2018-3-16 15:03:28</div>
+                                    <div class="bs-col">{{item.etime}}</div>
                                 </div>
                             </div>
                         </block-slot>
@@ -108,20 +108,10 @@
                             <span slot="title">他人估价</span>
                             <span slot="more"></span>
                             <div slot="conent">
-                                <div class="block-slot-item">
-                                    <div class="bs-col">曹**</div>
-                                    <div class="bs-col">4000元/m²</div>
-                                    <div class="bs-col">2018-3-16 15:03:28</div>
-                                </div>
-                                <div class="block-slot-item">
-                                    <div class="bs-col">曹**</div>
-                                    <div class="bs-col">4000元/m²</div>
-                                    <div class="bs-col">2018-3-16 15:03:28</div>
-                                </div>
-                                <div class="block-slot-item">
-                                    <div class="bs-col">曹**</div>
-                                    <div class="bs-col">4000元/m²</div>
-                                    <div class="bs-col">2018-3-16 15:03:28</div>
+                                <div class="block-slot-item" v-for="(item,index) in landDetailJson.evaluate" :key="index">
+                                    <div class="bs-col">{{item.name}}</div>
+                                    <div class="bs-col">{{item.eprice}}</div>
+                                    <div class="bs-col">{{item.etime}}</div>
                                 </div>
                             </div>
                         </block-slot>
@@ -159,30 +149,8 @@
                 </mt-tab-container-item>
             </mt-tab-container>
         </div>
-        <!-- 支付弹框 -->
-        <div class="pay-msgbox-wrapper">
-            <transition name="bounce">
-                <div class="pay-msgbox" v-if="payMsgBox">
-                    <div class="pay-msgbox-header">确认支付</div>
-                    <div class="pay-msgbox-content">
-                        <div class="content-message">查看需支付{{payToWatchItem.price}}大师币,是否确认查看?</div>
-                        <div class="content-money">
-                            剩余：
-                            <i class="my-icon-tongqian"></i>
-                            <span class="text">{{$store.state.user.money}}</span>
-                            <router-link :to="{name: 'recharge'}" class="my-icon-add"></router-link>
-                        </div>
-                    </div>
-                    <div class="pay-msgbox-btns">
-                        <div class="pay-msgbox-btn cancle" @click="payMsgBox = false">不看了</div>
-                        <div class="pay-msgbox-btn confirm" @click="confirmWatch">确认查看</div>
-                    </div>
-                </div>
-            </transition>
-            <div class="pay-msgbox-modal" v-show="payMsgBox" @click="payMsgBox = false"></div>
-        </div>
         <!-- 金币掉落 -->
-        <div v-if="goldDrop" class="gold-drop-box">
+        <div v-if="goldDrop" class="gold-drop-box" @click="goldDrop = false">
             <img class="home-box-close-img" src="~@/assets/img/golddrop.gif">
         </div>
     </div>
@@ -190,14 +158,13 @@
 <script>
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
-import { getMomentList } from '@/api'
+import { getLandAbstract, getLandDetail } from '@/api'
 export default {
     name: 'landDetail',
     components: { blockSlot, momentList },
     data() {
         return {
-            active: 'tabContainer2', // 当前显示面板内容,tabContainer1=概况,tabContainer2=详情
-            selected: 'details', // 当前显示的标题,summarize=概况,details=详情
+            selected: 'summarize', // 当前显示的标题,summarize=概况,details=详情
             type: 0, // 0地块1房产
             partIn: true, // 是否参与true->参与false->未参与
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮
@@ -205,9 +172,8 @@ export default {
             evaluatePrice: null,
             operation: 0, // 点击的是哪个按钮,0=第一次估价,1=再次估价,2=修改估价
             goldDrop: false, // 金币掉落,第一估计和再次估价的时候为true
-            momentJson: [],
-            payMsgBox: false,
-            payToWatchItem: ''
+            landAbstractJson: '',
+            landDetailJson: ''
         }
     },
     computed: {
@@ -225,33 +191,35 @@ export default {
             this.operation = !operation ? 3 : operation
             this.popupVisible = !this.popupVisible
             if (this.operation === 0 || this.operation === 1) {
-                // this.goldDrop = true
+                this.goldDrop = true
             }
         },
-        // 获取动态列表
-        getMomentList_data() {
-            getMomentList().then(res => {
-                console.log(res)
-                this.momentJson = res.data
+        getLandAbstract_data() {
+            let params = {
+                pid: this.$route.query.pid,
+                uid: this.$store.state.user.user_id
+            }
+            getLandAbstract(params).then(res => {
+                if (res && res.Data) {
+                    this.landAbstractJson = res.Data
+                }
             })
         },
-        // 打开支付msgBox
-        openPayMsgBox(item) {
-            this.payMsgBox = true
-            this.payToWatchItem = item
-        },
-        // 支付查看内容
-        confirmWatch() {
-            // if (this.$store.state.user.money > this.payToWatchItem.price) {.
-                // this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
-                // this.$toast(`-${this.payToWatchItem.price}大师币`)
-                this.$router.push({ path: '/momentDetail', query: { 'id': this.payToWatchItem.id } })
-            // }
-            this.payMsgBox = false
+        getLandDetail_data() {
+            let params = {
+                pid: this.$route.query.pid,
+                uid: this.$store.state.user.user_id
+            }
+            getLandDetail(params).then(res => {
+                if (res && res.Data) {
+                    this.landDetailJson = res.Data
+                }
+            })
         }
     },
     mounted() {
-        this.getMomentList_data()
+        this.getLandAbstract_data()
+        this.getLandDetail_data()
     }
 }
 </script>
@@ -509,90 +477,6 @@ export default {
                     }
                 }
             }
-        }
-    }
-    .pay-msgbox-wrapper {
-        position absolute
-        z-index 3000
-        .pay-msgbox {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            background-color: #fff;
-            width: 80%;
-            border-radius: toRem(5);
-            font-size: toRem(15);
-            overflow: hidden;
-            backface-visibility: hidden;
-            padding: toRem(15) toRem(10);
-            z-index: 3002;
-            transform: translate3d(-50%, -50%, 0);
-            .pay-msgbox-header {
-                font-size: toRem(16);
-                font-weight: 700;
-                color: #666;
-                text-align: center;
-                padding-bottom: toRem(15);
-                border-1px-bottom(#eee);
-            }
-            .pay-msgbox-content {
-                position: relative;
-                color: #000;
-                padding: toRem(25) toRem(10);
-                .content-message {
-                    font-size: toRem(15);
-                    margin-bottom: toRem(10);
-                }
-                .content-money {
-                    .my-icon-tongqian {
-                        color: #f9c546;
-                    }
-                    .text {
-                        color: #666;
-                        margin: 0 toRem(10) 0 toRem(5);
-                    }
-                    .my-icon-add {
-                        color: $appColor;
-                    }
-                }
-            }
-            .pay-msgbox-btns {
-                display: flex;
-                height: 40px;
-                line-height: 40px;
-                justify-content: space-around;
-                .pay-msgbox-btn {
-                    display: block;
-                    background-color: #fff;
-                    flex: 1;
-                    text-align: center;
-                    color: #fff;
-                    border-radius: toRem(5);
-                }
-                .cancle {
-                    width: 50%;
-                    background: #ccc;
-                    margin-right: toRem(5);
-                }
-                .confirm {
-                    width: 50%;
-                    background: $appColor;
-                    margin-left: toRem(5);
-                }
-            }
-        }
-        .pay-msgbox-modal {
-            position: fixed;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
-            background: #000;
-            z-index: 3001;
-            transition: all 0.2s;
         }
     }
     .gold-drop-box {

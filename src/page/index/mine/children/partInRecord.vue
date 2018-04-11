@@ -7,7 +7,7 @@
         </mt-navbar>
         <div class="page-infinite-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
             <ul class="record-list" v-if="record">
-                <li class="record-item">
+                <!-- <li class="record-item">
                     <div class="record-item-panel" @click="$router.push({name: 'transactionDetail'})">
                         <div class="record-head">
                             <span class="rh-address">纯前端数据-测试用跳到交易详情页</span>
@@ -19,9 +19,9 @@
                             <p>估计时间：2018-04-04 14:14:09</p>
                         </div>
                     </div>
-                </li>
+                </li> -->
                 <li class="record-item" v-for="item in filterRecord" :key="item.id">
-                    <div class="record-item-panel">
+                    <router-link class="record-item-panel" tag="div" :to="{path: '/transactionDetail', query: {'id': item.id}}">
                         <div class="record-head">
                             <span class="rh-address">{{item.name}}</span>
                             <span class="rh-status" v-if="item.estatus === '0'">待公布</span>
@@ -33,14 +33,14 @@
                             <p>预估成交楼面价: {{item.evaluate_num}}/m²</p>
                             <p>估计时间：{{item.evaluate_time}}</p>
                         </div>
-                    </div>
+                    </router-link>
                 </li>
             </ul>
         </div>
     </div>
 </template>
 <script>
-import { getEvaluateRecord } from '@/api'
+import { getEvaluateRecord } from '@/api/mine'
 export default {
     name: 'partInRecord',
     data() {

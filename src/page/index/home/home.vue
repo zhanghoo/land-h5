@@ -158,7 +158,7 @@
 <script>
 import rankTop from '@/components/rankTop'
 import blockSlot from '@/components/blockSlot'
-import { getRankList, getSystemNews } from '@/api'
+import { getRankList, getSystemNews } from '@/api/home'
 export default {
     name: 'home',
     components: { rankTop, blockSlot },

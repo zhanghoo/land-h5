@@ -4,11 +4,12 @@
             <div class="trans-detail-avatar">
                 <img class="avatar-img" v-if="user.avatar" :src="user.avatar">
             </div>
-            <div class="trans-detail-status">{{statusText}}</div>
+            <div class="trans-detail-status">{{json.estatus | statusToString}}</div>
         </div>
-        <div class="trans-detail-land" @click="$router.push({name: 'landDetail'})">
-            <p class="tdl-title">德清低密度独栋别墅</p>
-            <p class="tdl-local"><span class="tdl-local-icon my-icon-adress"></span>浙江 德清 郭肇</p>
+        <div class="trans-detail-land" @click="$router.push({path: '/landDetail', query: { 'pid': json.product_id}})">
+            <p class="tdl-title">{{json.name}}</p>
+            <p class="tdl-local">
+                <span class="tdl-local-icon my-icon-adress"></span>{{json.province}}</p>
             <p class="tdl-tags">
                 <mt-button class="label" plain>挂牌</mt-button>
                 <mt-button class="label" plain>商用</mt-button>
@@ -16,94 +17,57 @@
             </p>
         </div>
         <div class="trans-detail-dealinfo">
-            <p class="tdd-line">投注大师币：200</p>
-            <p class="tdd-line">预估成交楼面价：4000元/m²</p>
-            <p class="tdd-line">估价时间：2018-3-6 09:03:28</p>
-            <p class="tdd-line">方案编号：007654</p>
+            <p class="tdd-line">投注大师币：无字段</p>
+            <p class="tdd-line">预估成交楼面价：{{json.evaluate_num}}元/m²</p>
+            <p class="tdd-line">估价时间：{{json.evaluate_time}}</p>
+            <p class="tdd-line">方案编号：{{json.number}}</p>
         </div>
-        <p v-if="type == 0 && status == 0" class="trans-detail-share">
-            <mt-button class="tds-btn" type="primary">分享</mt-button>
+        <p v-if="type == 0 && json.estatus == 0" class="trans-detail-share">
+            <mt-button class="tds-btn" type="primary" @click="share">分享</mt-button>
         </p>
-        <template v-if="status == 1 || status == 2">
+        <template v-if="json.estatus == 1 || json.estatus == 2">
             <!-- 估价成功或失败 -->
             <div class="rans-detail-price" @click="$router.push({name: 'dealInformation'})">
-                <div>成交楼面价<span class="rdp-num">4000</span>元/m²</div>
+                <div>成交楼面价
+                    <span class="rdp-num">{{json.sold_area}}</span>元/m²</div>
                 <span class="my-icon-more"></span>
             </div>
-            <div v-if="status == 1" class="trans-detail-tips">
-                <span class="tip">恭喜你，赢得了5000大师币！</span>
+            <div v-if="json.estatus == 1" class="trans-detail-tips">
+                <span class="tip">恭喜你，赢得了{{json.get_coin}}大师币！</span>
                 <mt-button class="tds-btn" type="primary">分享</mt-button>
             </div>
             <p v-else class="trans-detail-tips fail">当工作变成游戏，生活就充满快乐！</p>
-            <block-slot class="rank-list first">
-                <span slot="title">前三名玩家可获得大师币及大师积分奖励</span>
-                <span slot="more"></span>
-                <div slot="conent">
-                    <div class="block-slot-item first-item">
-                        <div class="bs-col">排名</div>
-                        <div class="bs-col">昵称</div>
-                        <div class="bs-col">估价</div>
-                        <div class="bs-col">大师币</div>
-                        <div class="bs-col">估价时间</div>
+            <!-- rank-list -->
+            <div class="rank-list-wrapper" v-if="json.rank_list">
+                <block-slot class="rank-list first">
+                    <span slot="title">前三名玩家可获得大师币及大师积分奖励</span>
+                    <span slot="more"></span>
+                    <div slot="conent">
+                        <div class="block-slot-item first-item">
+                            <div class="bs-col">排名</div>
+                            <div class="bs-col">昵称</div>
+                            <div class="bs-col">估价</div>
+                            <div class="bs-col">大师币</div>
+                            <div class="bs-col">估价时间</div>
+                        </div>
+                        <div class="block-slot-item" :class="{'item-title': index === 3}" v-for="(item,index) in json.rank_list" :key="index">
+                            <template v-if="index !== 3">
+                                <div class="bs-col">{{item.rank_num}}</div>
+                                <div class="bs-col">{{item.nick_name}}</div>
+                                <div class="bs-col">{{item.evaluate_num}}</div>
+                                <div class="bs-col">无字段</div>
+                                <div class="bs-col">{{item.evaluate_time}}</div>
+                            </template>
+                            <template v-else>
+                                <block-slot class="rank-list">
+                                    <span slot="title">前10%的玩家可获得大师积分奖励</span>
+                                </block-slot>
+                            </template>
+                        </div>
                     </div>
-                    <div class="block-slot-item">
-                        <div class="bs-col">1</div>
-                        <div class="bs-col">曹万贯</div>
-                        <div class="bs-col">4000元/m²</div>
-                        <div class="bs-col">1000</div>
-                        <div class="bs-col">2018-3-6 09:03:28</div>
-                    </div>
-                    <div class="block-slot-item">
-                        <div class="bs-col">2</div>
-                        <div class="bs-col">曹万贯</div>
-                        <div class="bs-col">4000元/m²</div>
-                        <div class="bs-col">500</div>
-                        <div class="bs-col">2018-3-6 09:03:28</div>
-                    </div>
-                    <div class="block-slot-item">
-                        <div class="bs-col">3</div>
-                        <div class="bs-col">曹万贯</div>
-                        <div class="bs-col">4000元/m²</div>
-                        <div class="bs-col">500</div>
-                        <div class="bs-col">2018-3-6 09:03:28</div>
-                    </div>
-                </div>
-            </block-slot>
-            <block-slot class="rank-list">
-                <span slot="title">前10%的玩家可获得大师积分奖励</span>
-                <span slot="more"></span>
-                <div slot="conent">
-                    <div class="block-slot-item">
-                        <div class="bs-col">4</div>
-                        <div class="bs-col">曹万贯</div>
-                        <div class="bs-col">4000元/m²</div>
-                        <div class="bs-col">500</div>
-                        <div class="bs-col">2018-3-6 09:03:28</div>
-                    </div>
-                    <div class="block-slot-item">
-                        <div class="bs-col">5</div>
-                        <div class="bs-col">曹万贯</div>
-                        <div class="bs-col">4000元/m²</div>
-                        <div class="bs-col">500</div>
-                        <div class="bs-col">2018-3-6 09:03:28</div>
-                    </div>
+                </block-slot>
+            </div>
 
-                    <div class="block-slot-item">
-                        <div class="bs-col">6</div>
-                        <div class="bs-col">曹万贯</div>
-                        <div class="bs-col">4000元/m²</div>
-                        <div class="bs-col">500</div>
-                        <div class="bs-col">2018-3-6 09:03:28</div>
-                    </div>
-                    <div class="block-slot-item">
-                        <div class="bs-col">7</div>
-                        <div class="bs-col">曹万贯</div>
-                        <div class="bs-col">4000元/m²</div>
-                        <div class="bs-col">500</div>
-                        <div class="bs-col">2018-3-6 09:03:28</div>
-                    </div>
-                </div>
-            </block-slot>
             <!-- 子页面 -->
             <router-view/>
         </template>
@@ -116,6 +80,8 @@
     </div>
 </template>
 <script>
+import { wxShare } from '@/api'
+import { getEvaluateDetail } from '@/api/mine'
 import { mapState } from 'vuex'
 import blockSlot from '@/components/blockSlot'
 export default {
@@ -124,31 +90,46 @@ export default {
     data() {
         return {
             status: 1, // 0待公布1已公布(估价成功)2估价失败3已关闭
-            type: 0 // 0地块1房产
+            type: 0, // 0地块1房产
+            json: ''
         }
     },
     computed: {
         ...mapState([
             'user'
-        ]),
-        statusText: function() {
-            switch (this.status) {
-                case 0:
+        ])
+    },
+    filters: {
+        statusToString(val) {
+            switch (val) {
+                case '0':
                     return '待公布'
-                case 1:
+                case '1':
                     return '估价成功'
-                case 2:
+                case '2':
                     return '估价失败'
-                case 3:
+                case '3':
                     return '已关闭'
             }
         }
     },
     methods: {
-
+        getEvaluateDetail_data() {
+            getEvaluateDetail(this.$route.query.id).then(res => {
+                if (res && res.Data) {
+                    this.json = res.Data
+                }
+            })
+        },
+        share() {
+            let url = window.location.href
+            wxShare(url).then(res => {
+                console.log(res)
+            })
+        }
     },
     mounted() {
-
+        this.getEvaluateDetail_data()
     }
 }
 </script>
@@ -192,7 +173,7 @@ export default {
             }
         }
         .tdl-tags {
-            .label{
+            .label {
                 border: 1px solid $appColor;
                 color: $appColor;
             }
@@ -293,6 +274,19 @@ export default {
                 &.first-item {
                     font-weight: 700;
                     color: #333;
+                }
+                &.item-title{
+                    .block-slot{
+                        margin  0
+                    }
+                    .block-slot-head{
+                        color #333
+                        font-weight bold
+                        padding 0
+                        &:after{
+                            border: none
+                        }
+                    }
                 }
             }
             &.first {

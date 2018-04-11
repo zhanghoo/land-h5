@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getUserInfo } from '@/api'
+import { getUserInfo } from '@/api/mine'
 
 Vue.use(Vuex)
 

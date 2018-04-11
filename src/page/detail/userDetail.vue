@@ -28,7 +28,7 @@
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
 import { mapState } from 'vuex'
-import { getUserMoment } from '@/api'
+import { getUserMoment } from '@/api/mine'
 export default {
     name: 'userDetail',
     components: { blockSlot, momentList },
