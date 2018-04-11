@@ -31,7 +31,7 @@
     </div>
 </template>
 <script>
-import { getRankList } from '@/api'
+import { getRankList } from '@/api/home'
 
 export default {
     name: 'rankList',

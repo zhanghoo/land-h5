@@ -50,7 +50,7 @@
     </div>
 </template>
 <script>
-import { getScoreRecord, getScoreRule } from '@/api'
+import { getScoreRecord, getScoreRule } from '@/api/mine'
 export default {
     name: 'mineScore',
     data() {

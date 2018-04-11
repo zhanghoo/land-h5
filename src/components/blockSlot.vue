@@ -11,13 +11,6 @@
         </div>
         <div class="block-slot-body">
             <slot name="conent">
-                <div class="block-slot-item">
-                    <div>1.1</div>
-                    <div>1.2</div>
-                </div>
-                <div class="block-slot-item">
-                    <div>2</div>
-                </div>
             </slot>
         </div>
     </div>
