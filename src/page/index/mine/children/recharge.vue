@@ -1,22 +1,17 @@
 <template>
     <div id="recharge">
         <div class="r-account-info">
-            <p>账号：<span>400787333677</span></p>
-            <p>大师币：<span class="num">36543</span></p>
+            <p>账号：
+                <span>{{user.user_id}}</span>
+            </p>
+            <p>大师币：
+                <span class="num">36543</span>
+            </p>
         </div>
         <div class="r-amount">
             <p class="ra-tip">选择充值金额</p>
             <div class="ra-btns">
-                <p class="ra-btns-row">
-                    <mt-button plain class="ra-btn">50</mt-button>
-                    <mt-button plain class="ra-btn">100</mt-button>
-                    <mt-button plain class="ra-btn">200</mt-button>
-                </p>
-                <p class="ra-btns-row">
-                    <mt-button plain class="ra-btn">300</mt-button>
-                    <mt-button plain class="ra-btn">500</mt-button>
-                    <mt-button plain class="ra-btn">1000</mt-button>
-                </p>
+                <span class="ra-btn" v-for="(item, index) in rechargeMoneys" :key="index" :class="{'active': selectMoney === item}" @click="selectMoney = item">{{item}}</span>
             </div>
         </div>
         <div class="r-way">
@@ -30,19 +25,25 @@
                 </div>
             </div>
         </div>
-        <p class="r-btn-do"><mt-button class="rbd-btn" type="primary">立即充值</mt-button></p>
+        <p class="r-btn-do">
+            <mt-button class="rbd-btn" type="primary">立即充值</mt-button>
+        </p>
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
     name: 'recharge',
     data() {
         return {
-
+            rechargeMoneys: [50, 100, 200, 300, 500, 1000],
+            selectMoney: 0
         }
     },
     computed: {
-
+        ...mapState([
+            'user'
+        ])
     },
     methods: {
 
@@ -79,17 +80,32 @@ export default {
         line-height: toRem(18);
         color: #333;
         background: $panelBg;
+        .ra-tip{
+            margin-bottom toRem(10)
+        }
         .ra-btns {
-            .ra-btns-row {
-                display: flex;
-                margin-top: toRem(10);
-                justify-content: space-between;
-                .ra-btn {
-                    width: toRem(105);
-                    height: toRem(40);
-                    border-color: $borderColor;
-                    font-size: toRem(14);
-                    color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            .ra-btn {
+                max-width: 30%;
+                min-width: 30%;
+                margin-bottom: toRem(10);
+                border-color: $borderColor;
+                font-size: toRem(14);
+                color: #333;
+                text-align center
+                padding toRem(8) toRem(12)
+                border: 1px solid $borderColor;
+                border-radius toRem(5)
+                &:nth-child(3n-1) {
+                    margin: 0 5% toRem(10);
+                }
+                &.active{
+                    color #fff
+                    background $appColor
+                    border-color: $appColor
                 }
             }
         }

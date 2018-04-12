@@ -4,23 +4,24 @@
             <mt-field class="publish-title" placeholder="拟个标题吧" v-model="title"></mt-field>
             <mt-field class="publish-content" placeholder="分享点好东西..." type="textarea" rows="3" v-model="content"></mt-field>
             <div class="publish-upload">
-                <div class="picture_preview" v-for="(item, index) in picture_preview" :key="index">
-                    <img :src="item">
+                <div class="picture_preview" v-for="(item, index) in picture_preview" :key="index" v-if="item">
+                    <img class="preview-img" :src="item">
+                    <input class="preview-input" :id="`preview-${index}`" type="file" accept="image/*" @change="changePreview($event,index)">
+                    <label class="preview-label" :for="`preview-${index}`"></label>
                 </div>
-                <input id="upload" type="file" accept="image/*" capture="camera" multiple=“multiple” @change="upload($event)">
-                <label class="upload-btn my-icon-add1" for="upload"></label>
+                <input id="upload" type="file" accept="image/*" multiple=“multiple” @change="upload($event)">
+                <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
             </div>
             <div class=publish-voice>
                 <i class="my-icon-maikefengxianxing"></i>
                 发表语音信息
             </div>
         </div>
-        <div class=publish-charge @click="chargeVisible = !chargeVisible">
+        <div class=publish-charge>
             <i class="my-icon-renminbi3"></i>
             <span>收费查看</span>
             <div class="charge-btn">
-                <i class="my-icon-jiantouxia" v-show="chargeVisible === false"></i>
-                <i class="my-icon-jiantoushang" v-show="chargeVisible === true"></i>
+                <input type="checkbox" v-model="chargeVisible">
             </div>
         </div>
         <div class="charge-list" v-if="chargeVisible">
@@ -37,6 +38,7 @@
     </div>
 </template>
 <script>
+import { postPublish } from '@/api/moment'
 export default {
     name: 'publish',
     data() {
@@ -46,23 +48,47 @@ export default {
             moneyActive: 50,
             title: '',
             content: '',
-            picture: '',
+            pictureFile: [],
             picture_preview: []
         }
     },
     methods: {
         upload(ev) {
-            this.picture = ev.target.files
-            for (let i = 0; i < this.picture.length; i++) {
-                var reader = new FileReader()
-                reader.readAsDataURL(this.picture[i])
-                reader.onload = (e) => {
-                    this.picture_preview.push(e.target.result)
+            let picture = Array.from(ev.target.files)
+            let emptyNum = 3 - this.picture_preview.length
+            picture = picture.slice(0, emptyNum)
+            for (let i = 0; i < picture.length; i++) {
+                if (picture[i]) {
+                    let reader = new FileReader()
+                    reader.readAsDataURL(picture[i])
+                    reader.onload = (e) => {
+                        this.picture_preview.unshift(e.target.result)
+                        this.pictureFile.unshift(ev.target.files[i])
+                    }
                 }
             }
-            console.log(this.picture_preview)
+        },
+        changePreview(ev, index) {
+            let img = ev.target.files[0]
+            let reader = new FileReader()
+            reader.readAsDataURL(img)
+            reader.onload = (e) => {
+                this.$set(this.picture_preview, index, e.target.result)
+            }
         },
         publish() {
+            let params = {
+                pid: this.$route.query.pid || '',
+                uid: this.$store.state.user.user_id,
+                title: this.title,
+                text: this.content,
+                is_pay: this.chargeVisible ? 1 : 0,
+                money: this.chargeVisible ? this.moneyActive : 0,
+                images: this.pictureFile
+            }
+            postPublish(params).then(res => {
+                console.log(res)
+            })
         }
     }
 }
@@ -106,6 +132,7 @@ export default {
             padding-bottom: toRem(15);
             flex-wrap: wrap;
             .picture_preview {
+                position: relative;
                 width: toRem(55);
                 height: toRem(55);
                 border: 1px solid #e0e0e0;
@@ -117,6 +144,18 @@ export default {
                     display: block;
                     width: 100%;
                     height: 100%;
+                }
+                .preview-input {
+                    display: none;
+                }
+                .preview-label {
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: 0;
+                    bottom: 0;
+                    background: transparent;
+                    z-index: 10;
                 }
             }
             #upload {

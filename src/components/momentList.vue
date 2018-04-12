@@ -60,6 +60,7 @@
     </ul>
 </template>
 <script>
+import { postZan } from '@/api/moment'
 export default {
     name: 'momentList',
     props: {
@@ -75,12 +76,15 @@ export default {
     },
     methods: {
         addZan(item) {
-            item.activeZan = !item.activeZan
-            if (item.activeZan) {
-                item.lnum++
-            } else {
-                item.lnum--
+            item.activeZan = true
+            item.lnum++
+            let params = {
+                cid: item.id,
+                uid: this.$store.state.user.user_id
             }
+            postZan(params).then(res => {
+                console.log(res)
+            })
         },
         // 打开支付msgBox
         openPayMsgBox(item) {

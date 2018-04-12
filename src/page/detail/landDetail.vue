@@ -28,7 +28,7 @@
                     <block-slot class="land-detail-comments">
                         <span slot="title">用户评论</span>
                         <div slot="more">
-                            <span @click="$router.push({name: 'publish'})" class="land-detail-publish">发表评论</span>
+                            <span @click="$router.push({path: '/publish', query: { 'pid': $route.query.pid}})" class="land-detail-publish">发表评论</span>
                         </div>
                         <div slot="conent">
                             <moment-list :json="landAbstractJson.comment"></moment-list>
