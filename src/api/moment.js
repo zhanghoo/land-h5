@@ -1,19 +1,31 @@
 import { request, instance } from '@/utils/request'
 
+// 动态列表
+export function getMomentList({ page, uid }) {
+    let res = request('/api/home/dynamic/lookCommentList', 'POST', { 'p': page, 'uid': uid })
+    return res
+}
+
+// 动态详情
+export function getMomentDetail({ cid, uid }) {
+    let res = request('/api/home/dynamic/lookCommentDetails', 'POST', { 'cid': cid, 'uid': uid })
+    return res
+}
+
 // 查看评论
-export function getCommentDetails(commentID, userID) {
+export function getCommentDetails({ commentID, userID }) {
     let res = request('/api/home/dynamic/lookCommentDetails', 'POST', { 'cid': commentID, 'uid': userID })
     return res
 }
 
 // 评论点赞
-export function postZan({cid, uid}) {
+export function postZan({ cid, uid }) {
     let res = request('/api/home/dynamic/commentFabulous', 'POST', { 'cid': cid, 'uid': uid })
     return res
 }
 
 // 发布评论
-export function postPublish({pid, uid, title, text, is_pay, money, images}) {
+export async function postPublish({ pid, uid, title, text, is_pay, money, images }) {
     let params = {
         'pid': pid,
         'uid': uid,
@@ -27,10 +39,10 @@ export function postPublish({pid, uid, title, text, is_pay, money, images}) {
     Object.keys(params).forEach(key => {
         form.append(key, params[key])
     })
-    let res = instance.post('/api/home/dynamic/releaseComment', form, {
+    let res = await instance.post('/api/home/dynamic/releaseComment', form, {
         headers: {
             'Content-type': 'multipart/form-data'
         }
     })
-    return res
+    return res.data
 }

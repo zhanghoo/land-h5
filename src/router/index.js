@@ -17,6 +17,7 @@ const withdrawCashNext = () => import('@/page/index/mine/children/withdrawCash/n
 const withdrawCashAdd = () => import('@/page/index/mine/children/withdrawCash/add')
 const feedback = () => import('@/page/index/mine/children/feedback')
 const idAuth = () => import('@/page/index/mine/children/idAuth')
+const vipVerify = () => import('@/page/index/mine/children/vipVerify')
 const landDetail = () => import('@/page/detail/landDetail')
 const transactionDetail = () => import('@/page/detail/transactionDetail')
 const dealInformation = () => import('@/page/detail/transaction/dealInformation')
@@ -115,6 +116,11 @@ export default new Router({
                             name: 'idAuth',
                             path: 'idAuth',
                             component: idAuth
+                        },
+                        {
+                            name: 'vipVerify',
+                            path: 'vipVerify',
+                            component: vipVerify
                         }
                     ]
                 }

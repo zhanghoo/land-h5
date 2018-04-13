@@ -158,7 +158,8 @@
 <script>
 import rankTop from '@/components/rankTop'
 import blockSlot from '@/components/blockSlot'
-import { getRankList, getSystemNews } from '@/api/home'
+import { getRankList, getSystemNews, postSign } from '@/api/home'
+import { wxLogin } from '@/api'
 export default {
     name: 'home',
     components: { rankTop, blockSlot },
@@ -204,9 +205,18 @@ export default {
             setTimeout(function() {
                 _self.boxOpen = true
             }, 1000)
+            postSign().then(res => {
+                console.log(res.Msg)
+            })
+        },
+        getWxLogin_data() {
+            wxLogin().then(res => {
+                console.log(res)
+            })
         }
     },
     mounted() {
+        // this.getWxLogin_data()
         if (this.firstIn) {
             this.popupVisible = true
         }

@@ -4,7 +4,7 @@
             <router-link :to="{name: 'publish'}"><i class="my-icon-add"></i>发布新动态</router-link>
         </header>
         <!-- 列表 -->
-        <momentList :json="moments" @watch="openPayMsgBox"></momentList>
+        <momentList :json="moments"></momentList>
 
         <!-- 支付弹框 -->
         <div class="pay-msgbox-wrapper">
@@ -32,7 +32,8 @@
 </template>
 <script>
 import momentList from '@/components/momentList'
-import { getMomentList } from '@/api'
+// import { getMomentList } from '@/api'
+import { getMomentList } from '@/api/moment'
 export default {
     name: 'moment',
     components: { momentList },
@@ -46,24 +47,15 @@ export default {
     methods: {
         // 获取动态列表
         getMomentList_data() {
-            getMomentList().then(res => {
-                console.log(res)
-                this.moments = res.data
+            let params = {
+                page: 1,
+                uid: this.$store.state.user.user_id
+            }
+            getMomentList(params).then(res => {
+                if (res && res.Data) {
+                    this.moments = res.Data
+                }
             })
-        },
-        // 打开支付msgBox
-        openPayMsgBox(item) {
-            this.payMsgBox = true
-            this.payToWatchItem = item
-        },
-        // 支付查看内容
-        confirmWatch() {
-            // if (this.$store.state.user.money > this.payToWatchItem.price) {.
-                // this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
-                // this.$toast(`-${this.payToWatchItem.price}大师币`)
-                this.$router.push({ path: '/momentDetail', query: { 'id': this.payToWatchItem.id } })
-            // }
-            this.payMsgBox = false
         }
     },
     mounted() {

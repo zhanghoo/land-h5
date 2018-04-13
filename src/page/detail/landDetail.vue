@@ -75,11 +75,11 @@
                                 <dd>{{landDetailJson.deadline}}</dd>
                             </dl>
                             <dl class="ldi-col">
-                                <dt>让出单位</dt>
+                                <dt>出让单位</dt>
                                 <dd>{{landDetailJson.sunit}}</dd>
                             </dl>
                             <dl class="ldi-col">
-                                <dt>让出方式</dt>
+                                <dt>出让方式</dt>
                                 <dd>{{landDetailJson.stype}}</dd>
                             </dl>
                         </div>
@@ -94,10 +94,9 @@
                             <span slot="title">我的估价</span>
                             <span slot="more"></span>
                             <div slot="conent">
-                                <div class="block-slot-item" v-for="(item,index) in landDetailJson.evaluate" :key="index">
-                                    <div class="bs-col">{{item.eprice}}</div>
+                                <div class="block-slot-item" v-for="(item,index) in landDetailJson.user" :key="index">
                                     <div class="bs-col">
-                                        <span>无字段</span>
+                                        <span>{{item.evaluate_num}}元/m²</span>
                                         <span class="icon my-icon-qianbi"></span>
                                     </div>
                                     <div class="bs-col">{{item.etime}}</div>
@@ -110,7 +109,7 @@
                             <div slot="conent">
                                 <div class="block-slot-item" v-for="(item,index) in landDetailJson.evaluate" :key="index">
                                     <div class="bs-col">{{item.name}}</div>
-                                    <div class="bs-col">{{item.eprice}}</div>
+                                    <div class="bs-col">{{item.evaluate_num}}元/m²</div>
                                     <div class="bs-col">{{item.etime}}</div>
                                 </div>
                             </div>
@@ -124,7 +123,7 @@
                             </div>
                         </template>
                         <template v-else>
-                            <mt-button v-show="!popupVisible" @click="clickInvitation(0)" class="btn-evaluate" type="primary">估价（200大师币）</mt-button>
+                            <mt-button v-show="!popupVisible" @click="clickInvitation(0)" class="btn-evaluate" type="primary">估价（100大师积分）</mt-button>
                         </template>
                     </div>
                     <mt-popup v-model="popupVisible" class="evaluate-wrap" position="bottom">
@@ -138,9 +137,9 @@
                             </div>
                             <div class="lde-bottom">
                                 <mt-field placeholder="预估成交楼面价（元/m²）" type="number" v-model="evaluatePrice" class="">
-                                    <mt-button class="btn-evaluate small" type="primary">
+                                    <mt-button class="btn-evaluate small" type="primary" @click="buy">
                                         <span class="btn-evaluate-text">估价</span>
-                                        <span v-show="operation !== 2" class="btn-evaluate-tip">（200大师币）</span>
+                                        <span v-show="operation !== 2" class="btn-evaluate-tip">（100大师积分）</span>
                                     </mt-button>
                                 </mt-field>
                             </div>
@@ -158,7 +157,7 @@
 <script>
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
-import { getLandAbstract, getLandDetail } from '@/api'
+import { getLandAbstract, getLandDetail, postLandEvaluation } from '@/api'
 export default {
     name: 'landDetail',
     components: { blockSlot, momentList },
@@ -169,7 +168,7 @@ export default {
             partIn: true, // 是否参与true->参与false->未参与
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮
             popupVisible: false,
-            evaluatePrice: null,
+            evaluatePrice: '',
             operation: 0, // 点击的是哪个按钮,0=第一次估价,1=再次估价,2=修改估价
             goldDrop: false, // 金币掉落,第一估计和再次估价的时候为true
             landAbstractJson: '',
@@ -215,6 +214,20 @@ export default {
                     this.landDetailJson = res.Data
                 }
             })
+        },
+        buy() {
+            if (!this.evaluatePrice) {
+                this.$toast('请填写金额')
+            } else {
+                let params = {
+                    pid: this.$route.query.pid,
+                    uid: this.$store.state.user.user_id,
+                    money: this.evaluatePrice
+                }
+                postLandEvaluation(params).then(res => {
+                    this.$toast('res.Msg')
+                })
+            }
         }
     },
     mounted() {
@@ -382,6 +395,7 @@ export default {
             }
             &.land-detail-myprice {
                 .bs-col {
+                    width: fit-content !important;
                     color: $appColor;
                     .icon {
                         margin-left: toRem(4.5);
