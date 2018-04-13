@@ -3,12 +3,12 @@
         <template v-if="json">
             <div class="momentDetail-info">
                 <img class="info-avatar" v-if="json.avatar" :src="json.avatar">
-                <span class="info-name" v-if="json.name">{{json.name}}</span>
+                <span class="info-name" v-if="json.uname">{{json.uname}}</span>
                 <mt-button class="label" plain type="primary" v-if="json.label">{{json.label}}</mt-button>
-                <span class="info-time" v-if="json.time">{{json.time}}</span>
+                <span class="info-time" v-if="json.ptime">{{json.ptime}}</span>
             </div>
             <div class="momentDetail-zan">
-                <i class="my-icon-zan" :class="{'active': json.activeZan}" @click="addZan(json)"> {{json.zan}}</i>
+                <i class="my-icon-zan" :class="{'active': json.is_like !== '0'}" @click="addZan(json)"> {{json.lnum}}</i>
             </div>
             <div class="momentDetail-content">
                 <div class="content-title">{{json.title}}</div>
@@ -18,7 +18,7 @@
     </div>
 </template>
 <script>
-import { getMomentDetail } from '@/api'
+import { getMomentDetail, postZan } from '@/api/moment'
 export default {
     name: 'momentDetail',
     data() {
@@ -28,19 +28,27 @@ export default {
     },
     methods: {
         getMomentsDetail_data() {
-            let id = this.$route.query.id
-            if (id) {
-                getMomentDetail(id).then(res => {
-                    this.json = res.data
-                })
+            let params = {
+                'cid': this.$route.query.cid,
+                'uid': this.$store.state.user.user_id
             }
+            getMomentDetail(params).then(res => {
+                if (res && res.Data) {
+                    this.json = res.Data
+                }
+            })
         },
         addZan(item) {
-            item.activeZan = !item.activeZan
-            if (item.activeZan) {
-                item.zan++
-            } else {
-                item.zan--
+            if (item.is_like === '0') {
+                item.lnum++
+                item.is_like = true
+                let params = {
+                    cid: item.cid,
+                    uid: this.$store.state.user.user_id
+                }
+                postZan(params).then(res => {
+                    console.log(res)
+                })
             }
         }
     },

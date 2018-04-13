@@ -27,11 +27,14 @@
         </p>
         <template v-if="json.estatus == 1 || json.estatus == 2">
             <!-- 估价成功或失败 -->
-            <div class="rans-detail-price" @click="$router.push({name: 'dealInformation'})">
-                <div>成交楼面价
-                    <span class="rdp-num">{{json.sold_area}}</span>元/m²</div>
+            <router-link class="rans-detail-price" tag="div" :to="{ name: 'dealInformation', params: {'bid': json.id} }">
+                <div>
+                    成交楼面价
+                    <span class="rdp-num" >{{json.sold_area}}</span>
+                    元/m²
+                </div>
                 <span class="my-icon-more"></span>
-            </div>
+            </router-link>
             <div v-if="json.estatus == 1" class="trans-detail-tips">
                 <span class="tip">恭喜你，赢得了{{json.get_coin}}大师币！</span>
                 <mt-button class="tds-btn" type="primary">分享</mt-button>
@@ -47,22 +50,15 @@
                             <div class="bs-col">排名</div>
                             <div class="bs-col">昵称</div>
                             <div class="bs-col">估价</div>
-                            <div class="bs-col">大师币</div>
+                            <div class="bs-col">大师积分</div>
                             <div class="bs-col">估价时间</div>
                         </div>
-                        <div class="block-slot-item" :class="{'item-title': index === 3}" v-for="(item,index) in json.rank_list" :key="index">
-                            <template v-if="index !== 3">
-                                <div class="bs-col">{{item.rank_num}}</div>
-                                <div class="bs-col">{{item.nick_name}}</div>
-                                <div class="bs-col">{{item.evaluate_num}}</div>
-                                <div class="bs-col">无字段</div>
-                                <div class="bs-col">{{item.evaluate_time}}</div>
-                            </template>
-                            <template v-else>
-                                <block-slot class="rank-list">
-                                    <span slot="title">前10%的玩家可获得大师积分奖励</span>
-                                </block-slot>
-                            </template>
+                        <div class="block-slot-item" v-for="(item,index) in json.rank_list" :key="index">
+                            <div class="bs-col">{{item.rank_num}}</div>
+                            <div class="bs-col">{{item.nick_name}}</div>
+                            <div class="bs-col">{{item.evaluate_num}}元/m²</div>
+                            <div class="bs-col">无字段</div>
+                            <div class="bs-col">{{item.evaluate_time}}</div>
                         </div>
                     </div>
                 </block-slot>
@@ -274,19 +270,6 @@ export default {
                 &.first-item {
                     font-weight: 700;
                     color: #333;
-                }
-                &.item-title{
-                    .block-slot{
-                        margin  0
-                    }
-                    .block-slot-head{
-                        color #333
-                        font-weight bold
-                        padding 0
-                        &:after{
-                            border: none
-                        }
-                    }
                 }
             }
             &.first {

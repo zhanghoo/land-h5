@@ -3,15 +3,15 @@
         <li class="list-item" v-for="(item,index) in json" :key="index">
             <div class="item-user">
                 <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
-                <span class="user-name" v-if="item.name">{{item.name}}</span>
+                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
                 <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
             </div>
             <div class="item-title">{{item.title}}</div>
             <div class="item-content">
                 <!-- 封面 -->
-                <template v-if="item.mode === 'cover'">
-                    <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'id': item.id}}" tag="div">
-                        <img :src="item.coveImg">
+                <template v-if="item.image">
+                    <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
+                        <img :src="item.image">
                     </router-link>
                 </template>
                 <!-- 需支付 -->
@@ -20,7 +20,7 @@
                 </template>
                 <!-- 概览 -->
                 <template v-if="item.mode === 'overview'">
-                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'id': item.id}}" tag="div">
+                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
                         <div class="overview-title">{{item.subTitle}}</div>
                         <div class="overview-adress">
                             <i class="my-icon-adress"></i>{{item.adress}}</div>
@@ -31,7 +31,7 @@
                 </template>
             </div>
             <div class="item-info">
-                <i class="my-icon-zan" :class="{'active': item.activeZan}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                <i class="my-icon-zan" :class="{'active': item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
                 <span class="info-time">{{item.pub_time}}</span>
             </div>
         </li>
@@ -76,15 +76,17 @@ export default {
     },
     methods: {
         addZan(item) {
-            item.activeZan = true
-            item.lnum++
-            let params = {
-                cid: item.id,
-                uid: this.$store.state.user.user_id
+            if (item.is_like === '0') {
+                item.lnum++
+                item.is_like = true
+                let params = {
+                    cid: item.cid,
+                    uid: this.$store.state.user.user_id
+                }
+                postZan(params).then(res => {
+                    console.log(res)
+                })
             }
-            postZan(params).then(res => {
-                console.log(res)
-            })
         },
         // 打开支付msgBox
         openPayMsgBox(item) {
@@ -96,7 +98,7 @@ export default {
             // if (this.$store.state.user.money > this.payToWatchItem.price) {.
             // this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
             // this.$toast(`-${this.payToWatchItem.price}大师币`)
-            this.$router.push({ path: '/momentDetail', query: { 'id': this.payToWatchItem.id } })
+            this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
             // }
             this.payMsgBox = false
         }

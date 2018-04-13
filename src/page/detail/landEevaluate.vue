@@ -42,7 +42,7 @@
         </div>
         <div class="list">
             <div class="list-title">全平台投注均为
-                <i class="my-icon-qianbi"></i>200/注</div>
+                <i class="my-icon-qianbi"></i>100/注</div>
             <div class="list-item" v-for="(item, index) in 3" :key="index">
                 <div class="item-title">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 4号地块</div>
                 <div class="item-adress">

@@ -18,6 +18,12 @@ export function getLandDetail({ pid, uid }) {
     return res
 }
 
+// 参与估价
+export function postLandEvaluation({ pid, uid, money }) {
+    let res = request('/api/home/index/landEvaluation', 'POST', { 'pid': pid, 'uid': uid, 'money': money })
+    return res
+}
+
 // 获取全国省份数据
 export function getProvince() {
     let res = request('/api/geograph/province', 'GET')
@@ -42,16 +48,8 @@ export function getCity(provinceCode) {
     return res
 }
 
-// 以下是模拟的数据
-
-// 获取动态列表
-export function getMomentList() {
-    let res = request('http://liansixin.win/momentList', 'GET')
-    return res
-}
-
-// 获取动态详情
-export function getMomentDetail(id) {
-    let res = request('http://liansixin.win/momentDetail', 'GET', { 'id': id })
+// 获取交易信息
+export function getLandBusinessTransaction(bid) {
+    let res = request('/api/home/index/landBusinessTransaction', 'POST', { 'bid': bid })
     return res
 }

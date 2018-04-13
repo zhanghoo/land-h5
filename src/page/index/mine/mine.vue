@@ -37,9 +37,9 @@
         <div class="mine-cash">
             <ul class="cash-list">
                 <li class="cash-item">
-                    <router-link class="cash-item-a" :to="{name: 'recharge'}">
+                    <router-link class="cash-item-a" :to="{name: 'vipVerify'}">
                         <div class="cash-item-icon my-icon-recharge"></div>
-                        <span class="cash-item-text">充值</span>
+                        <span class="cash-item-text">我的会员</span>
                     </router-link>
                 </li>
                 <li class="cash-item">
@@ -204,9 +204,6 @@ export default {
                 line-height: 1.38;
                 .cash-item-icon {
                     display: block;
-                    margin-bottom: toRem(6.5);
-                    width: toRem(23);
-                    height: toRem(23);
                     font-size: toRem(22);
                     text-align: center;
                     color: $appColor;

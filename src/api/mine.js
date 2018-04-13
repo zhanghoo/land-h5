@@ -14,13 +14,13 @@ export function getUserInfo(userid) {
 }
 
 // 修改个人资料
-export function postUserInfo({ userid, username, avatar }) {
+export async function postUserInfo({ userid, username, avatar }) {
     let params = { 'user_id': userid, 'nick_name': username, 'avatar': avatar }
     let form = new FormData()
     Object.keys(params).forEach(key => {
         form.append(key, params[key])
     })
-    let res = instance.post('/api/home/user/UserInfo', form, {
+    let res = await instance.post('/api/home/user/UserInfo', form, {
         headers: {
             'Content-type': 'multipart/form-data'
         }
@@ -72,9 +72,21 @@ export function getAccount() {
 }
 
 // 身份验证
-export function postAuthValidate({ company, file }) {
-    let res = request('/api/home/user/getAccount', 'POST', { 'company': company, 'file': file })
-    return res
+export async function postAuthValidate({ company, file }) {
+    let params = {
+        'company': company,
+        'file': file
+    }
+    let form = new FormData()
+    Object.keys(params).forEach(key => {
+        form.append(key, params[key])
+    })
+    let res = await instance.post('/api//home/user/authValidate', form, {
+        headers: {
+            'Content-type': 'multipart/form-data'
+        }
+    })
+    return res.data
 }
 
 // 用户反馈

@@ -7,35 +7,35 @@
                 <div class="block-slot-item">
                     <dl>
                         <dt>房产名称</dt>
-                        <dd>德清低密度独栋别墅</dd>
+                        <dd>{{json.name}}</dd>
                     </dl>
                     <dl>
                         <dt>竞得单位</dt>
-                        <dd>杭州秋工雨投资有限公司</dd>
+                        <dd>{{json.buy_unit}}</dd>
                     </dl>
                     <dl>
                         <dt>成交面积</dt>
-                        <dd>360平方米</dd>
+                        <dd>{{json.sold_area}}</dd>
                     </dl>
                     <dl>
                         <dt>成交总价</dt>
-                        <dd>6000万</dd>
+                        <dd>{{json.total_closing_cost}}</dd>
                     </dl>
                     <dl>
                         <dt>成交楼面价</dt>
-                        <dd>4663元/平方米</dd>
+                        <dd>{{json.closing_cost}}</dd>
                     </dl>
                     <dl>
                         <dt>溢价率</dt>
-                        <dd>40%</dd>
+                        <dd>{{json.premium_rate}}</dd>
                     </dl>
                     <dl>
                         <dt>成交日期</dt>
-                        <dd>2018-3-8</dd>
+                        <dd>{{json.closing_time}}</dd>
                     </dl>
                     <dl>
                         <dt>备注</dt>
-                        <dd>无</dd>
+                        <dd>{{json.remark}}</dd>
                     </dl>
                 </div>
             </div>
@@ -44,22 +44,29 @@
 </template>
 <script>
 import blockSlot from '@/components/blockSlot'
+import { getLandBusinessTransaction } from '@/api'
 export default {
     name: 'dealInformation',
     components: { blockSlot },
     data() {
         return {
-
+            json: ''
         }
     },
-    computed: {
-
-    },
     methods: {
-
+        getLandBusinessTransaction_data() {
+            console.log(this.$route)
+            console.log(this.$route.params.bid)
+            getLandBusinessTransaction(this.$route.params.bid).then(res => {
+                console.log(res)
+                if (res && res.Data) {
+                    this.json = res.Data
+                }
+            })
+        }
     },
     mounted() {
-
+        this.getLandBusinessTransaction_data()
     }
 }
 </script>

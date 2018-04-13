@@ -4,38 +4,81 @@
             <span class="icon my-icon-qianbi"></span>
             <span class="num">1000</span>
         </p>
-        <div class="button">
-            <mt-button @click="clickInvitation">提交</mt-button>
+        <div class="idAuth-form">
+            <mt-field class="form-title" placeholder="请填写所在公司" v-model="company"></mt-field>
+            <div class="publish-upload">
+                <div class="upload-title">上传相关证明
+                    <span>（证书、工牌等）</span>
+                </div>
+                <div class="upload-preview">
+                    <div class="picture_preview" v-for="(item, index) in picture_preview" :key="index" v-if="item">
+                        <img class="preview-img" :src="item">
+                        <input class="preview-input" :id="`preview-${index}`" type="file" accept="image/*" @change="changePreview($event,index)">
+                        <label class="preview-label" :for="`preview-${index}`"></label>
+                    </div>
+                    <input id="upload" type="file" accept="image/*" multiple=“multiple” @change="upload($event)">
+                    <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
+                </div>
+            </div>
         </div>
-        <mt-popup
-            v-model="popupVisible"
-            position="right"
-            :modal="false">
-            <div class="text" @click="back">恭喜你！<br>已完成地产相关人士认证</div>
+        <div class="button">
+            <mt-button @click="postIdAuth">提交</mt-button>
+        </div>
+        <mt-popup v-model="popupVisible" position="right" :modal="false">
+            <div class="text">恭喜你！<br>已完成地产相关人士认证</div>
         </mt-popup>
     </div>
 </template>
 <script>
+import { postAuthValidate } from '@/api/mine'
 export default {
     name: 'idAuth',
     data() {
         return {
+            company: '',
+            pictureFile: [],
+            picture_preview: [],
             popupVisible: false
         }
     },
-    computed: {
-
-    },
     methods: {
-        clickInvitation() {
-            this.popupVisible = !this.popupVisible
+        upload(ev) {
+            let picture = Array.from(ev.target.files)
+            let emptyNum = 3 - this.picture_preview.length
+            picture = picture.slice(0, emptyNum)
+            for (let i = 0; i < picture.length; i++) {
+                if (picture[i]) {
+                    let reader = new FileReader()
+                    reader.readAsDataURL(picture[i])
+                    reader.onload = (e) => {
+                        this.picture_preview.unshift(e.target.result)
+                        this.pictureFile.unshift(ev.target.files[i])
+                    }
+                }
+            }
         },
-        back() {
-            history.back()
+        changePreview(ev, index) {
+            let img = ev.target.files[0]
+            let reader = new FileReader()
+            reader.readAsDataURL(img)
+            reader.onload = (e) => {
+                this.$set(this.picture_preview, index, e.target.result)
+            }
+        },
+        postIdAuth() {
+            if (!this.company) {
+                this.$toast('请填写公司名称')
+            } else {
+                let params = {
+                    company: this.company,
+                    file: this.pictureFile
+                }
+                postAuthValidate(params).then(res => {
+                    console.log(res)
+                    this.popupVisible = !this.popupVisible
+                })
+            }
         }
-    },
-    mounted() {
-
     }
 }
 </script>
@@ -59,6 +102,77 @@ export default {
         }
         .num {
             color: $appColor;
+        }
+    }
+    .idAuth-form {
+        padding: 0 toRem(18);
+        background: #fff;
+        .form-title {
+            border-1px-bottom(#e6e6e6);
+            .mint-cell-wrapper {
+                padding: 0;
+            }
+            input{
+                font-size toRem(14)
+                &::placeholder{
+                    color #ccc
+                }
+            }
+        }
+        .publish-upload {
+            padding: toRem(15) 0;
+            .upload-title {
+                color: #333;
+                font-size: toRem(12);
+                margin-bottom toRem(15)
+                span {
+                    color: #ccc;
+                }
+            }
+            .upload-preview {
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                .picture_preview {
+                    position: relative;
+                    width: toRem(55);
+                    height: toRem(55);
+                    border: 1px solid #e0e0e0;
+                    border-radius: toRem(5);
+                    overflow: hidden;
+                    margin-right: toRem(12);
+                    img {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                    }
+                    .preview-input {
+                        display: none;
+                    }
+                    .preview-label {
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        top: 0;
+                        bottom: 0;
+                        background: transparent;
+                        z-index: 10;
+                    }
+                }
+                #upload {
+                    display: none;
+                }
+                .upload-btn {
+                    color: #e0e0e0;
+                    width: toRem(55);
+                    height: toRem(55);
+                    font-size: toRem(27.5);
+                    text-align: center;
+                    padding: toRem(13.5);
+                    border: 1px solid #e0e0e0;
+                    border-radius: toRem(5);
+                }
+            }
         }
     }
     .button {
