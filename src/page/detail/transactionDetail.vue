@@ -43,7 +43,8 @@
             <!-- rank-list -->
             <div class="rank-list-wrapper" v-if="json.rank_list">
                 <block-slot class="rank-list first">
-                    <span slot="title">前三名玩家可获得大师币及大师积分奖励</span>
+                    <!-- <span slot="title">前三名玩家可获得大师币及大师积分奖励</span> -->
+                    <span slot="title">此次估价排名前10%玩家可获得大师积分奖励</span>
                     <span slot="more"></span>
                     <div slot="conent">
                         <div class="block-slot-item first-item">

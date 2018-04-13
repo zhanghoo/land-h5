@@ -123,7 +123,7 @@
                       popup-transition="popup-fade"
                       class="h-popup"
                       :closeOnClickModal="false">
-                <div v-if="!scoreBtnClicked" class="home-get-score">
+                <!-- <div v-if="!scoreBtnClicked" class="home-get-score">
                     <div class="home-get-score-title">每日签到
                         <span class="hg-icon my-icon-baocuo" @click="clickInvitation"></span>
                     </div>
@@ -142,10 +142,10 @@
                     </div>
                 </div>
                 <div v-show="scoreBtnClicked"
-                     @click="clickInvitation"
-                     class="home-box-open">
+                     @click="clickInvitation" -->
+                <div class="home-box-open">
                     <div class="home-box" :class="boxOpen ? 'open' : ''">
-                        <img class="home-box-close-img" src="~@/assets/img/box.png">
+                        <img @click="getScore" class="home-box-close-img" src="~@/assets/img/box.png">
                         <img class="home-box-open-score" src="~@/assets/img/addscore.png">
                         <img class="home-box-open-img" src="~@/assets/img/boxopen.png">
                     </div>
@@ -193,20 +193,24 @@ export default {
         },
         clickInvitation() {
             this.popupVisible = !this.popupVisible
+            /*
             if (!this.scoreBtnClicked) {
                 // 未点击直接隐藏,扣除10积分
                 console.log('未点击签到, 扣除10积分')
             } else {
             }
+            */
         },
         getScore() {
             var _self = this
-            _self.scoreBtnClicked = true
+            // _self.scoreBtnClicked = true
             setTimeout(function() {
-                _self.boxOpen = true
-            }, 1000)
+                // 定时关闭弹框
+                _self.clickInvitation()
+            }, 2000)
             postSign().then(res => {
                 console.log(res.Msg)
+                _self.boxOpen = true
             })
         },
         getWxLogin_data() {
