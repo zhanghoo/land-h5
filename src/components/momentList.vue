@@ -65,7 +65,7 @@ export default {
     name: 'momentList',
     props: {
         json: {
-            type: Array || Object
+            type: Array
         }
     },
     computed: {
