@@ -3,14 +3,14 @@
         <div class="userDetail-header">
             <div class="header-user">
                 <div class="user-avatar">
-                    <img class="avatar-img" v-if="user.avatar" :src="user.avatar">
+                    <img class="avatar-img" v-if="userinfo.avatar" :src="userinfo.avatar">
                 </div>
                 <div class="user-base">
                     <div class="base-wrapper">
-                        <p class="user-name">{{user.nick_name}}</p>
-                        <mt-button class="label user-label" plain type="primary">地产大亨</mt-button>
+                        <p class="user-name">{{userinfo.nick_name}}</p>
+                        <mt-button class="label user-label" plain type="primary">{{userinfo.level}}</mt-button>
                     </div>
-                    <div class="user-score">积分:36547</div>
+                    <div class="user-score">积分：{{userinfo.master_score}}</div>
                 </div>
             </div>
         </div>
@@ -28,13 +28,14 @@
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
 import { mapState } from 'vuex'
-import { getUserMoment } from '@/api/mine'
+import { getUserDetail } from '@/api/mine'
 export default {
     name: 'userDetail',
     components: { blockSlot, momentList },
     data() {
         return {
-            json: []
+            json: [],
+            userinfo: []
         }
     },
     computed: {
@@ -44,9 +45,12 @@ export default {
     },
     methods: {
         getUserMoment_data() {
-            getUserMoment().then(res => {
+            // console.log(this.$route.params.userId)
+            getUserDetail(this.$route.params.userId).then(res => {
+                // console.log(res)
                 if (res && res.Data) {
-                    this.json = res.Data
+                    this.json = res.Data.userstate
+                    this.userinfo = res.Data.userinfo
                 }
             })
         }

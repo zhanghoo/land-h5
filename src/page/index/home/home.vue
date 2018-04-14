@@ -9,20 +9,26 @@
                 <p class="ht-line"></p>
             </div>
             <div class="home-rank">
-                <div class="home-rank-item" v-if="rankList[1]" @click="$router.push({name: 'rankList'})">
-                    <rank-top :color="'#C6C6C6'" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name" @click="$router.push({name: 'rankList'})"></rank-top>
-                    <span class="home-rank-name">{{rankList[1].nick_name}}</span>
-                    <span class="home-rank-num">{{rankList[1].master_score}}</span>
+                <div class="home-rank-item" v-if="rankList[1]">
+                    <div @click="$router.push({name: 'userDetail', params: { userId: rankList[1].user_id }})">
+                        <rank-top :color="'#C6C6C6'" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name"></rank-top>
+                    </div>
+                    <span class="home-rank-name" @click="$router.push({name: 'rankList'})">{{rankList[1].nick_name}}</span>
+                    <span class="home-rank-num" @click="$router.push({name: 'rankList'})">{{rankList[1].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[0]" @click="$router.push({name: 'rankList'})">
-                    <rank-top :color="'#FCD107'" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
-                    <span class="home-rank-name">{{rankList[0].nick_name}}</span>
-                    <span class="home-rank-num">{{rankList[0].master_score}}</span>
+                <div class="home-rank-item" v-if="rankList[0]">
+                    <div @click="$router.push({name: 'userDetail', params: { userId: rankList[0].user_id }})">
+                        <rank-top :color="'#FCD107'" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
+                    </div>
+                    <span class="home-rank-name" @click="$router.push({name: 'rankList'})">{{rankList[0].nick_name}}</span>
+                    <span class="home-rank-num" @click="$router.push({name: 'rankList'})">{{rankList[0].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[2]" @click="$router.push({name: 'rankList'})">
-                    <rank-top :color="'#804621'" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
-                    <span class="home-rank-name">{{rankList[2].nick_name}}</span>
-                    <span class="home-rank-num">{{rankList[2].master_score}}</span>
+                <div class="home-rank-item" v-if="rankList[2]">
+                    <div @click="$router.push({name: 'userDetail', params: { userId: rankList[2].user_id }})">
+                        <rank-top :color="'#804621'" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
+                    </div>
+                    <span class="home-rank-name" @click="$router.push({name: 'rankList'})">{{rankList[2].nick_name}}</span>
+                    <span class="home-rank-num" @click="$router.push({name: 'rankList'})">{{rankList[2].master_score}}</span>
                 </div>
             </div>
             <div class="home-msg">
@@ -165,7 +171,7 @@ export default {
     components: { rankTop, blockSlot },
     data() {
         return {
-            firstIn: true, // firstIn每日第一进入链接
+            firstIn: false, // firstIn每日第一进入链接
             rankList: '',
             systemNews: '',
             popupVisible: false,

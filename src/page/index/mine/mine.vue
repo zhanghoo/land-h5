@@ -1,13 +1,13 @@
 <template>
     <div id="mine">
         <div class="mine-info">
-            <router-link class="info-wrapper" :to="{name: 'userDetail'}" tag="div">
+            <router-link class="info-wrapper" :to="{name: 'userDetail', params: { userId: mine.user_id}}" tag="div">
                 <div class="avatar">
-                    <img class="avatar-img" v-if="user.avatar" :src="user.avatar">
+                    <img class="avatar-img" v-if="mine.avatar" :src="mine.avatar">
                 </div>
                 <div class="info">
-                    <p class="name">{{user.nick_name}}</p>
-                    <mt-button class="info-label" plain type="primary">地产大亨</mt-button>
+                    <p class="name">{{mine.nick_name}}</p>
+                    <mt-button class="info-label" plain type="primary">{{mine.level}}</mt-button>
                 </div>
             </router-link>
             <router-link class="my-icon-more" :to="{name: 'myInfo'}"></router-link>
@@ -16,13 +16,13 @@
             <ul class="count-list">
                 <li class="count-item">
                     <router-link class="count-item-a" :to="{name: 'mineGold'}">
-                        <span class="count-item-num">1500</span>
+                        <span class="count-item-num">{{mine.master_coin}}</span>
                         <span class="count-item-text">大师币</span>
                     </router-link>
                 </li>
                 <li class="count-item">
                     <router-link class="count-item-a" :to="{name: 'mineScore'}">
-                        <span class="count-item-num">56543</span>
+                        <span class="count-item-num">{{mine.master_score}}</span>
                         <span class="count-item-text">大师积分</span>
                     </router-link>
                 </li>
@@ -37,7 +37,9 @@
         <div class="mine-cash">
             <ul class="cash-list">
                 <li class="cash-item">
-                    <router-link class="cash-item-a" :to="{name: 'vipVerify'}">
+                    <!-- 如果是会员则直接跳到提交信息充值页面 -->
+                    <router-link class="cash-item-a"
+                                 :to="{name: mine.is_charge ? 'recharge' : 'vipVerify'}">
                         <div class="cash-item-icon my-icon-recharge"></div>
                         <span class="cash-item-text">我的会员</span>
                     </router-link>
@@ -100,7 +102,7 @@ export default {
     },
     computed: {
         ...mapState([
-            'user'
+            'mine'
         ])
     },
     methods: {

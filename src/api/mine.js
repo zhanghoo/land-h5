@@ -1,8 +1,21 @@
 import { request, instance } from '@/utils/request'
 
+// 我的页面
+export function getMineInfo() {
+    let res = request('/api/home/user/myPage', 'POST')
+    return res
+}
+
 // 用户主页
 export function getUserMoment() {
     let res = request('/api/home/system/userHomePage', 'POST')
+    return res
+}
+
+// 用户主页
+// 测试ID 61230468
+export function getUserDetail(userid) {
+    let res = request('/api/home/system/userHomePage', 'POST', { 'user_id': userid })
     return res
 }
 

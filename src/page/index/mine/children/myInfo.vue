@@ -2,7 +2,7 @@
     <div id="myInfo">
         <div class="avatar">
             <div class="avatar-wrapper">
-                <img class="avatar-img" v-if="user.avatar" :src="avatar_preview">
+                <img class="avatar-img" v-if="mine.avatar" :src="avatar_preview">
                 <input id="upload" type="file" accept="image/*" capture="camera" @change="upload($event)" style="display: none;">
                 <label class="upload-btn" for="upload"></label>
             </div>
@@ -32,7 +32,7 @@ export default {
     },
     computed: {
         ...mapState([
-            'user'
+            'mine'
         ])
     },
     methods: {
@@ -51,13 +51,13 @@ export default {
                 this.$toast('昵称不能为空')
             } else {
                 let params = {
-                    userid: this.user.user_id,
+                    userid: this.mine.user_id,
                     username: this.username,
                     avatar: this.avatar
                 }
-                console.log(params)
+                // console.log(params)
                 postUserInfo(params).then(res => {
-                    if (res && res.code === 0) {
+                    if (res && (res.Code === 0 || res.data.Code === 0)) {
                         this.$toast('修改成功')
                     }
                 })
@@ -65,8 +65,8 @@ export default {
         }
     },
     mounted() {
-        this.avatar_preview = this.user.avatar
-        this.username = this.user.nick_name
+        this.avatar_preview = this.mine.avatar
+        this.username = this.mine.nick_name
     }
 }
 </script>
