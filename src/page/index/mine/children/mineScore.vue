@@ -2,7 +2,7 @@
     <div id="mineScore">
         <div class="m-score-count">
             <p class="count">当前大师积分：
-                <span class="num">36543</span>
+                <span class="num">{{mine.master_score}}</span>
             </p>
             <p class="rule" @click="openScoreRule">
                 <span class="icon my-icon-tishi"></span>&nbsp;规则</p>
@@ -50,6 +50,7 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import { getScoreRecord, getScoreRule } from '@/api/mine'
 export default {
     name: 'mineScore',
@@ -59,6 +60,11 @@ export default {
             scoreRecord: '',
             scoreRule: ''
         }
+    },
+    computed: {
+        ...mapState([
+            'mine'
+        ])
     },
     methods: {
         openScoreRule() {
@@ -73,7 +79,7 @@ export default {
         },
         // 获取记录
         getScoreRecord_data() {
-            getScoreRecord(this.$store.state.user.user_id).then(res => {
+            getScoreRecord(this.$store.state.mine.user_id).then(res => {
                 if (res && res.Data && res.Data.record) {
                     this.scoreRecord = res.Data.record
                 }

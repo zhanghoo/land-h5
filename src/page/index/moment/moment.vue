@@ -16,7 +16,7 @@
                         <div class="content-money">
                             剩余：
                             <i class="my-icon-tongqian"></i>
-                            <span class="text">{{$store.state.user.money}}</span>
+                            <span class="text">{{$store.state.mine.money}}</span>
                             <router-link :to="{name: 'recharge'}" class="my-icon-add"></router-link>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ export default {
         getMomentList_data() {
             let params = {
                 page: 1,
-                uid: this.$store.state.user.user_id
+                uid: this.$store.state.mine.user_id
             }
             getMomentList(params).then(res => {
                 if (res && res.Data) {

@@ -43,14 +43,17 @@
         <div class="list">
             <div class="list-title">全平台投注均为
                 <i class="my-icon-zuanshi"></i>100/次</div>
-            <div class="list-item" v-for="(item, index) in 3" :key="index">
-                <div class="item-title">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 4号地块</div>
+            <div class="list-item" v-for="(item, index) in landList" :key="index">
+                <div class="item-title" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">{{item.name}}</div>
                 <div class="item-adress">
-                    <i class="my-icon-adress"></i>浙江 杭州 江干</div>
+                    <i class="my-icon-adress"></i>{{item.province}}</div>
                 <div class="item-label">
-                    <mt-button class="label" plain type="primary">挂牌</mt-button>
-                    <mt-button class="label" plain type="primary">商用</mt-button>
-                    <mt-button class="label" plain type="primary">460平方米</mt-button>
+                    <!-- 出售方式 sold_type -->
+                    <mt-button class="label" plain type="primary">{{item.sold_type}}</mt-button>
+                    <!-- 用途 purpose 1商住 2商办 3工业 -->
+                    <mt-button class="label" plain type="primary">{{item.purpose | purposeToString}}</mt-button>
+                    <!-- 面积 sold_area -->
+                    <mt-button class="label" plain type="primary">{{item.sold_area}}平方米</mt-button>
                 </div>
             </div>
         </div>
@@ -69,21 +72,36 @@ export default {
             cityJson: [],
             typeJson: [],
             citySelected: '',
-            typeSelected: ''
+            typeSelected: '',
+            landList: []
+        }
+    },
+    filters: {
+        purposeToString(val) {
+            switch (val) {
+                case '1':
+                    return '商住'
+                case '2':
+                    return '商办'
+                case '3':
+                    return '工业'
+            }
         }
     },
     methods: {
         getSearchDetail_data() {
-            if (this.keyWord) {
-                let params = {
-                    keyWord: this.keyWord,
-                    cityID: this.citySelected || 0,
-                    type: this.typeSelected || 0
-                }
-                getSearchDetail(params).then(res => {
-                    console.log(res)
-                })
+            // 全传0时 默认返回第一进入时所展示内容
+            let params = {
+                keyWord: this.keyWord || 0,
+                cityID: this.citySelected || 0,
+                type: this.typeSelected || 0,
+                page: 1
             }
+            getSearchDetail(params).then(res => {
+                if (res && res.Data) {
+                    this.landList = res.Data
+                }
+            })
         },
         openSelectList(val) {
             if (this.selectType === val) {
@@ -103,7 +121,7 @@ export default {
         }
     },
     mounted() {
-
+        this.getSearchDetail_data()
     }
 }
 </script>

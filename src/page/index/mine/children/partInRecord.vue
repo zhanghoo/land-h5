@@ -27,6 +27,7 @@
                             <span class="rh-status" v-if="item.estatus === '0'">待公布</span>
                             <span class="rh-status" v-else-if="item.estatus === '1'">估价成功</span>
                             <span class="rh-status" v-else-if="item.estatus === '2'">估价失败</span>
+                            <span class="rh-status" v-else-if="item.estatus === '3'">已关闭</span>
                         </div>
                         <div class="record-content">
                             <p>投注大师币：200</p>

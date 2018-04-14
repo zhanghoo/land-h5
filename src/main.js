@@ -35,7 +35,7 @@ Vue.use(VueProgressBar, {
 })
 Vue.use(VueAMap)
 VueAMap.initAMapApiLoader({
-    key: '34c63d21973601f846831188108cc048',
+    key: '5fSAgLiaGcGH9Ff2qYRefFZF2zI1MIbG',
     // plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
     v: '1.4.4'
 })
@@ -46,10 +46,13 @@ VueAMap.initAMapApiLoader({
 
 // 全局路由登录验证
 router.beforeEach((to, from, next) => {
-    if (store.state.user) {
+    if (store.state.mine) {
         next()
     } else {
-        store.dispatch('get_userInfo').then(res => {
+        // store.dispatch('get_userInfo').then(res => {
+        //    next()
+        // })
+        store.dispatch('get_mineInfo').then(res => {
             next()
         })
     }

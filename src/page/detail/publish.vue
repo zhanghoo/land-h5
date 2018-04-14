@@ -77,9 +77,11 @@ export default {
             }
         },
         publish() {
+            var _self = this
+            // 房产id为空传0
             let params = {
-                pid: this.$route.query.pid || '',
-                uid: this.$store.state.user.user_id,
+                pid: this.$route.query.pid || 0,
+                uid: this.$store.state.mine.user_id,
                 title: this.title,
                 text: this.content,
                 is_pay: this.chargeVisible ? 1 : 0,
@@ -87,7 +89,20 @@ export default {
                 images: this.pictureFile
             }
             postPublish(params).then(res => {
-                console.log(res)
+                // console.log(typeof (res.Code)) -> string
+                if (res.Code === '0') {
+                    this.$toast('提交成功')
+                    if (!this.$route.query.pid) {
+                        // 操作为发布动态时, 成功 3s 跳转到回动态页面
+                        setTimeout(function() {
+                            _self.$router.push({ name: 'moment' })
+                        }, 3000)
+                    } else {
+                        _self.$router.go(-1)
+                    }
+                } else {
+                    this.$toast(res.Msg)
+                }
             })
         }
     }

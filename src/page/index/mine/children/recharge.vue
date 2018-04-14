@@ -2,10 +2,10 @@
     <div id="recharge">
         <div class="r-account-info">
             <p>账号：
-                <span>{{user.user_id}}</span>
+                <span>{{account ? account.user_id : 0}}</span>
             </p>
             <p>大师币：
-                <span class="num">36543</span>
+                <span class="num">{{account ? account.master_coin : 0 }}</span>
             </p>
         </div>
         <div class="r-amount">
@@ -31,25 +31,31 @@
     </div>
 </template>
 <script>
-import { mapState } from 'vuex'
+import { getAccount } from '@/api/mine'
 export default {
     name: 'recharge',
     data() {
         return {
-            rechargeMoneys: [50, 100, 200, 300, 500, 1000],
-            selectMoney: 0
+            rechargeMoneys: [],
+            selectMoney: 0,
+            account: null
         }
     },
     computed: {
-        ...mapState([
-            'user'
-        ])
+
     },
     methods: {
-
+        getAccountData() {
+            getAccount().then(res => {
+                if (res && res.Data) {
+                    this.account = res.Data
+                    this.rechargeMoneys = res.Data.charge_num
+                }
+            })
+        }
     },
     mounted() {
-
+        this.getAccountData()
     }
 }
 </script>

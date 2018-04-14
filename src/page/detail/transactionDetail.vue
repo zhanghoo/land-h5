@@ -2,7 +2,7 @@
     <div id="transactionDetail">
         <div class="trans-detail-top">
             <div class="trans-detail-avatar">
-                <img class="avatar-img" v-if="user.avatar" :src="user.avatar">
+                <img class="avatar-img" v-if="mine.avatar" :src="mine.avatar">
             </div>
             <div class="trans-detail-status">{{json.estatus | statusToString}}</div>
         </div>
@@ -11,13 +11,17 @@
             <p class="tdl-local">
                 <span class="tdl-local-icon my-icon-adress"></span>{{json.province}}</p>
             <p class="tdl-tags">
-                <mt-button class="label" plain>挂牌</mt-button>
-                <mt-button class="label" plain>商用</mt-button>
-                <mt-button class="label" plain>360平方米</mt-button>
+                <!-- 出售方式 sold_type -->
+                <mt-button class="label" plain>{{json.sold_type}}</mt-button>
+                <!-- 用途 purpose 1商住 2商办 3工业 -->
+                <mt-button class="label" plain>{{json.purpose | purposeToString}}</mt-button>
+                <!-- 面积 sold_area -->
+                <mt-button class="label" plain>{{json.sold_area}}平方米</mt-button>
             </p>
         </div>
         <div class="trans-detail-dealinfo">
-            <p class="tdd-line">投注大师币：无字段</p>
+            <!-- PS: 据0412需求大师币改为大师积分, 是固定的 100 -->
+            <p class="tdd-line">投注大师积分：100</p>
             <p class="tdd-line">预估成交楼面价：{{json.evaluate_num}}元/m²</p>
             <p class="tdd-line">估价时间：{{json.evaluate_time}}</p>
             <p class="tdd-line">方案编号：{{json.number}}</p>
@@ -27,7 +31,7 @@
         </p>
         <template v-if="json.estatus == 1 || json.estatus == 2">
             <!-- 估价成功或失败 -->
-            <router-link class="rans-detail-price" tag="div" :to="{ name: 'dealInformation', params: {'bid': json.id} }">
+            <router-link class="rans-detail-price" tag="div" :to="{ name: 'dealInformation', params: {'bid': json.bid} }">
                 <div>
                     成交楼面价
                     <span class="rdp-num" >{{json.sold_area}}</span>
@@ -37,11 +41,11 @@
             </router-link>
             <div v-if="json.estatus == 1" class="trans-detail-tips">
                 <span class="tip">恭喜你，赢得了{{json.get_coin}}大师币！</span>
-                <mt-button class="tds-btn" type="primary">分享</mt-button>
+                <mt-button class="tds-btn" type="primary" @click="share">分享</mt-button>
             </div>
             <p v-else class="trans-detail-tips fail">当工作变成游戏，生活就充满快乐！</p>
             <!-- rank-list -->
-            <div class="rank-list-wrapper" v-if="json.rank_list">
+            <div class="rank-list-wrapper" v-if="json.rank_list && json.rank_list != 'null'">
                 <block-slot class="rank-list first">
                     <!-- <span slot="title">前三名玩家可获得大师币及大师积分奖励</span> -->
                     <span slot="title">此次估价排名前10%玩家可获得大师积分奖励</span>
@@ -68,7 +72,7 @@
             <!-- 子页面 -->
             <router-view/>
         </template>
-        <template v-else-if="status == 3">
+        <template v-else-if="json.estatus == 3">
             <!-- 已关闭 -->
             <div class="trans-detail-tips close">
                 <span class="tdt-icon my-icon-guanyuwomen"></span>很抱歉本次竞猜活动因不可抗力关闭了，大师币已退回你的账户
@@ -93,7 +97,7 @@ export default {
     },
     computed: {
         ...mapState([
-            'user'
+            'mine'
         ])
     },
     filters: {
@@ -107,6 +111,16 @@ export default {
                     return '估价失败'
                 case '3':
                     return '已关闭'
+            }
+        },
+        purposeToString(val) {
+            switch (val) {
+                case '1':
+                    return '商住'
+                case '2':
+                    return '商办'
+                case '3':
+                    return '工业'
             }
         }
     },

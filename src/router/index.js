@@ -185,7 +185,7 @@ export default new Router({
         },
         {
             name: 'userDetail',
-            path: '/userDetail',
+            path: '/userDetail/:userId',
             component: userDetail
         }
     ]

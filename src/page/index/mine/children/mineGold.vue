@@ -2,7 +2,7 @@
     <div id="mineGold">
         <div class="m-gold-count">
             <p class="count">当前大师币：
-                <span class="num">1500</span>
+                <span class="num">{{mine.master_coin}}</span>
             </p>
             <p class="btn">
                 <mt-button type="primary" @click="popupVisible = !popupVisible">转赠</mt-button>
@@ -37,13 +37,15 @@
         </mt-popup>
         <mt-popup v-model="tipVisible" class="tip-popup">
             <div class="mine-present-tip">
-                <div class="mpt-icon my-icon-chenggong"></div>
-                <div class="mpt-text">转增成功</div>
+                <div class="mpt-icon"
+                     :class="sendCoinReturnCode === 0 ? 'my-icon-chenggong' : 'my-icon-shibai'"></div>
+                <div class="mpt-text">{{sendCoinReturnMsg}}</div>
             </div>
         </mt-popup>
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import { getCoinRecord, postSendCoin } from '@/api/mine'
 export default {
     name: 'mineGold',
@@ -53,13 +55,20 @@ export default {
             tipVisible: false,
             coinRecord: '',
             presentUserid: '',
-            presentNumber: ''
+            presentNumber: '',
+            sendCoinReturnCode: 1,
+            sendCoinReturnMsg: '请求失败'
         }
+    },
+    computed: {
+        ...mapState([
+            'mine'
+        ])
     },
     methods: {
         // 获取记录
         getCoinRecord_data() {
-            getCoinRecord(this.$store.state.user.user_id).then(res => {
+            getCoinRecord(this.$store.state.mine.user_id).then(res => {
                 if (res && res.Data && res.Data.record) {
                     this.coinRecord = res.Data.record
                 }
@@ -67,6 +76,7 @@ export default {
         },
         // 确认转赠
         confirmPresent() {
+            var _self = this
             if (!this.presentUserid || !this.presentNumber) {
                 this.$toast('请填写信息')
             } else {
@@ -75,9 +85,11 @@ export default {
                     presentNumber: this.presentNumber
                 }
                 postSendCoin(params).then(res => {
-                    if (res) {
-                        this.popupVisible = !this.popupVisible
-                        this.tipVisible = !this.tipVisible
+                    this.popupVisible = !this.popupVisible
+                    this.tipVisible = !this.tipVisible
+                    _self.sendCoinReturnMsg = res.Msg
+                    _self.sendCoinReturnCode = res.Code
+                    if (res.Code) {
                     }
                 })
             }

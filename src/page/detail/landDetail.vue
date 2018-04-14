@@ -56,19 +56,19 @@
                             </dl>
                             <dl class="ldi-col">
                                 <dt>出让面积</dt>
-                                <dd>{{landDetailJson.sarea}}</dd>
+                                <dd>{{landDetailJson.sold_area}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>用途</dt>
-                                <dd>{{landDetailJson.purpose}}</dd>
+                                <dd>{{landDetailJson.purpose | purposeToString}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>起始价</dt>
-                                <dd>{{landDetailJson.sprice}}</dd>
+                                <dd>{{landDetailJson.starting_price}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>容积率</dt>
-                                <dd>{{landDetailJson.pratio}}</dd>
+                                <dd>{{landDetailJson.plot_ratio}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>截止时间</dt>
@@ -76,11 +76,11 @@
                             </dl>
                             <dl class="ldi-col">
                                 <dt>出让单位</dt>
-                                <dd>{{landDetailJson.sunit}}</dd>
+                                <dd>{{landDetailJson.sold_unit}}</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>出让方式</dt>
-                                <dd>{{landDetailJson.stype}}</dd>
+                                <dd>{{landDetailJson.sold_type}}</dd>
                             </dl>
                         </div>
                         <div class="land-price-count land-detail-border">已估价{{landDetailJson.enum}}次，估价后可查看他人估价</div>
@@ -95,11 +95,9 @@
                             <span slot="more"></span>
                             <div slot="conent">
                                 <div class="block-slot-item" v-for="(item,index) in landDetailJson.user" :key="index">
-                                    <div class="bs-col">
-                                        <span>{{item.evaluate_num}}元/m²</span>
-                                        <span class="icon my-icon-qianbi"></span>
-                                    </div>
-                                    <div class="bs-col">{{item.etime}}</div>
+                                    <div class="bs-col">{{item.evaluate_num}}元/m²</div>
+                                    <div class="bs-col">100<span class="icon my-icon-zuanshi"></span></div>
+                                    <div class="bs-col">{{item.evaluate_time}}</div>
                                 </div>
                             </div>
                         </block-slot>
@@ -107,18 +105,22 @@
                             <span slot="title">他人估价</span>
                             <span slot="more"></span>
                             <div slot="conent">
-                                <div class="block-slot-item" v-for="(item,index) in landDetailJson.evaluate" :key="index">
-                                    <div class="bs-col">{{item.name}}</div>
-                                    <div class="bs-col">{{item.evaluate_num}}元/m²</div>
-                                    <div class="bs-col">{{item.etime}}</div>
-                                </div>
+                                <template v-if="landDetailJson.evaluate">
+                                    <div class="block-slot-item" v-for="(item,index) in landDetailJson.evaluate" :key="index">
+                                        <div class="bs-col">{{item.nick_name}}</div>
+                                        <div class="bs-col">{{item.evaluate_num}}元/m²</div>
+                                        <div class="bs-col">{{item.evaluate_time}}</div>
+                                    </div>
+                                </template>
+                                <p v-else class="block-slot-item">暂无他人估价</p>
                             </div>
                         </block-slot>
                     </template>
                     <div v-if="deadlineYN == 'Y'" class="land-detail-btns">
                         <template v-if="partIn">
-                            <div v-show="!popupVisible" class="btn-operats">
-                                <mt-button @click="clickInvitation(1)" class="btn-again" type="default">再次估价</mt-button>
+                            <div v-show="!popupVisible" class="btn-operat">
+                                <!-- !!PS: 据0412需求修改, 再次估价去掉, 改为只能修改估价 -->
+                                <!-- <mt-button @click="clickInvitation(1)" class="btn-again" type="default">再次估价</mt-button> -->
                                 <mt-button class="btn-edit" @click="clickInvitation(2)" type="primary">修改估价</mt-button>
                             </div>
                         </template>
@@ -128,13 +130,14 @@
                     </div>
                     <mt-popup v-model="popupVisible" class="evaluate-wrap" position="bottom">
                         <div class="land-detail-evaluate">
-                            <div class="lde-top" v-show="operation !== 2">
+                            <!-- !!PS: 据0412需求修改, 金币>=200限定去掉, 所以这里不显示了 -->
+                            <!-- <div class="lde-top" v-show="operation !== 2">
                                 <div class="lde-left">
-                                    <span class="lde-icon my-icon-qianbi"></span>1088</div>
+                                    <span class="lde-icon my-icon-zuanshi"></span>{{mine.master_score}}</div>
                                 <div class="lde-right">
                                     <span class="lde-add my-icon-add"></span>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="lde-bottom">
                                 <mt-field placeholder="预估成交楼面价（元/m²）" type="number" v-model="evaluatePrice" class="">
                                     <mt-button class="btn-evaluate small" type="primary" @click="buy">
@@ -158,6 +161,7 @@
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
 import { getLandAbstract, getLandDetail, postLandEvaluation } from '@/api'
+import { mapState } from 'vuex'
 export default {
     name: 'landDetail',
     components: { blockSlot, momentList },
@@ -165,38 +169,51 @@ export default {
         return {
             selected: 'summarize', // 当前显示的标题,summarize=概况,details=详情
             type: 0, // 0地块1房产
-            partIn: true, // 是否参与true->参与false->未参与
-            deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮
+            partIn: true, // 是否参与true->参与false->未参与 !!!合接口后弃用
+            deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮 !!!合接口后弃用
             popupVisible: false,
             evaluatePrice: '',
-            operation: 0, // 点击的是哪个按钮,0=第一次估价,1=再次估价,2=修改估价
+            operation: 0, // 点击的是哪个按钮,0=第一次估价,1=再次估价,2=修改估价 !!PS:0412需求修改, 再次估价去掉, 只能修改
             goldDrop: false, // 金币掉落,第一估计和再次估价的时候为true
             landAbstractJson: '',
-            landDetailJson: ''
+            landDetailJson: '',
+            deadlineYN: 'N'
         }
     },
     computed: {
+        ...mapState([
+            'mine'
+        ]),
+        // deadlineYN() {
+        //     var t = Date.parse(new Date()) > this.deadline ? 'Y' : 'N'
+        //     return t
+        // },
         landText() {
             var t = this.type === 0 ? '地块' : '房产'
             return t
-        },
-        deadlineYN() {
-            var t = Date.parse(new Date()) > this.deadline ? 'Y' : 'N'
-            return t
+        }
+    },
+    filters: {
+        purposeToString(val) {
+            switch (val) {
+                case '1':
+                    return '商住'
+                case '2':
+                    return '商办'
+                case '3':
+                    return '工业'
+            }
         }
     },
     methods: {
         clickInvitation(operation) {
-            this.operation = !operation ? 3 : operation
+            this.operation = operation
             this.popupVisible = !this.popupVisible
-            if (this.operation === 0 || this.operation === 1) {
-                this.goldDrop = true
-            }
         },
         getLandAbstract_data() {
             let params = {
                 pid: this.$route.query.pid,
-                uid: this.$store.state.user.user_id
+                uid: this.$store.state.mine.user_id
             }
             getLandAbstract(params).then(res => {
                 if (res && res.Data) {
@@ -207,11 +224,18 @@ export default {
         getLandDetail_data() {
             let params = {
                 pid: this.$route.query.pid,
-                uid: this.$store.state.user.user_id
+                uid: this.$store.state.mine.user_id
             }
             getLandDetail(params).then(res => {
                 if (res && res.Data) {
                     this.landDetailJson = res.Data
+                    if (this.landDetailJson.user === '') {
+                        // 如果 user 为 '' 即未参与 则 我的估价 和 他人估价不显示
+                        this.partIn = false
+                    }
+                    // 这里后台 php 返回 的是 s 级 * 1000 转换为 ms
+                    // 当前时间 Date.parse(new Date()) 小于 截止时间 this.landDetailJson.time * 1000 则 Y 可估价
+                    this.deadlineYN = Date.parse(new Date()) < this.landDetailJson.time * 1000 ? 'Y' : 'N'
                 }
             })
         },
@@ -221,11 +245,24 @@ export default {
             } else {
                 let params = {
                     pid: this.$route.query.pid,
-                    uid: this.$store.state.user.user_id,
+                    uid: this.$store.state.mine.user_id,
                     money: this.evaluatePrice
                 }
                 postLandEvaluation(params).then(res => {
-                    this.$toast('res.Msg')
+                    if (res.Code === '0') {
+                        // 估价成功 关闭 覆盖层
+                        this.clickInvitation()
+                        if (this.operation === 2) {
+                            // 重新修改估计触发
+                            this.$toast('已重新修改估价')
+                        } else if (this.operation === 0) {
+                            // 初次估价 播放金币动画 这里还没播放
+                            this.goldDrop = true
+                            // !!!PS播放完毕 跳到 成交详情页面
+                        }
+                    } else {
+                        this.$toast(res.Msg)
+                    }
                 })
             }
         }
@@ -382,24 +419,23 @@ export default {
                         line-height: 1;
                         &:nth-child(1) {
                             text-align: left;
-                            width: 20%;
+                            width: 24%;
                         }
                         &:nth-child(2) {
-                            width: 40%;
+                            width: 38%;
                         }
                         &:nth-child(3) {
-                            width: 40%;
+                            width: 38%;
                         }
                     }
                 }
             }
             &.land-detail-myprice {
                 .bs-col {
-                    width: fit-content !important;
+                    /* width: fit-content !important; */
                     color: $appColor;
                     .icon {
                         margin-left: toRem(4.5);
-                        color: #ffed96;
                         font-size: toRem(13);
                     }
                 }
@@ -409,6 +445,22 @@ export default {
             .btn-operats {
                 display: flex;
                 justify-content: space-between;
+                padding: toRem(20) toRem(18);
+                .mint-button {
+                    padding: toRem(17) toRem(49);
+                    height: auto;
+                    border-radius: toRem(3);
+                    font-size: toRem(15);
+                    line-height: 1;
+                    color: #fff;
+                    &.mint-button--default {
+                        background: #ccc;
+                    }
+                }
+            }
+            .btn-operat {
+                display: flex;
+                justify-content: center;
                 padding: toRem(20) toRem(18);
                 .mint-button {
                     padding: toRem(17) toRem(49);

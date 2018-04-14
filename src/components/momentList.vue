@@ -9,7 +9,7 @@
             <div class="item-title">{{item.title}}</div>
             <div class="item-content">
                 <!-- 封面 -->
-                <template v-if="item.image">
+                <template v-if="item.image && item.image != null && item.image != 'null'">
                     <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
                         <img :src="item.image">
                     </router-link>
@@ -45,7 +45,7 @@
                         <div class="content-money">
                             剩余：
                             <i class="my-icon-tongqian"></i>
-                            <span class="text">{{$store.state.user.money}}</span>
+                            <span class="text">{{$store.state.mine.money}}</span>
                             <router-link :to="{name: 'recharge'}" class="my-icon-add"></router-link>
                         </div>
                     </div>
@@ -68,6 +68,9 @@ export default {
             type: Array
         }
     },
+    computed: {
+
+    },
     data() {
         return {
             payMsgBox: false,
@@ -81,7 +84,7 @@ export default {
                 item.is_like = true
                 let params = {
                     cid: item.cid,
-                    uid: this.$store.state.user.user_id
+                    uid: this.$store.state.mine.user_id
                 }
                 postZan(params).then(res => {
                     console.log(res)
@@ -95,7 +98,7 @@ export default {
         },
         // 支付查看内容
         confirmWatch() {
-            // if (this.$store.state.user.money > this.payToWatchItem.price) {.
+            // if (this.$store.state.mine.money > this.payToWatchItem.price) {.
             // this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
             // this.$toast(`-${this.payToWatchItem.price}大师币`)
             this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })

@@ -30,7 +30,7 @@ export default {
         getMomentsDetail_data() {
             let params = {
                 'cid': this.$route.query.cid,
-                'uid': this.$store.state.user.user_id
+                'uid': this.$store.state.mine.user_id
             }
             getMomentDetail(params).then(res => {
                 if (res && res.Data) {
@@ -44,7 +44,7 @@ export default {
                 item.is_like = true
                 let params = {
                     cid: item.cid,
-                    uid: this.$store.state.user.user_id
+                    uid: this.$store.state.mine.user_id
                 }
                 postZan(params).then(res => {
                     console.log(res)

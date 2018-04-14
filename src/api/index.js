@@ -1,8 +1,9 @@
 import { request } from '@/utils/request'
 
 // 搜索框（房产地价估价）
-export function getSearchDetail({ keyWord, cityID, type }) {
-    let res = request('/api/home/index/landDescDetails', 'POST', { 'wd': keyWord, 'cid': cityID, 'type': type })
+// keyWord, cityID, type 全传0时 默认返回第一进入时所展示内容
+export function getSearchDetail({ keyWord, cityID, type, page }) {
+    let res = request('/api/home/index/landSeach', 'POST', { 'wd': keyWord, 'cid': cityID, 'type': type, 'p': page })
     return res
 }
 
