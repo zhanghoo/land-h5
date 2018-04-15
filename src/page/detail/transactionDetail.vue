@@ -78,6 +78,24 @@
                 <span class="tdt-icon my-icon-guanyuwomen"></span>很抱歉本次竞猜活动因不可抗力关闭了，大师币已退回你的账户
             </div>
         </template>
+        <mt-popup v-model="popupVisible2" position="center">
+            <div class="mine-invitation2">
+                <div class="mi2-header">邀请好友<span class="mi2-close my-icon-close" @click="clickInvitation2"></span></div>
+                <div class="mi2-content">
+                    <div class="mi2-line">
+                        <span class="mi2-title">第一步</span>点击右上角的
+                        <span class="mi2-menu"><i class="mi2-menu-icon my-icon-gengduo"></i></span>微信功能
+                    </div>
+                    <div class="mi2-line">
+                        <span class="mi2-title">第二步</span>选择
+                        <span class="mi2-share"><i class="mi2-share-icon my-icon-fenxiang1"></i>发送给好友</span>分享游戏到微信好友
+                    </div>
+                </div>
+                <div class="mi2-btns">
+                    <div class="mi2-btn confirm" @click="clickInvitation2">确&nbsp;认</div>
+                </div>
+            </div>
+        </mt-popup>
     </div>
 </template>
 <script>
@@ -92,7 +110,8 @@ export default {
         return {
             status: 1, // 0待公布1已公布(估价成功)2估价失败3已关闭
             type: 0, // 0地块1房产
-            json: ''
+            json: '',
+            popupVisible2: false
         }
     },
     computed: {
@@ -133,10 +152,15 @@ export default {
             })
         },
         share() {
-            let url = window.location.href
+            let url = `${window.location.href}&userid=${this.mine.user_id}`
+            console.log(url)
             wxShare(url).then(res => {
                 console.log(res)
+                this.clickInvitation2()
             })
+        },
+        clickInvitation2() {
+            this.popupVisible2 = !this.popupVisible2
         }
     },
     mounted() {
@@ -307,7 +331,111 @@ export default {
     .mint-popup {
         width: 100%;
         height: 100%;
-        background: $appBg;
+        background: transparent;
+        .mine-invitation2 {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: #fff;
+            width: 80%;
+            border-radius: toRem(5);
+            font-size: toRem(15);
+            overflow: hidden;
+            backface-visibility: hidden;
+            padding: toRem(15) 0 toRem(10);
+            z-index: 3002;
+            transform: translate3d(-50%, -50%, 0);
+            .mi2-header {
+                position: relative;
+                font-size: toRem(16);
+                font-weight: 700;
+                color: #666;
+                text-align: center;
+                padding-bottom: toRem(15);
+                border-1px-bottom(#eee);
+                .mi2-close {
+                    position: absolute;
+                    top: 0;
+                    right: toRem(10);
+                    width: toRem(20);
+                    height: toRem(20);
+                    line-height: toRem(20);
+                    background: #ccc;
+                    border-radius: 100%;
+                    color: #fff;
+                    font-size: toRem(12);
+                }
+            }
+            .mi2-content {
+                position: relative;
+                color: #000;
+                padding: toRem(20) toRem(20);
+                .mi2-line {
+                    font-size: toRem(14);
+                    line-height: 2;
+                    .mi2-title {
+                        display: inline-block;
+                        margin-right: toRem(5);
+                        font-weight: 700;
+                    }
+                    .mi2-menu {
+                        display: inline-block;
+                        margin: 0 toRem(5) 0 toRem(1);
+                        width: toRem(22);
+                        height: toRem(15);
+                        line-height: toRem(11);
+                        background: #000;
+                        color: #fff;
+                        text-align: center;
+                        .mi2-menu-icon {
+                            vertical-align: middle;
+                        }
+                    }
+                    .mi2-share {
+                        display: inline-block;
+                        margin: 0 toRem(5) 0 toRem(1);
+                        width: toRem(90);
+                        height: toRem(20);
+                        line-height: toRem(20);
+                        background: #555;
+                        color: #fff;
+                        text-align: center;
+                        font-size: toRem(11);
+                        .mi2-share-icon {
+                            position: relative;
+                            top: toRem(-2);
+                            right: toRem(2);
+                            vertical-align: middle;
+                            font-size: toRem(18);
+                        }
+                    }
+                }
+            }
+            .mi2-btns {
+                display: flex;
+                padding: 0 toRem(10);
+                height: 40px;
+                line-height: 40px;
+                justify-content: space-around;
+                .mi2-btn {
+                    display: block;
+                    background-color: #fff;
+                    flex: 1;
+                    text-align: center;
+                    color: #fff;
+                    border-radius: toRem(5);
+                }
+                .cancle {
+                    width: 50%;
+                    background: #ccc;
+                    margin-right: toRem(5);
+                }
+                .confirm {
+                    width: 100%;
+                    background: $appColor;
+                }
+            }
+        }
     }
 }
 </style>

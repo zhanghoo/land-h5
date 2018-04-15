@@ -2,7 +2,7 @@
     <div id="landEevaluate">
         <div class="search">
             <div class="search-input-wrapper">
-                <i class="my-icon-add"></i>
+                <i class="my-icon-search my-icon-sousuosearch82"></i>
                 <form @submit.prevent="getSearchDetail_data">
                     <input class="search-input" type="search" placeholder="搜索地产名称" v-model="keyWord">
                 </form>
@@ -12,14 +12,12 @@
         <div class="select">
             <div class="select-action">
                 <div class="action-item action-city" :class="{'active': selectType === 'city' && selectVisible === true}" @click="openSelectList('city')">
-                    <span v-if="citySelected">{{citySelected}}</span>
-                    <span v-else>选择城市</span>
+                    <span>{{citySelectedStr}}</span>
                     <i class="my-icon-jiantoushang" v-if="selectType === 'city' && selectVisible === true"></i>
                     <i class="my-icon-jiantouxia" v-else></i>
                 </div>
                 <div class="action-item action-type" :class="{'active': selectType === 'type' && selectVisible === true}" @click="openSelectList('type')">
-                    <span v-if="typeSelected">{{typeSelected}}</span>
-                    <span v-else>选择类型</span>
+                    <span>{{typeSelectedStr}}</span>
                     <i class="my-icon-jiantoushang" v-if="selectType === 'type' && selectVisible === true"></i>
                     <i class="my-icon-jiantouxia" v-else></i>
                 </div>
@@ -29,13 +27,18 @@
                 <template v-if="selectType === 'city'">
                     <div class="list-title">热门城市</div>
                     <div class="list-wrapper">
-                        <div class="list-item" v-for="(item, index) in 10" :key="index" @click="selected(item)">北京</div>
+                        <div class="list-item" :class="{ 'on' : citySelectedIndex === 0 }" @click="selected(0, '选择城市', 0)">全部</div>
+                        <template v-for="(item, index) in hotList">
+                            <div class="list-item" :class="{ 'on' : citySelectedIndex === index + 1 }" :key="index" @click="selected(item.id, item.city, index + 1)">{{item.city}}</div>
+                        </template>
                     </div>
                 </template>
                 <!-- type -->
                 <template v-if="selectType === 'type'">
                     <div class="list-wrapper">
-                        <div class="list-item" v-for="(item, index) in 2" :key="index" @click="selected(item)">北京</div>
+                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 0 }" @click="selected(0, '全部', 0)">全部</div>
+                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 1 }" @click="selected(0, '地块', 1)">地块</div>
+                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 2 }" @click="selected(1, '房产', 2)">房产</div>
                     </div>
                 </template>
             </div>
@@ -62,6 +65,7 @@
 </template>
 <script>
 import { getSearchDetail } from '@/api'
+import { getHotCity } from '@/api/home'
 export default {
     name: 'landEevaluate',
     data() {
@@ -71,9 +75,14 @@ export default {
             selectType: '',
             cityJson: [],
             typeJson: [],
-            citySelected: '',
-            typeSelected: '',
-            landList: []
+            citySelected: 0,
+            citySelectedStr: '选择城市',
+            citySelectedIndex: 0,
+            typeSelected: 0,
+            typeSelectedStr: '选择类型',
+            typeSelectedIndex: 0,
+            landList: [],
+            hotList: []
         }
     },
     filters: {
@@ -89,14 +98,22 @@ export default {
         }
     },
     methods: {
+        getHotCity_date() {
+            getHotCity().then(res => {
+                if (res && res.Data) {
+                    this.hotList = res.Data
+                }
+            })
+        },
         getSearchDetail_data() {
             // 全传0时 默认返回第一进入时所展示内容
             let params = {
                 keyWord: this.keyWord || 0,
-                cityID: this.citySelected || 0,
-                type: this.typeSelected || 0,
+                cityID: this.citySelected,
+                type: this.typeSelected,
                 page: 1
             }
+            // console.log(params)
             getSearchDetail(params).then(res => {
                 if (res && res.Data) {
                     this.landList = res.Data
@@ -111,16 +128,25 @@ export default {
                 this.selectVisible = true
             }
         },
-        selected(item) {
+        selected(item, str, index) {
+            // item 用于传值
+            // str 用于显示选择城市text
+            // index 用于 on
             if (this.selectType === 'city') {
                 this.citySelected = item
+                this.citySelectedStr = str
+                this.citySelectedIndex = index
             } else if (this.selectType === 'type') {
                 this.typeSelected = item
+                this.typeSelectedStr = str
+                this.typeSelectedIndex = index
             }
             this.selectVisible = false
+            this.getSearchDetail_data()
         }
     },
     mounted() {
+        this.getHotCity_date()
         this.getSearchDetail_data()
     }
 }
@@ -144,6 +170,8 @@ export default {
             i {
                 color: #ccc;
                 margin-right: toRem(10);
+                font-size: toRem(16);
+                line-height: 1;
             }
             .search-input {
                 width: 100%;
@@ -220,6 +248,10 @@ export default {
                     margin-bottom: toRem(10);
                     &:nth-child(3n-1) {
                         margin: 0 5% toRem(10);
+                    }
+                    &.on {
+                        background: $appColor;
+                        color: #fff;
                     }
                 }
             }

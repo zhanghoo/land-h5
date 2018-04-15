@@ -11,7 +11,7 @@
                 </div>
                 <img class="announce-panel-win" src="~@/assets/img/win@2x.png">
             </div>
-            <div class="announce-panel-landinfo" @click="$router.push({path: '/transactionDetail', query: {'id': item.id}})">
+            <div class="announce-panel-landinfo" @click="$router.push({path: '/landDetail', query: {'pid': item.id}})">
                 <div class="apl-address">{{item.name}}</div>
                 <div class="apl-prices">
                     <div class="apl-prices-tags">成交楼面价<mt-button class="apl-tag" plain type="primary">{{item.evaluate_num}}元/m²</mt-button></div>
@@ -38,7 +38,7 @@ export default {
                 if (res && res.Data) {
                     this.json = res.Data
                 }
-                console.log(res)
+                // console.log(res)
             })
         }
     },

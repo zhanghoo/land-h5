@@ -3,7 +3,8 @@
         <div class="home-top">
             <div class="home-title">
                 <p class="ht-line"></p>
-                <p>排行榜
+                <p>
+                    <span>排行榜</span>
                     <span class="en">HOT</span>
                 </p>
                 <p class="ht-line"></p>
@@ -61,9 +62,13 @@
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
-                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</div>
-                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-12地块），杭州储出[2018] 5号地块</div>
-                <div class="block-slot-item" @click="$router.push({name: 'landDetail'})">江干区（丁桥单元JG0405-13地块），杭州储出[2018] 6号地块</div>
+                <template v-for="(item, index) in newestList">
+                    <div class="block-slot-item"
+                         @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})"
+                         :key="index">
+                        {{item.name}}
+                    </div>
+                </template>
             </div>
         </block-slot>
         <block-slot :title-icon="true" class="winner-newest-list">
@@ -72,59 +77,35 @@
                 <span class="my-icon-more"></span>
             </span>
             <div slot="conent">
-                <div class="block-slot-item">
+                <div v-for="(item, index) in announceList" :key="index" class="block-slot-item">
                     <div class="bsi-panel">
                         <div class="bsi-panel-l">
-                            <p class="bsi-title">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</p>
-                            <p class="bsi-type">商用</p>
+                            <p class="bsi-title"
+                            @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">{{item.name}}</p>
+                            <p class="bsi-type">{{item.purpose | purposeToString}}</p>
                             <p class="bsi-price">成交楼面价
-                                <span class="bsi-price-num">4000元/m²</span>
+                                <span class="bsi-price-num">{{item.evaluate_num}}元/m²</span>
                             </p>
                             <p class="bsi-price">预估楼面价
-                                <span class="bsi-price-num">4000元/m²</span>
+                                <span class="bsi-price-num">{{item.starting_price}}元/m²</span>
                             </p>
                         </div>
                         <div class="bsi-panel-c">
                             <div class="bsi-user-avatar">
-                                <div class="bsi-avatar"><img src="~@/assets/img/avatar.jpg"></div>
+                                <div class="bsi-avatar"><img v-if="item.avatar" :src="item.avatar"></div>
                                 <img class="bsi-win" src="~@/assets/img/win@2x.png">
                             </div>
-                            <p class="bsi-user-name">曹万贯</p>
-                            <mt-button class="bsi-user-tag" plain type="primary">地产大亨</mt-button>
+                            <p class="bsi-user-name">{{item.nick_name}}</p>
+                            <mt-button class="bsi-user-tag" plain type="primary">{{item.level}}</mt-button>
                         </div>
-                        <div class="bsi-panel-r">
+                        <!-- <div class="bsi-panel-r">
                             <span class="my-icon-zan"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="block-slot-item">
-                    <div class="bsi-panel">
-                        <div class="bsi-panel-l">
-                            <p class="bsi-title">江干区（丁桥单元JG0405-11地块），杭州储出[2018] 4号地块</p>
-                            <p class="bsi-type">商用</p>
-                            <p class="bsi-price">成交楼面价
-                                <span class="bsi-price-num">4000元/m²</span>
-                            </p>
-                            <p class="bsi-price">预估楼面价
-                                <span class="bsi-price-num">4000元/m²</span>
-                            </p>
-                        </div>
-                        <div class="bsi-panel-c">
-                            <div class="bsi-user-avatar">
-                                <div class="bsi-avatar"><img src="~@/assets/img/avatar.jpg"></div>
-                                <img class="bsi-win" src="~@/assets/img/win@2x.png">
-                            </div>
-                            <p class="bsi-user-name">曹万贯</p>
-                            <mt-button class="bsi-user-tag" plain type="primary">地产大亨</mt-button>
-                        </div>
-                        <div class="bsi-panel-r">
-                            <span class="my-icon-zan"></span>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </block-slot>
-        <template v-if="firstIn">
+        <template v-if="!mine.is_sign">
             <mt-popup v-model="popupVisible"
                       popup-transition="popup-fade"
                       class="h-popup"
@@ -164,23 +145,43 @@
 <script>
 import rankTop from '@/components/rankTop'
 import blockSlot from '@/components/blockSlot'
-import { getRankList, getSystemNews, postSign } from '@/api/home'
-import { wxLogin } from '@/api'
+import { getRankList, getSystemNews, postSign, getLandBusinessList } from '@/api/home'
+import { wxLogin, getSearchDetail } from '@/api'
+import { mapState } from 'vuex'
 export default {
     name: 'home',
     components: { rankTop, blockSlot },
     data() {
         return {
-            firstIn: false, // firstIn每日第一进入链接
+            firstIn: 1, // firstIn每日第一进入链接 !!!合接口之后启用, 使用返回字段is_sign 0 是未签 1 是已签
             rankList: '',
             systemNews: '',
+            newestList: [],
+            newestListNum: 3, // home页最新地产展示上限数
+            announceList: [],
+            announceListNum: 3, // home页最近优胜名单展示上限数
             popupVisible: false,
             scoreBtnClicked: false,
-            boxOpen: false
+            boxOpen: false,
+            page: 1
         }
     },
     computed: {
-
+        ...mapState([
+            'mine'
+        ])
+    },
+    filters: {
+        purposeToString(val) {
+            switch (val) {
+                case '1':
+                    return '商住'
+                case '2':
+                    return '商办'
+                case '3':
+                    return '工业'
+            }
+        }
     },
     methods: {
         getRankList_data() {
@@ -194,6 +195,37 @@ export default {
             getSystemNews().then(res => {
                 if (res && res.Data) {
                     this.systemNews = res.Data
+                }
+            })
+        },
+        getLandEevaluate_data() {
+            // 全传0时 默认返回第一进入时所展示内容
+            let params = {
+                keyWord: this.keyWord || 0,
+                cityID: this.citySelected || 0,
+                type: this.typeSelected || 0,
+                page: this.page
+            }
+            getSearchDetail(params).then(res => {
+                if (res && res.Data) {
+                    // 截取数组的前 3 个展示
+                    // this.newestList = res.Data.alice(0, this.newestListNum)
+                    var _list = res.Data
+                    var _len = _list.length > this.newestListNum ? this.newestListNum : _list.length
+                    for (var i = 0; i < _len; i++) {
+                        this.newestList.push(_list[i])
+                    }
+                }
+            })
+        },
+        getLandBusinessList_data() {
+            getLandBusinessList(this.page).then(res => {
+                if (res && res.Data) {
+                    var _list = res.Data
+                    var _len = _list.length > this.announceListNum ? this.announceListNum : _list.length
+                    for (var i = 0; i < _len; i++) {
+                        this.announceList.push(_list[i])
+                    }
                 }
             })
         },
@@ -215,7 +247,7 @@ export default {
                 _self.clickInvitation()
             }, 2000)
             postSign().then(res => {
-                console.log(res.Msg)
+                // console.log(res.Msg)
                 _self.boxOpen = true
             })
         },
@@ -232,6 +264,8 @@ export default {
         }
         this.getRankList_data()
         this.getSystemNews_data()
+        this.getLandEevaluate_data()
+        this.getLandBusinessList_data()
     }
 }
 </script>

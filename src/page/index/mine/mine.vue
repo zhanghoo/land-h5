@@ -62,7 +62,7 @@
                     </router-link>
                 </li>
                 <li class="sets-item">
-                    <div class="sets-item-a" @click="clickInvitation">
+                    <div class="sets-item-a" @click="share">
                         <div class="sets-item-icon my-icon-invitation"></div>
                         <span class="sets-item-text">邀请好友</span>
                         <div class="my-icon-more"></div>
@@ -87,27 +87,106 @@
                 <mt-button @click="clickInvitation">取消</mt-button>
             </div>
         </mt-popup>
+        <mt-popup v-model="popupVisible2" position="center">
+            <div class="mine-invitation2">
+                <div class="mi2-header">邀请好友<span class="mi2-close my-icon-close" @click="clickInvitation2"></span></div>
+                <div class="mi2-content">
+                    <div class="mi2-line">
+                        <span class="mi2-title">第一步</span>点击右上角的
+                        <span class="mi2-menu"><i class="mi2-menu-icon my-icon-gengduo"></i></span>微信功能
+                    </div>
+                    <div class="mi2-line">
+                        <span class="mi2-title">第二步</span>选择
+                        <span class="mi2-share"><i class="mi2-share-icon my-icon-fenxiang1"></i>发送给好友</span>分享游戏到微信好友
+                    </div>
+                </div>
+                <div class="mi2-btns">
+                    <div class="mi2-btn confirm" @click="clickInvitation2">确&nbsp;认</div>
+                </div>
+            </div>
+        </mt-popup>
         <!-- 子页面 -->
         <router-view/>
     </div>
 </template>
 <script>
+import { wxShare } from '@/api'
 import { mapState } from 'vuex'
 export default {
     name: 'mine',
     data() {
         return {
-            popupVisible: false
+            popupVisible: false,
+            popupVisible2: false,
+            shareInfo: '' // 返回的相关分享
         }
     },
     computed: {
         ...mapState([
             'mine'
-        ])
+        ]),
+        isWeiXin() {
+            // 判断是否是微信
+            var ua = window.navigator.userAgent.toLowerCase()
+            var wx = ua.match(/MicroMessenger/i) === 'micromessenger' ? 1 : 0
+            return wx
+        }
     },
     methods: {
         clickInvitation() {
             this.popupVisible = !this.popupVisible
+        },
+        share() {
+            let url = `${window.location.href}&userid=${this.mine.user_id}`
+            alert('POST的URL' + url)
+            wxShare(url).then(res => {
+                // console.log(res)
+                if (res && res.Data) {
+                    alert('appId=' + res.Data.appId + ' /nonceStr=' + res.Data.nonceStr + ' /timestamp=' + res.Data.timestamp + ' /url=' + res.Data.url + ' /signature=' + res.Data.signature + ' /rawString=' + res.Data.rawString)
+                    this.shareInfo = res.Data
+                    this.clickInvitation2()
+                    this.onWxMenuShare()
+                }
+            })
+        },
+        clickInvitation2() {
+            this.popupVisible2 = !this.popupVisible2
+        },
+        onWxMenuShare() {
+            // 配置微信分享按钮
+            let _shareInfo = this.shareInfo
+            // console.log(_shareInfo)
+            if (this.isWeiXin) {
+                wx.config({
+                    debug: false,
+                    appId: _shareInfo.appId,
+                    timestamp: _shareInfo.timestamp,
+                    nonceStr: _shareInfo.nonceStr,
+                    signature: _shareInfo.signature,
+                    jsApiList: [
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'onMenuShareQQ',
+                        'onMenuShareWeibo',
+                        'onMenuShareQZone'
+                    ]
+                })
+                wx.ready(function() {
+                    wx.onMenuShareTimeline({
+                        'title': '分享给好友',
+                        'imgUrl': '',
+                        'link': _shareInfo.url
+                    })
+                    wx.onMenuShareAppMessage({
+                        'title': '分享到朋友圈',
+                        'desc': '地产大师测试分享到朋友圈',
+                        'imgUrl': '',
+                        'link': _shareInfo.url
+                    })
+                })
+            } else {
+                alert('非微信环境点击分享')
+            }
         }
     }
 }
@@ -278,6 +357,110 @@ export default {
                 font-size: toRem(15);
                 color: #333;
                 background: $panelBg;
+            }
+        }
+        .mine-invitation2 {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: #fff;
+            width: 80%;
+            border-radius: toRem(5);
+            font-size: toRem(15);
+            overflow: hidden;
+            backface-visibility: hidden;
+            padding: toRem(15) 0 toRem(10);
+            z-index: 3002;
+            transform: translate3d(-50%, -50%, 0);
+            .mi2-header {
+                position: relative;
+                font-size: toRem(16);
+                font-weight: 700;
+                color: #666;
+                text-align: center;
+                padding-bottom: toRem(15);
+                border-1px-bottom(#eee);
+                .mi2-close {
+                    position: absolute;
+                    top: 0;
+                    right: toRem(10);
+                    width: toRem(20);
+                    height: toRem(20);
+                    line-height: toRem(20);
+                    background: #ccc;
+                    border-radius: 100%;
+                    color: #fff;
+                    font-size: toRem(12);
+                }
+            }
+            .mi2-content {
+                position: relative;
+                color: #000;
+                padding: toRem(20) toRem(20);
+                .mi2-line {
+                    font-size: toRem(14);
+                    line-height: 2;
+                    .mi2-title {
+                        display: inline-block;
+                        margin-right: toRem(5);
+                        font-weight: 700;
+                    }
+                    .mi2-menu {
+                        display: inline-block;
+                        margin: 0 toRem(5) 0 toRem(1);
+                        width: toRem(22);
+                        height: toRem(15);
+                        line-height: toRem(11);
+                        background: #000;
+                        color: #fff;
+                        text-align: center;
+                        .mi2-menu-icon {
+                            vertical-align: middle;
+                        }
+                    }
+                    .mi2-share {
+                        display: inline-block;
+                        margin: 0 toRem(5) 0 toRem(1);
+                        width: toRem(90);
+                        height: toRem(20);
+                        line-height: toRem(20);
+                        background: #555;
+                        color: #fff;
+                        text-align: center;
+                        font-size: toRem(11);
+                        .mi2-share-icon {
+                            position: relative;
+                            top: toRem(-2);
+                            right: toRem(2);
+                            vertical-align: middle;
+                            font-size: toRem(18);
+                        }
+                    }
+                }
+            }
+            .mi2-btns {
+                display: flex;
+                padding: 0 toRem(10);
+                height: 40px;
+                line-height: 40px;
+                justify-content: space-around;
+                .mi2-btn {
+                    display: block;
+                    background-color: #fff;
+                    flex: 1;
+                    text-align: center;
+                    color: #fff;
+                    border-radius: toRem(5);
+                }
+                .cancle {
+                    width: 50%;
+                    background: #ccc;
+                    margin-right: toRem(5);
+                }
+                .confirm {
+                    width: 100%;
+                    background: $appColor;
+                }
             }
         }
     }

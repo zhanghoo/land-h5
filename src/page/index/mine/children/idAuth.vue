@@ -16,7 +16,7 @@
                         <input class="preview-input" :id="`preview-${index}`" type="file" accept="image/*" @change="changePreview($event,index)">
                         <label class="preview-label" :for="`preview-${index}`"></label>
                     </div>
-                    <input id="upload" type="file" accept="image/*" multiple=“multiple” @change="upload($event)">
+                    <input id="upload" type="file" accept="image/*" multiple="multiple" @change="upload($event)">
                     <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
                 </div>
             </div>

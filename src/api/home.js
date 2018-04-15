@@ -23,3 +23,9 @@ export function postSign() {
     let res = request('/api/home/user/signIn', 'POST')
     return res
 }
+
+// 热门城市
+export function getHotCity() {
+    let res = request('/api/home/Index/getHotCity', 'POST')
+    return res
+}
