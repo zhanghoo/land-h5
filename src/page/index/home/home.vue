@@ -153,7 +153,7 @@ export default {
     components: { rankTop, blockSlot },
     data() {
         return {
-            firstIn: 1, // firstIn每日第一进入链接 !!!合接口之后启用, 使用返回字段is_sign 0 是未签 1 是已签
+            firstIn: 0, // firstIn每日第一进入链接 !!!合接口之后启用, 使用返回字段is_sign 0 是未签 1 是已签
             rankList: '',
             systemNews: '',
             newestList: [],

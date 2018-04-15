@@ -94,7 +94,7 @@ export async function postAuthValidate({ company, file }) {
     Object.keys(params).forEach(key => {
         form.append(key, params[key])
     })
-    let res = await instance.post('/api//home/user/authValidate', form, {
+    let res = await instance.post('/api/home/user/authValidate', form, {
         headers: {
             'Content-type': 'multipart/form-data'
         }

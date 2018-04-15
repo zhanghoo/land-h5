@@ -46,16 +46,24 @@ VueAMap.initAMapApiLoader({
 
 // 全局路由登录验证
 router.beforeEach((to, from, next) => {
-    if (store.state.mine) {
-        next()
-    } else {
-        // store.dispatch('get_userInfo').then(res => {
-        //    next()
-        // })
-        store.dispatch('get_mineInfo').then(res => {
+    // console.log(store.state.license)
+    // if (store.state.license) {
+    //     // 从empty页 获得 授权登录
+        if (store.state.mine) {
             next()
-        })
-    }
+        } else {
+            // store.dispatch('get_userInfo').then(res => {
+            //    next()
+            // })
+            store.dispatch('get_mineInfo').then(res => {
+                next()
+            })
+        }
+    // } else {
+    //     // 跳回empty页接收授权
+    //     store.dispatch('set_License', true)
+    //     next({ path: '/empty' })
+    // }
 })
 
 /* eslint-disable no-new */

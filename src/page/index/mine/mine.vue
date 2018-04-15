@@ -62,7 +62,7 @@
                     </router-link>
                 </li>
                 <li class="sets-item">
-                    <div class="sets-item-a" @click="share">
+                    <div class="sets-item-a" @click="clickInvitation2">
                         <div class="sets-item-icon my-icon-invitation"></div>
                         <span class="sets-item-text">邀请好友</span>
                         <div class="my-icon-more"></div>
@@ -137,12 +137,12 @@ export default {
             this.popupVisible = !this.popupVisible
         },
         share() {
+            // transactionDetail页面 和 mine页面 分享需要重新设置 加上userid, 这里分享的是当前详情页面
+            // 其余页面分享的都是, empty入口界面
+            // 遗留分享问题, 在其他页面的分享应该是默认的全局默认的shareInfo 在 main.js 里面 每个router里面拼接一下链接, 在state 里面保存其他的微信参数
             let url = `${window.location.href}&userid=${this.mine.user_id}`
-            alert('POST的URL' + url)
             wxShare(url).then(res => {
-                // console.log(res)
                 if (res && res.Data) {
-                    alert('appId=' + res.Data.appId + ' /nonceStr=' + res.Data.nonceStr + ' /timestamp=' + res.Data.timestamp + ' /url=' + res.Data.url + ' /signature=' + res.Data.signature + ' /rawString=' + res.Data.rawString)
                     this.shareInfo = res.Data
                     this.clickInvitation2()
                     this.onWxMenuShare()
@@ -157,18 +157,16 @@ export default {
             let _shareInfo = this.shareInfo
             // console.log(_shareInfo)
             if (this.isWeiXin) {
+                // alert('点击了分享, 开始config')
                 wx.config({
-                    debug: false,
-                    appId: _shareInfo.appId,
-                    timestamp: _shareInfo.timestamp,
-                    nonceStr: _shareInfo.nonceStr,
-                    signature: _shareInfo.signature,
+                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: _shareInfo.appId, // 必填，公众号的唯一标识
+                    timestamp: _shareInfo.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: _shareInfo.nonceStr, // 必填，生成签名的随机串
+                    signature: _shareInfo.signature, // 必填，签名
                     jsApiList: [
                         'onMenuShareTimeline',
-                        'onMenuShareAppMessage',
-                        'onMenuShareQQ',
-                        'onMenuShareWeibo',
-                        'onMenuShareQZone'
+                        'onMenuShareAppMessage'
                     ]
                 })
                 wx.ready(function() {

@@ -5,7 +5,9 @@ import { getUserInfo, getMineInfo } from '@/api/mine'
 Vue.use(Vuex)
 
 const state = {
-    user: ''
+    license: false,
+    user: '',
+    mine: ''
 }
 
 const getters = {
@@ -18,6 +20,9 @@ const mutations = {
     },
     setMineInfo(state, val) {
         state.mine = val
+    },
+    setLicense(state, val) {
+        state.license = val
     },
     addUserMoney(state, val) {
         state.mine.money += val
@@ -39,6 +44,9 @@ const actions = {
         await getMineInfo().then(res => {
             commit('setMineInfo', res.Data)
         })
+    },
+    set_License({ commit }, val) {
+        commit('setLicense', val)
     },
     post_addUserMoney({ commit }, val) {
         // 发送请求

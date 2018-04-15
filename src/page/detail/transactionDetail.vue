@@ -117,7 +117,13 @@ export default {
     computed: {
         ...mapState([
             'mine'
-        ])
+        ]),
+        isWeiXin() {
+            // 判断是否是微信
+            var ua = window.navigator.userAgent.toLowerCase()
+            var wx = ua.match(/MicroMessenger/i) === 'micromessenger' ? 1 : 0
+            return wx
+        }
     },
     filters: {
         statusToString(val) {
@@ -152,15 +158,54 @@ export default {
             })
         },
         share() {
+            // transactionDetail页面 和 mine页面 分享需要重新设置 加上userid, 这里分享的是当前详情页面
+            // 其余页面分享的都是, empty入口界面
+            // 遗留分享问题, 在其他页面的分享应该是默认的全局默认的shareInfo 在 main.js 里面 每个router里面拼接一下链接, 在state 里面保存其他的微信参数
             let url = `${window.location.href}&userid=${this.mine.user_id}`
-            console.log(url)
             wxShare(url).then(res => {
-                console.log(res)
-                this.clickInvitation2()
+                if (res && res.Data) {
+                    this.shareInfo = res.Data
+                    this.clickInvitation2()
+                    this.onWxMenuShare()
+                }
             })
         },
         clickInvitation2() {
             this.popupVisible2 = !this.popupVisible2
+        },
+        onWxMenuShare() {
+            // 配置微信分享按钮
+            let _shareInfo = this.shareInfo
+            // console.log(_shareInfo)
+            if (this.isWeiXin) {
+                // alert('点击了分享, 开始config')
+                wx.config({
+                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: _shareInfo.appId, // 必填，公众号的唯一标识
+                    timestamp: _shareInfo.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: _shareInfo.nonceStr, // 必填，生成签名的随机串
+                    signature: _shareInfo.signature, // 必填，签名
+                    jsApiList: [
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage'
+                    ]
+                })
+                wx.ready(function() {
+                    wx.onMenuShareTimeline({
+                        'title': '分享给好友',
+                        'imgUrl': '',
+                        'link': _shareInfo.url
+                    })
+                    wx.onMenuShareAppMessage({
+                        'title': '分享到朋友圈',
+                        'desc': '地产大师测试分享到朋友圈',
+                        'imgUrl': '',
+                        'link': _shareInfo.url
+                    })
+                })
+            } else {
+                alert('非微信环境点击分享')
+            }
         }
     },
     mounted() {
