@@ -16,7 +16,9 @@
                     <div class="land-detail-summarize">
                         <div class="lds-shows">
                             <div class="lds-shows-map" v-if="type === 0" :key="0">
-                                <el-amap vid="amap-vue"></el-amap>
+                                <el-amap vid="amap-vue" :center="center">
+                                    <el-amap-marker vid="component-marker"></el-amap-marker>
+                                </el-amap>
                             </div>
                             <div class="lds-shows-img" v-else :key="1"></div>
                         </div>
@@ -64,7 +66,7 @@
                             </dl>
                             <dl class="ldi-col">
                                 <dt>起始价</dt>
-                                <dd>{{landDetailJson.starting_price}}</dd>
+                                <dd>{{landDetailJson.starting_price}}元/平方米</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>容积率</dt>
@@ -86,7 +88,7 @@
                         <div class="land-price-count land-detail-border">已估价{{landDetailJson.enum}}次，估价后可查看他人估价</div>
                         <div class="land-detail-tip land-detail-border">
                             <span class="ldt-icon my-icon-guanyuwomen"></span>
-                            截止时间前可修改估价
+                            截止时间前可修改估价；若地块流拍，以所有参与玩家的加权平均数作为结果公布
                         </div>
                     </div>
                     <template v-if="partIn">
@@ -177,7 +179,13 @@ export default {
             goldDrop: false, // 金币掉落,第一估计和再次估价的时候为true
             landAbstractJson: '',
             landDetailJson: '',
-            deadlineYN: 'N'
+            deadlineYN: 'N',
+            center: [121.59996, 31.197646],
+            markers: [
+            {
+                position: [121.59996, 31.197646]
+            }
+          ]
         }
     },
     computed: {
@@ -218,6 +226,12 @@ export default {
             getLandAbstract(params).then(res => {
                 if (res && res.Data) {
                     this.landAbstractJson = res.Data
+                    let lng = Number(res.Data.longitude)
+                    let lat = Number(res.Data.latitude)
+                    if (lng && lat) {
+                        this.center = [lng, lat]
+                        this.markers[0].position = [lng + 0.012, lat + 0.012]
+                    }
                 }
             })
         },
