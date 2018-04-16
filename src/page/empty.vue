@@ -25,7 +25,7 @@ export default {
     },
     mounted() {
         // this.getWxLogin_data()
-        // document.location = 'http://localhost:8040/#/index/home'
+        document.location = 'http://localhost:8040/#/index/home'
     }
 }
 </script>
