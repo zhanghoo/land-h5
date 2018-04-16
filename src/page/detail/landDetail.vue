@@ -66,7 +66,7 @@
                             </dl>
                             <dl class="ldi-col">
                                 <dt>起始价</dt>
-                                <dd>{{landDetailJson.starting_price}}</dd>
+                                <dd>{{landDetailJson.starting_price}}元/平方米</dd>
                             </dl>
                             <dl class="ldi-col">
                                 <dt>容积率</dt>
@@ -88,7 +88,7 @@
                         <div class="land-price-count land-detail-border">已估价{{landDetailJson.enum}}次，估价后可查看他人估价</div>
                         <div class="land-detail-tip land-detail-border">
                             <span class="ldt-icon my-icon-guanyuwomen"></span>
-                            截止时间前可修改估价
+                            截止时间前可修改估价；若地块流拍，以所有参与玩家的加权平均数作为结果公布
                         </div>
                     </div>
                     <template v-if="partIn">

@@ -9,7 +9,10 @@
             </p>
         </div>
         <div class="r-amount">
-            <p class="ra-tip">选择充值金额</p>
+            <p class="ra-tip">
+                <span>选择充值金额</span>
+                <span class="ra-tip-t">首次充值额外获得200大师积分</span>
+            </p>
             <div class="ra-btns">
                 <span class="ra-btn" v-for="(item, index) in rechargeMoneys" :key="index" :class="{'active': selectMoney === item}" @click="selectMoney = item">{{item}}</span>
             </div>
@@ -24,6 +27,10 @@
                     <span class="my-icon-chenggong1"></span>
                 </div>
             </div>
+        </div>
+        <div class="land-detail-tip land-detail-border">
+            <span class="ldt-icon my-icon-guanyuwomen"></span>
+            充值比例1:1，充值后还可获得相应积分。大师币可提现。
         </div>
         <p class="r-btn-do">
             <mt-button class="rbd-btn" type="primary">立即充值</mt-button>
@@ -88,6 +95,10 @@ export default {
         background: $panelBg;
         .ra-tip{
             margin-bottom toRem(10)
+            .ra-tip-t {
+                font-size: toRem(12);
+                color: #999;
+            }
         }
         .ra-btns {
             display: flex;
@@ -117,8 +128,7 @@ export default {
         }
     }
     .r-way {
-        padding: toRem(14) toRem(18) toRem(15);
-        margin-bottom: toRem(85);
+        padding: toRem(14) toRem(18) 0;
         font-size: toRem(14);
         line-height: toRem(18);
         color: #333;
@@ -147,6 +157,17 @@ export default {
                     color: $appColor;
                 }
             }
+        }
+    }
+    .land-detail-tip {
+        padding: toRem(14) toRem(18) toRem(15);
+        margin-bottom: toRem(85);
+        font-size: toRem(14);
+        line-height: toRem(18);
+        color: #999;
+        background: $panelBg;
+        .ldt-icon {
+            margin-right: toRem(3.5);
         }
     }
     .r-btn-do {

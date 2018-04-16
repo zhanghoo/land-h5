@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="list">
-            <div class="list-title">全平台投注均为
+            <div class="list-title">全平台预估均为
                 <i class="my-icon-zuanshi"></i>100/次</div>
             <div class="list-item" v-for="(item, index) in landList" :key="index">
                 <div class="item-title" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">{{item.name}}</div>

@@ -13,8 +13,10 @@
                 <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
             </div>
             <div class=publish-voice>
-                <i class="my-icon-maikefengxianxing"></i>
-                发表语音信息
+                <span>
+                    <i @click="record" class="my-icon-maikefengxianxing"></i>
+                    <i>{{voiceTip}}</i>
+                </span>
             </div>
         </div>
         <div class=publish-charge>
@@ -49,7 +51,22 @@ export default {
             title: '',
             content: '',
             pictureFile: [],
-            picture_preview: []
+            picture_preview: [],
+            voiceTip: '发表语音信息',
+            localId: '',
+            serverId: '',
+            recordStep: 0 // 录音操作 0 开始录音 1 结束录音
+        }
+    },
+    computed: {
+        isWeiXin() {
+            // 判断是否是微信
+            let ua = window.navigator.userAgent.toLowerCase()
+            // 如果匹配到了 则 用匹配到的返回数组第一项再次 判断
+            let wx = ua.match(/MicroMessenger/i)
+                    ? ua.match(/MicroMessenger/i)[0] === 'micromessenger' ? 1 : 0
+                    : 0
+            return wx
         }
     },
     methods: {
@@ -104,6 +121,105 @@ export default {
                     this.$toast(res.Msg)
                 }
             })
+        },
+        record() {
+            var _self = this
+            let _setT = null
+            if (_self.isWeiXin) {
+                if (_self.recordStep === 0) {
+                    // 开始录音
+                    _self.recordStep = 1
+                    _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
+                    wx.startRecord({
+                        cancel() {
+                            _self.voiceTip = '您已拒绝授权录音，无法为您录音'
+                        },
+                        success() {
+                            _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
+                        }
+                    })
+                    // 相当下面的setTimeout函数
+                    wx.onVoiceRecordEnd({
+                        // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+                        complete(res) {
+                            _self.localId = res.localId
+                            _self.recordStep = 2
+                            _self.voiceTip = '已停止录音，再次点击可试听录音'
+                        }
+                    })
+                } else if (_self.recordStep === 1) {
+                    // 停止录音
+                    wx.stopRecord({
+                        success(res) {
+                            _self.localId = res.localId
+                            _self.recordStep = 2
+                            _self.voiceTip = '已停止录音，再次点击可试听录音'
+                        }
+                    })
+                } else if (_self.recordStep === 2) {
+                    // 试听录音
+                    wx.playVoice({
+                        localId: _self.localId,
+                        success(res) {
+                            _self.recordStep = 3
+                            _self.voiceTip = '正在播放，再次点击可停止播放'
+                        }
+                    })
+                } else if (_self.recordStep === 3) {
+                    // 停止录音
+                    wx.stopVoice({
+                        localId: _self.localId,
+                        success() {
+                            _self.recordStep = 0
+                            _self.voiceTip = '停止播放，再次点击可重新录音'
+                            // _self.record()
+                        }
+                    })
+                }
+                // if (_self.recordStep === 0) {
+                //     // 开始录音
+                //     _self.recordStep = 1
+                //     _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
+                //     setTimeout(function() {
+                //         if (_self.recordStep === 1) {
+                //             // 处在录音状态才能停止录音
+                //             _self.recordStep = 0
+                //             _self.voiceTip = '已停止录音，再次点击重新录音'
+                //         }
+                //     }, 60000)
+                // } else if (_self.recordStep === 1) {
+                //     // 停止录音
+                //     _self.recordStep = 0
+                //     _self.voiceTip = '已停止录音，再次点击重新录音'
+                // }
+            } else {
+                clearTimeout(_setT)
+                if (_self.recordStep === 0) {
+                    // 开始录音
+                    _self.recordStep = 1
+                    _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
+                    _setT = setTimeout(function() {
+                        if (_self.recordStep === 1) {
+                            // 处在录音状态才能停止录音
+                            _self.recordStep = 2
+                            _self.voiceTip = '已停止录音，再次点击可试听录音'
+                        }
+                    }, 6000)
+                } else if (_self.recordStep === 1) {
+                    clearTimeout(_setT)
+                    // 停止录音
+                    _self.recordStep = 2
+                    _self.voiceTip = '已停止录音，再次点击可试听录音'
+                } else if (_self.recordStep === 2) {
+                    // 播放录音
+                    _self.recordStep = 3
+                    _self.voiceTip = '正在播放，再次点击可停止播放'
+                } else if (_self.recordStep === 3) {
+                    // 停止播放
+                    _self.recordStep = 0
+                    _self.voiceTip = '停止播放，再次点击可重新录音'
+                }
+            }
         }
     }
 }
@@ -177,12 +293,13 @@ export default {
                 display: none;
             }
             .upload-btn {
+                display: block;
                 color: #e0e0e0;
                 width: toRem(55);
                 height: toRem(55);
+                line-height: toRem(55);
                 font-size: toRem(27.5);
                 text-align: center;
-                padding: toRem(13.5);
                 border: 1px solid #e0e0e0;
                 border-radius: toRem(5);
                 margin-bottom: toRem(10);
@@ -197,7 +314,7 @@ export default {
             border-1px-top(#e6e6e6);
             i {
                 color: #666;
-                margin-right: toRem(5);
+                font-style: normal;
             }
         }
     }

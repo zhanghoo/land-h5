@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { wxShare } from '@/api'
+import { wxShare, getShareInfoDesc } from '@/api'
 import { getUserInfo, getMineInfo } from '@/api/mine'
 
 Vue.use(Vuex)
@@ -9,8 +9,9 @@ const state = {
     license: false,
     user: '',
     mine: '',
-    wxConfig: '',
-    shareLink: ''
+    wxConfig: '', // 使用JSSDK, config接口注入权限验证配置时用到的配置
+    shareLink: '', // 分享的链接
+    shareInfoDesc: '' // 分享的描述
 }
 
 const getters = {
@@ -32,6 +33,9 @@ const mutations = {
     },
     setShareLink(state, val) {
         state.shareLink = val
+    },
+    setShareInfoDesc(state, val) {
+        state.shareInfoDesc = val
     },
     addUserMoney(state, val) {
         state.mine.money += val
@@ -58,7 +62,7 @@ const actions = {
         await wxShare(url).then(res => {
             let _shareInfo = res.Data
             let _wxConfig = {
-                debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                 appId: _shareInfo.appId, // 必填，公众号的唯一标识
                 timestamp: _shareInfo.timestamp, // 必填，生成签名的时间戳
                 nonceStr: _shareInfo.nonceStr, // 必填，生成签名的随机串
@@ -70,6 +74,11 @@ const actions = {
             }
             commit('setWxConfig', _wxConfig)
             commit('setShareLink', _shareInfo.url)
+        })
+    },
+    async get_shareInfoDesc({ commit }) {
+         await getShareInfoDesc().then(res => {
+            commit('setShareInfoDesc', res.Data)
         })
     },
     set_License({ commit }, val) {

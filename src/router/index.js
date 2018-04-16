@@ -22,6 +22,7 @@ const vipVerify = () => import('@/page/index/mine/children/vipVerify')
 const landDetail = () => import('@/page/detail/landDetail')
 const transactionDetail = () => import('@/page/detail/transactionDetail')
 const dealInformation = () => import('@/page/detail/transaction/dealInformation')
+const homeDealInformation = () => import('@/page/detail/transaction/dealInformation')
 const momentDetail = () => import('@/page/detail/momentDetail')
 const rankList = () => import('@/page/detail/rankList')
 const landEevaluate = () => import('@/page/detail/landEevaluate')
@@ -143,6 +144,11 @@ export default new Router({
                     component: dealInformation
                 }
             ]
+        },
+        {
+            name: 'homeDealInformation',
+            path: '/homeDealInformation',
+            component: homeDealInformation
         },
         {
             name: 'landDetail',

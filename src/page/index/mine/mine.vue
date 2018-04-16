@@ -38,11 +38,20 @@
             <ul class="cash-list">
                 <li class="cash-item">
                     <!-- 如果是会员则直接跳到提交信息充值页面 -->
-                    <router-link class="cash-item-a"
-                                 :to="{name: mine.is_charge ? 'recharge' : 'vipVerify'}">
-                        <div class="cash-item-icon my-icon-recharge"></div>
-                        <span class="cash-item-text">我的会员</span>
-                    </router-link>
+                    <template v-if="mine.is_charge === '0'">
+                        <!-- 非会员 -->
+                        <router-link class="cash-item-a" :to="{name: 'vipVerify'}">
+                            <div class="cash-item-icon my-icon-recharge"></div>
+                            <span class="cash-item-text">我的会员</span>
+                        </router-link>
+                    </template>
+                    <template v-else>
+                        <!-- 是会员 -->
+                        <router-link class="cash-item-a" :to="{name: 'recharge'}">
+                            <div class="cash-item-icon my-icon-recharge"></div>
+                            <span class="cash-item-text">我的会员</span>
+                        </router-link>
+                    </template>
                 </li>
                 <li class="cash-item">
                     <router-link class="cash-item-a" :to="{name: 'withdrawCash'}">
@@ -139,6 +148,8 @@ export default {
         share() {
             // transactionDetail页面 和 mine页面 分享需要重新设置 加上userid, 这里分享的是当前详情页面
             // 其余页面分享的都是, empty入口界面
+            // 0416 已解决 这个 mine 里的分享不再发送 wxShare请求, 只是一个提示弹框
+            // share不使用, 只在transactionDetail 的分享中 分享时会重新获取
             // 遗留分享问题, 在其他页面的分享应该是默认的全局默认的shareInfo 在 main.js 里面 每个router里面拼接一下链接, 在state 里面保存其他的微信参数
             let url = `${window.location.href}&userid=${this.mine.user_id}`
             wxShare(url).then(res => {
@@ -171,13 +182,13 @@ export default {
                 })
                 wx.ready(function() {
                     wx.onMenuShareTimeline({
-                        'title': '分享给好友',
+                        'title': '分享到朋友圈',
                         'imgUrl': '',
                         'link': _shareInfo.url
                     })
                     wx.onMenuShareAppMessage({
-                        'title': '分享到朋友圈',
-                        'desc': '地产大师测试分享到朋友圈',
+                        'title': '分享给朋友',
+                        'desc': '地产大师测试分享给朋友',
                         'imgUrl': '',
                         'link': _shareInfo.url
                     })

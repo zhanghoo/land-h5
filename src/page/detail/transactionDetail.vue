@@ -21,7 +21,7 @@
         </div>
         <div class="trans-detail-dealinfo">
             <!-- PS: 据0412需求大师币改为大师积分, 是固定的 100 -->
-            <p class="tdd-line">投注大师积分：100</p>
+            <p class="tdd-line">预估大师积分：100</p>
             <p class="tdd-line">预估成交楼面价：{{json.evaluate_num}}元/m²</p>
             <p class="tdd-line">估价时间：{{json.evaluate_time}}</p>
             <p class="tdd-line">方案编号：{{json.number}}</p>
@@ -116,12 +116,15 @@ export default {
     },
     computed: {
         ...mapState([
-            'mine'
+            'mine', 'shareInfoDesc'
         ]),
         isWeiXin() {
             // 判断是否是微信
-            var ua = window.navigator.userAgent.toLowerCase()
-            var wx = ua.match(/MicroMessenger/i) === 'micromessenger' ? 1 : 0
+            let ua = window.navigator.userAgent.toLowerCase()
+            // 如果匹配到了 则 用匹配到的返回数组第一项再次 判断
+            let wx = ua.match(/MicroMessenger/i)
+                    ? ua.match(/MicroMessenger/i)[0] === 'micromessenger' ? 1 : 0
+                    : 0
             return wx
         }
     },
@@ -180,7 +183,7 @@ export default {
             if (this.isWeiXin) {
                 // alert('点击了分享, 开始config')
                 wx.config({
-                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                     appId: _shareInfo.appId, // 必填，公众号的唯一标识
                     timestamp: _shareInfo.timestamp, // 必填，生成签名的时间戳
                     nonceStr: _shareInfo.nonceStr, // 必填，生成签名的随机串
@@ -192,19 +195,19 @@ export default {
                 })
                 wx.ready(function() {
                     wx.onMenuShareTimeline({
-                        'title': '分享给好友',
-                        'imgUrl': '',
+                        'title': `transitionDetail-${shareInfoDesc.timeline_title}`,
+                        'imgUrl': shareInfoDesc.timeline_imgUrl,
                         'link': _shareInfo.url
                     })
                     wx.onMenuShareAppMessage({
-                        'title': '分享到朋友圈',
-                        'desc': '地产大师测试分享到朋友圈',
-                        'imgUrl': '',
+                        'title': `transitionDetail-${shareInfoDesc.appmessage_title}`,
+                        'desc': shareInfoDesc.appmessage_desc,
+                        'imgUrl': shareInfoDesc.appmessage_imgUrl,
                         'link': _shareInfo.url
                     })
                 })
             } else {
-                alert('非微信环境点击分享')
+                // alert('呀T_T, 好像出错了~~快去微信朋友圈分享试试吧')
             }
         }
     },

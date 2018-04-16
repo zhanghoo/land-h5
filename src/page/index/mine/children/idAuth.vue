@@ -1,7 +1,7 @@
 <template>
     <div id="idAuth">
         <p class="desc">地产行业相关人士身份验证成功后可获得
-            <span class="icon my-icon-qianbi"></span>
+            <span class="icon my-icon-zuanshi"></span>
             <span class="num">1000</span>
         </p>
         <div class="idAuth-form">
@@ -97,7 +97,6 @@ export default {
         line-height: 1;
         color: #666;
         .icon {
-            color: #ffed96;
             font-size: toRem(13);
         }
         .num {
@@ -163,12 +162,13 @@ export default {
                     display: none;
                 }
                 .upload-btn {
+                    display: block;
                     color: #e0e0e0;
                     width: toRem(55);
                     height: toRem(55);
+                    line-height: toRem(55);
                     font-size: toRem(27.5);
                     text-align: center;
-                    padding: toRem(13.5);
                     border: 1px solid #e0e0e0;
                     border-radius: toRem(5);
                 }

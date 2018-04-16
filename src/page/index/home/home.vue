@@ -10,26 +10,26 @@
                 <p class="ht-line"></p>
             </div>
             <div class="home-rank">
-                <div class="home-rank-item" v-if="rankList[1]">
+                <div class="home-rank-item" v-if="rankList[1]" @click.self="$router.push({name: 'rankList'})">
                     <div @click="$router.push({name: 'userDetail', params: { userId: rankList[1].user_id }})">
-                        <rank-top :color="'#C6C6C6'" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name"></rank-top>
+                        <rank-top :color="'#C6C6C6'" :avatar="rankList[1].avatar" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name"></rank-top>
                     </div>
-                    <span class="home-rank-name" @click="$router.push({name: 'rankList'})">{{rankList[1].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({name: 'rankList'})">{{rankList[1].master_score}}</span>
+                    <span class="home-rank-name">{{rankList[1].nick_name}}</span>
+                    <span class="home-rank-num" @click="$router.push({name: 'userDetail', params: { userId: rankList[1].user_id }})">{{rankList[1].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[0]">
+                <div class="home-rank-item" v-if="rankList[0]" @click.self="$router.push({name: 'rankList'})">
                     <div @click="$router.push({name: 'userDetail', params: { userId: rankList[0].user_id }})">
-                        <rank-top :color="'#FCD107'" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
+                        <rank-top :color="'#FCD107'" :avatar="rankList[0].avatar" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
                     </div>
-                    <span class="home-rank-name" @click="$router.push({name: 'rankList'})">{{rankList[0].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({name: 'rankList'})">{{rankList[0].master_score}}</span>
+                    <span class="home-rank-name">{{rankList[0].nick_name}}</span>
+                    <span class="home-rank-num" @click="$router.push({name: 'userDetail', params: { userId: rankList[0].user_id }})">{{rankList[0].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[2]">
+                <div class="home-rank-item" v-if="rankList[2]" @click.self="$router.push({name: 'rankList'})">
                     <div @click="$router.push({name: 'userDetail', params: { userId: rankList[2].user_id }})">
-                        <rank-top :color="'#804621'" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
+                        <rank-top :color="'#804621'" :avatar="rankList[2].avatar" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
                     </div>
-                    <span class="home-rank-name" @click="$router.push({name: 'rankList'})">{{rankList[2].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({name: 'rankList'})">{{rankList[2].master_score}}</span>
+                    <span class="home-rank-name">{{rankList[2].nick_name}}</span>
+                    <span class="home-rank-num" @click="$router.push({name: 'userDetail', params: { userId: rankList[2].user_id }})">{{rankList[2].master_score}}</span>
                 </div>
             </div>
             <div class="home-msg">
@@ -78,10 +78,9 @@
             </span>
             <div slot="conent">
                 <div v-for="(item, index) in announceList" :key="index" class="block-slot-item">
-                    <div class="bsi-panel">
+                    <div class="bsi-panel" @click="$router.push({name: 'homeDealInformation', params: { bid: item.bid}})">
                         <div class="bsi-panel-l">
-                            <p class="bsi-title"
-                            @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">{{item.name}}</p>
+                            <p class="bsi-title">{{item.name}}</p>
                             <p class="bsi-type">{{item.purpose | purposeToString}}</p>
                             <p class="bsi-price">成交楼面价
                                 <span class="bsi-price-num">{{item.evaluate_num}}元/m²</span>
@@ -91,7 +90,7 @@
                             </p>
                         </div>
                         <div class="bsi-panel-c">
-                            <div class="bsi-user-avatar">
+                            <div class="bsi-user-avatar" @click.stop="$router.push({name: 'userDetail', params: { userId: item.user_id }})">
                                 <div class="bsi-avatar"><img v-if="item.avatar" :src="item.avatar"></div>
                                 <img class="bsi-win" src="~@/assets/img/win@2x.png">
                             </div>
