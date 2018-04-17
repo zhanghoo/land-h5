@@ -20,7 +20,7 @@
             <div class="m-score-rule" @click="popupVisible = false">
                 <div class="m-score-count">
                     <p class="count">当前大师积分：
-                        <span class="num">36543</span>
+                        <span class="num">{{$store.state.mine.master_score}}</span>
                     </p>
                 </div>
                 <div class="m-score-detail">

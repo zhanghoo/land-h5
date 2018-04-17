@@ -34,7 +34,7 @@
             <router-link class="rans-detail-price" tag="div" :to="{ name: 'dealInformation', params: {'bid': json.bid} }">
                 <div>
                     成交楼面价
-                    <span class="rdp-num" >{{json.sold_area}}</span>
+                    <span class="rdp-num">{{json.sold_area}}</span>
                     元/m²
                 </div>
                 <span class="my-icon-more"></span>
@@ -80,15 +80,20 @@
         </template>
         <mt-popup v-model="popupVisible2" position="center">
             <div class="mine-invitation2">
-                <div class="mi2-header">邀请好友<span class="mi2-close my-icon-close" @click="clickInvitation2"></span></div>
+                <div class="mi2-header">邀请好友
+                    <span class="mi2-close my-icon-close" @click="clickInvitation2"></span>
+                </div>
                 <div class="mi2-content">
                     <div class="mi2-line">
                         <span class="mi2-title">第一步</span>点击右上角的
-                        <span class="mi2-menu"><i class="mi2-menu-icon my-icon-gengduo"></i></span>微信功能
+                        <span class="mi2-menu">
+                            <i class="mi2-menu-icon my-icon-gengduo"></i>
+                        </span>微信功能
                     </div>
                     <div class="mi2-line">
                         <span class="mi2-title">第二步</span>选择
-                        <span class="mi2-share"><i class="mi2-share-icon my-icon-fenxiang1"></i>发送给好友</span>分享游戏到微信好友
+                        <span class="mi2-share">
+                            <i class="mi2-share-icon my-icon-fenxiang1"></i>发送给好友</span>分享游戏到微信好友
                     </div>
                 </div>
                 <div class="mi2-btns">
@@ -99,7 +104,7 @@
     </div>
 </template>
 <script>
-import { wxShare } from '@/api'
+import { wxShare } from '@/api/wx'
 import { getEvaluateDetail } from '@/api/mine'
 import { mapState } from 'vuex'
 import blockSlot from '@/components/blockSlot'
@@ -116,17 +121,10 @@ export default {
     },
     computed: {
         ...mapState([
-            'mine', 'shareInfoDesc'
-        ]),
-        isWeiXin() {
-            // 判断是否是微信
-            let ua = window.navigator.userAgent.toLowerCase()
-            // 如果匹配到了 则 用匹配到的返回数组第一项再次 判断
-            let wx = ua.match(/MicroMessenger/i)
-                    ? ua.match(/MicroMessenger/i)[0] === 'micromessenger' ? 1 : 0
-                    : 0
-            return wx
-        }
+            'mine',
+            'shareInfoDesc',
+            'isWeiXin'
+        ])
     },
     filters: {
         statusToString(val) {
@@ -203,7 +201,7 @@ export default {
                         'downloadVoice'
                     ]
                 })
-                wx.ready(function() {
+                wx.ready(function () {
                     wx.onMenuShareTimeline({
                         'title': `transitionDetail-${shareInfoDesc.timeline_title}`,
                         'imgUrl': shareInfoDesc.timeline_imgUrl,

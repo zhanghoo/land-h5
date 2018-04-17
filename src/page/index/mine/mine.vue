@@ -119,7 +119,7 @@
     </div>
 </template>
 <script>
-import { wxShare } from '@/api'
+import { wxShare } from '@/api/wx'
 import { mapState } from 'vuex'
 export default {
     name: 'mine',
@@ -133,13 +133,7 @@ export default {
     computed: {
         ...mapState([
             'mine'
-        ]),
-        isWeiXin() {
-            // 判断是否是微信
-            var ua = window.navigator.userAgent.toLowerCase()
-            var wx = ua.match(/MicroMessenger/i) === 'micromessenger' ? 1 : 0
-            return wx
-        }
+        ])
     },
     methods: {
         clickInvitation() {
@@ -167,7 +161,7 @@ export default {
             // 配置微信分享按钮
             let _shareInfo = this.shareInfo
             // console.log(_shareInfo)
-            if (this.isWeiXin) {
+            if (this.$store.state.isWeiXin) {
                 // alert('点击了分享, 开始config')
                 wx.config({
                     debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。

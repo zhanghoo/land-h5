@@ -145,7 +145,7 @@
 import rankTop from '@/components/rankTop'
 import blockSlot from '@/components/blockSlot'
 import { getRankList, getSystemNews, postSign, getLandBusinessList } from '@/api/home'
-import { wxLogin, getSearchDetail } from '@/api'
+import { getSearchDetail } from '@/api'
 import { mapState } from 'vuex'
 export default {
     name: 'home',
@@ -249,15 +249,9 @@ export default {
                 // console.log(res.Msg)
                 _self.boxOpen = true
             })
-        },
-        getWxLogin_data() {
-            wxLogin().then(res => {
-                console.log(res)
-            })
         }
     },
     mounted() {
-        // this.getWxLogin_data()
         if (this.firstIn) {
             this.popupVisible = true
         }

@@ -3,7 +3,6 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-const empty = () => import('@/page/empty')
 const index = () => import('@/page/index/index')
 const moment = () => import('@/page/index/moment/moment')
 const home = () => import('@/page/index/home/home')
@@ -44,12 +43,7 @@ export default new Router({
     routes: [
         {
             path: '*',
-            redirect: '/empty'
-        },
-        {
-            name: 'empty',
-            path: '/empty',
-            component: empty
+            redirect: '/index'
         },
         {
             name: 'index',

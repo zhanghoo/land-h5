@@ -1,14 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { wxShare, getShareInfoDesc } from '@/api'
-import { getUserInfo, getMineInfo } from '@/api/mine'
+import { wxShare, getShareInfoDesc } from '@/api/wx'
+import { getMineInfo } from '@/api/mine'
 
 Vue.use(Vuex)
 
 const state = {
-    license: false,
-    user: '',
     mine: '',
+    isWeiXin: '',
+    license: false,
     wxConfig: '', // 使用JSSDK, config接口注入权限验证配置时用到的配置
     shareLink: '', // 分享的链接
     shareInfoDesc: '' // 分享的描述
@@ -19,11 +19,11 @@ const getters = {
 }
 
 const mutations = {
-    setUserInfo(state, val) {
-        state.user = val
-    },
     setMineInfo(state, val) {
         state.mine = val
+    },
+    set_isWeiXin(state, val) {
+        state.isWeiXin = val
     },
     setLicense(state, val) {
         state.license = val
@@ -46,13 +46,6 @@ const mutations = {
 }
 
 const actions = {
-    async get_userInfo({ commit }) {
-        let userid = 61230468
-        await getUserInfo(userid).then(res => {
-            // console.log(res)
-            commit('setUserInfo', res.Data)
-        })
-    },
     async get_mineInfo({ commit }) {
         await getMineInfo().then(res => {
             commit('setMineInfo', res.Data)

@@ -1,28 +1,14 @@
 import { request, instance } from '@/utils/request'
 
-// 我的页面
+// 获取用户主页（自己）
 export function getMineInfo() {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/myPage', 'POST')
+    let res = request('/home/user/myPage', 'POST')
     return res
 }
 
-// 用户主页
-export function getUserMoment() {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/system/userHomePage', 'POST')
-    return res
-}
-
-// 用户主页
-// 测试ID 61230468
+// 获取用户主页（他人）
 export function getUserDetail(userid) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/system/userHomePage', 'POST', { 'user_id': userid })
-    return res
-}
-
-// 获取个人资料
-// 测试ID 61230468
-export function getUserInfo(userid) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/UserInfo', 'POST', { 'user_id': userid })
+    let res = request('/home/system/userHomePage', 'POST', { 'user_id': userid })
     return res
 }
 
@@ -33,7 +19,7 @@ export async function postUserInfo({ userid, username, avatar }) {
     Object.keys(params).forEach(key => {
         form.append(key, params[key])
     })
-    let res = await instance.post('http://di.php0.jxcraft.net/public/index.php/home/user/UserInfo', form, {
+    let res = await instance.post('/home/user/UserInfo', form, {
         headers: {
             'Content-type': 'multipart/form-data'
         }
@@ -43,44 +29,44 @@ export async function postUserInfo({ userid, username, avatar }) {
 
 // 参与记录
 export function getEvaluateRecord(type) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/evaluateRecord', 'POST', { type })
+    let res = request('/home/user/evaluateRecord', 'POST', { type })
     return res
 }
 
 // 成交详情
 export function getEvaluateDetail(record_id) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/evaluateDetail', 'POST', { 'record_id': record_id })
+    let res = request('/home/user/evaluateDetail', 'POST', { 'record_id': record_id })
     return res
 }
 
 // 大师币操作记录
 export function getCoinRecord(userid) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/coinRecord', 'POST', { 'user_id': userid })
+    let res = request('/home/user/coinRecord', 'POST', { 'user_id': userid })
     return res
 }
 
 // 转赠大师币
 // 转赠测试id 31192016
 export function postSendCoin({ presentUserid, presentNumber }) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/sendCoin', 'POST', { 'user_id': presentUserid, 'num': presentNumber })
+    let res = request('/home/user/sendCoin', 'POST', { 'user_id': presentUserid, 'num': presentNumber })
     return res
 }
 
 // 大师积分操作记录
 export function getScoreRecord(userid) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/scoreRecord', 'POST', { 'user_id': userid })
+    let res = request('/home/user/scoreRecord', 'POST', { 'user_id': userid })
     return res
 }
 
 // 积分规则
 export function getScoreRule() {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/scoreRule', 'POST')
+    let res = request('/home/user/scoreRule', 'POST')
     return res
 }
 
 // 充值
 export function getAccount() {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/getAccount', 'POST')
+    let res = request('/home/user/getAccount', 'POST')
     return res
 }
 
@@ -94,7 +80,7 @@ export async function postAuthValidate({ company, file }) {
     Object.keys(params).forEach(key => {
         form.append(key, params[key])
     })
-    let res = await instance.post('http://di.php0.jxcraft.net/public/index.php/home/user/authValidate', form, {
+    let res = await instance.post('/home/user/authValidate', form, {
         headers: {
             'Content-type': 'multipart/form-data'
         }
@@ -104,6 +90,6 @@ export async function postAuthValidate({ company, file }) {
 
 // 用户反馈
 export function postFeedBack(content) {
-    let res = request('http://di.php0.jxcraft.net/public/index.php/home/user/feedback', 'POST', { content })
+    let res = request('/home/user/feedback', 'POST', { content })
     return res
 }
