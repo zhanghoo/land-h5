@@ -22,7 +22,10 @@
                             <span :style="{'absolute': index < 3}">{{item.rank}}</span>
                         </i>
                     </div>
-                    <div class="item item-name"><img class="name-avatar" v-if="item.avatar" :src="item.avatar">{{item.nick_name}}</div>
+                    <div class="item item-name">
+                        <img class="name-avatar" v-if="item.avatar" :src="item.avatar">
+                        <span class="name-text">{{item.nick_name}}</span>
+                    </div>
                     <div class="item item-level">{{item.level_name}}</div>
                     <div class="item item-score">{{item.master_score}}</div>
                 </div>
@@ -107,13 +110,17 @@ export default {
                 .item-name {
                     display: flex;
                     align-items: center;
-                    justify-content center
-                    img {
+                    justify-content center;
+                    .name-avatar {
+                        flex-shrink: 0;
                         width: toRem(25);
                         height: toRem(25);
                         border-radius: 100%;
                         overflow: hidden;
                         margin-right: toRem(5);
+                    }
+                    .name-text {
+                        text-ellipsis();
                     }
                 }
                 .item-index {

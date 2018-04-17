@@ -1,7 +1,7 @@
 <template>
     <div id="home">
         <div class="home-top">
-            <div class="home-title">
+            <div class="home-title" @click="$router.push({name: 'rankList'})">
                 <p class="ht-line"></p>
                 <p>
                     <span>排行榜</span>
