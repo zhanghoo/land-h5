@@ -1,8 +1,8 @@
 import { request, instance } from '@/utils/request'
 
 // 获取用户主页（自己）
-export function getMineInfo() {
-    let res = request('/home/user/myPage', 'POST')
+export function getMineInfo(user_id) {
+    let res = request('/home/user/myPage', 'POST', { 'user_id': user_id })
     return res
 }
 

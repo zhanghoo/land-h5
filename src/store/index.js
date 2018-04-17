@@ -47,8 +47,8 @@ const mutations = {
 }
 
 const actions = {
-    async get_mineInfo({ commit }) {
-        await getMineInfo().then(res => {
+    async get_mineInfo({ commit }, user_id) {
+        await getMineInfo(user_id).then(res => {
             commit('setMineInfo', res.Data)
             cache.setToken(res.Data.user_id)
         })
