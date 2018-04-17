@@ -11,17 +11,17 @@ module.exports = {
         assetsSubDirectory: 'static',
         assetsPublicPath: '/',
         proxyTable: {
-            '/api': {
-                target: 'http://di.php0.jxcraft.net/public/index.php',
-                changeOrigin: true,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            },
-            '/public': {
-                target: 'http://di.php0.jxcraft.net',
-                changeOrigin: true
-            }
+            // '/api': {
+            //     target: 'http://di.php0.jxcraft.net/public/index.php',
+            //     changeOrigin: true,
+            //     pathRewrite: {
+            //         '^/api': ''
+            //     }
+            // },
+            // '/public': {
+            //     target: 'http://di.php0.jxcraft.net',
+            //     changeOrigin: true
+            // }
         },
 
         // Various Dev Server settings
