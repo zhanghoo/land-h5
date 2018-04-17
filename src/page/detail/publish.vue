@@ -128,13 +128,13 @@ export default {
             if (_self.isWeiXin) {
                 if (_self.recordStep === 0) {
                     // 开始录音
-                    _self.recordStep = 1
-                    _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
                     wx.startRecord({
                         cancel() {
+                            _self.recordStep = 0
                             _self.voiceTip = '您已拒绝授权录音，无法为您录音'
                         },
                         success() {
+                            _self.recordStep = 1
                             _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
                         }
                     })
@@ -151,11 +151,16 @@ export default {
                 } else if (_self.recordStep === 1) {
                     // 停止录音
                     wx.stopRecord({
-                        localId: _self.localId
+                        success(res) {
+                            _self.localId = res.localId
+                            alert('stopRecord, localId = ' + _self.localId)
+                            _self.recordStep = 2
+                            _self.voiceTip = '已停止录音，再次点击可试听录音'
+                        },
+                        fail(res) {
+                            alert(JSON.stringify(res))
+                        }
                     })
-                    alert('stopRecord, localId = ' + _self.localId)
-                    _self.recordStep = 2
-                    _self.voiceTip = '已停止录音，再次点击可试听录音'
                 } else if (_self.recordStep === 2) {
                     // 试听录音
                     wx.playVoice({
@@ -164,6 +169,13 @@ export default {
                     alert('playVoice, localId = ' + _self.localId)
                     _self.recordStep = 3
                     _self.voiceTip = '正在播放，再次点击可停止播放'
+                    wx.onVoicePlayEnd({
+                        complete(res) {
+                            alert('onVoicePlayEnd, localId = ' + _self.localId)
+                            _self.recordStep = 0
+                            _self.voiceTip = '播放完毕，再次点击可重新录音'
+                        }
+                    })
                 } else if (_self.recordStep === 3) {
                     // 停止录音
                     wx.stopVoice({

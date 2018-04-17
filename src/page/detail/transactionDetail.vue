@@ -190,7 +190,17 @@ export default {
                     signature: _shareInfo.signature, // 必填，签名
                     jsApiList: [
                         'onMenuShareTimeline',
-                        'onMenuShareAppMessage'
+                        'onMenuShareAppMessage',
+                        'translateVoice',
+                        'startRecord',
+                        'stopRecord',
+                        'onVoiceRecordEnd',
+                        'playVoice',
+                        'onVoicePlayEnd',
+                        'pauseVoice',
+                        'stopVoice',
+                        'uploadVoice',
+                        'downloadVoice'
                     ]
                 })
                 wx.ready(function() {
