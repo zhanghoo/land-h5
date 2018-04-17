@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { wxShare, getShareInfoDesc } from '@/api/wx'
 import { getMineInfo } from '@/api/mine'
+import cache from '@/utils/cache'
 
 Vue.use(Vuex)
 
@@ -49,6 +50,7 @@ const actions = {
     async get_mineInfo({ commit }) {
         await getMineInfo().then(res => {
             commit('setMineInfo', res.Data)
+            cache.setToken(res.Data.user_id)
         })
     },
     async get_WxConfig({ commit }, url) {

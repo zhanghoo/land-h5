@@ -1,19 +1,26 @@
 import router from '@/router'
 import store from '@/store'
 import { wxLogin } from '@/api/wx'
+import cache from '@/utils/cache'
 
 // 全局路由登录验证
 router.beforeEach((to, from, next) => {
     if (store.state.mine) {
         next()
+    } else if (cache.getToken()) {
+        console.log(cache.getToken())
+        store.dispatch('get_mineInfo').then(res => {
+            console.log(res)
+            next()
+        })
     } else {
         wxLogin().then(res => {
             if (res && res.Data && res.Data.url) {
                 let url = res.Data.url
                 store.dispatch('get_mineInfo').then(res => {
                     if (url) {
-                        next(url) // 本地测试使用
-                        // document.location = url // 生产环境使用
+                        // next(url) // 本地测试使用
+                        document.location = url // 生产环境使用
                     } else {
                         next('/')
                     }
