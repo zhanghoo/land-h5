@@ -51,6 +51,7 @@ const isWeiXin = ua.match(/MicroMessenger/i)
 
 // 全局路由登录验证
 router.beforeEach((to, from, next) => {
+    console.log(from)
     // console.log(store.state.license)
     // if (store.state.license) {
     //     // 从empty页 获得 授权登录

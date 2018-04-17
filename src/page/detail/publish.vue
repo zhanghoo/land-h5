@@ -143,6 +143,7 @@ export default {
                         // 录音时间超过一分钟没有停止的时候会执行 complete 回调
                         complete(res) {
                             _self.localId = res.localId
+                            alert('onVoiceRecordEnd, localId = ' + _self.localId)
                             _self.recordStep = 2
                             _self.voiceTip = '已停止录音，再次点击可试听录音'
                         }
@@ -150,48 +151,28 @@ export default {
                 } else if (_self.recordStep === 1) {
                     // 停止录音
                     wx.stopRecord({
-                        success(res) {
-                            _self.localId = res.localId
-                            _self.recordStep = 2
-                            _self.voiceTip = '已停止录音，再次点击可试听录音'
-                        }
+                        localId: _self.localId
                     })
+                    alert('stopRecord, localId = ' + _self.localId)
+                    _self.recordStep = 2
+                    _self.voiceTip = '已停止录音，再次点击可试听录音'
                 } else if (_self.recordStep === 2) {
                     // 试听录音
                     wx.playVoice({
-                        localId: _self.localId,
-                        success(res) {
-                            _self.recordStep = 3
-                            _self.voiceTip = '正在播放，再次点击可停止播放'
-                        }
+                        localId: _self.localId
                     })
+                    alert('playVoice, localId = ' + _self.localId)
+                    _self.recordStep = 3
+                    _self.voiceTip = '正在播放，再次点击可停止播放'
                 } else if (_self.recordStep === 3) {
                     // 停止录音
                     wx.stopVoice({
-                        localId: _self.localId,
-                        success() {
-                            _self.recordStep = 0
-                            _self.voiceTip = '停止播放，再次点击可重新录音'
-                            // _self.record()
-                        }
+                        localId: _self.localId
                     })
+                    alert('stopVoice, localId = ' + _self.localId)
+                    _self.recordStep = 0
+                    _self.voiceTip = '停止播放，再次点击可重新录音'
                 }
-                // if (_self.recordStep === 0) {
-                //     // 开始录音
-                //     _self.recordStep = 1
-                //     _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
-                //     setTimeout(function() {
-                //         if (_self.recordStep === 1) {
-                //             // 处在录音状态才能停止录音
-                //             _self.recordStep = 0
-                //             _self.voiceTip = '已停止录音，再次点击重新录音'
-                //         }
-                //     }, 60000)
-                // } else if (_self.recordStep === 1) {
-                //     // 停止录音
-                //     _self.recordStep = 0
-                //     _self.voiceTip = '已停止录音，再次点击重新录音'
-                // }
             } else {
                 clearTimeout(_setT)
                 if (_self.recordStep === 0) {
