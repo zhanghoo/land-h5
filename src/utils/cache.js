@@ -7,7 +7,8 @@ export default {
         return Cookies.get(TokenKey)
     },
     setToken: function (token) {
-        return Cookies.set(TokenKey, token, { expires: 7 })
+        let setTime = 1 / 6
+        return Cookies.set(TokenKey, token, { expires: setTime })
     },
     removeToken: function () {
         return Cookies.remove(TokenKey)
