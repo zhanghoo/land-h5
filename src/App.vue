@@ -9,15 +9,40 @@
     </div>
 </template>
 <script>
+import { mapActions } from 'vuex'
 export default {
     name: 'App',
     methods: {
+        ...mapActions([
+            'get_mineInfo'
+        ]),
         browserCheck() {
             const ua = window.navigator.userAgent.toLowerCase()
             const isWeiXin = ua.match(/MicroMessenger/i)
                 ? ua.match(/MicroMessenger/i)[0] === 'micromessenger' ? 1 : 0
                 : 0
             this.$store.commit('set_isWeiXin', isWeiXin)
+        },
+        getUserInfo() {
+            function getQueryString(name) {
+                var reg = new RegExp('(^|&amp;)' + name + '=([^&amp;]*)(&amp;|$)', 'i')
+                var r = window.location.hash.split('?')
+                if (r[1]) {
+                    let result = r[1].match(reg)
+                    if (result != null) {
+                        return unescape(result[2])
+                    } else {
+                        return null
+                    }
+                } else {
+                    return null
+                }
+            }
+            let user_id = getQueryString('user_id')
+            console.log('user_id', user_id)
+            if (user_id) {
+                this.get_mineInfo(user_id)
+            }
         }
     },
     created() {
@@ -32,6 +57,7 @@ export default {
     },
     mounted() {
         this.browserCheck()
+        // this.getUserInfo()
         this.$Progress.finish()
     }
 }
