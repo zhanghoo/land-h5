@@ -10,9 +10,15 @@
             <div class="item-content">
                 <!-- 封面 -->
                 <template v-if="item.image && item.image != null && item.image != 'null'">
-                    <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
-                        <img :src="item.image">
-                    </router-link>
+                    <router-link class="content-cover"
+                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
+                     :class="`item-content-${item.image.length}`"
+                      tag="div">
+                         <img v-for="(item, index) in item.image"
+                              :src="item"
+                              :key="index"
+                              class="cover-img">
+                     </router-link>
                 </template>
                 <!-- 需支付 -->
                 <template v-if="item.is_pay === '1'">
@@ -146,11 +152,45 @@ $subText = #666;
         .item-content {
             margin-bottom: toRem(12);
             .content-cover {
-                height: toRem(180);
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                max-height: toRem(180);
                 overflow: hidden;
-                img {
-                    display: block;
+                .cover-img {
+                    display: inline-block;
                     width: 100%;
+                    border-width: 0 toRem(5);
+                    border-style: solid;
+                    border-color: transparent;
+                }
+                &.item-content-1 {
+                    border: none;
+                }
+                &.item-content-2 {
+                    .cover-img {
+                        width: 50%;
+                        &:nth-child(1) {
+                            border-width: 0 toRem(5) 0 0;
+                        }
+                        &:nth-child(2) {
+                            border-width: 0 0 0 toRem(5);
+                        }
+                    }
+                }
+                &.item-content-3 {
+                    .cover-img {
+                        width: 33.33%;
+                        &:nth-child(1) {
+                            border-width: 0 toRem(6.6) 0 0;
+                        }
+                        &:nth-child(2) {
+                            border-width: 0 toRem(3.3);
+                        }
+                        &:nth-child(3) {
+                            border-width: 0 0 0 toRem(6.6);
+                        }
+                    }
                 }
             }
             .content-pay {
