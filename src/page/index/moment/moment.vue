@@ -52,8 +52,10 @@ export default {
                 uid: this.$store.state.mine.user_id
             }
             getMomentList(params).then(res => {
-                if (res && res.Data) {
+                if (res && res.Data && res.Data !== 'null') {
                     this.moments = res.Data
+                } else {
+                    this.moments = []
                 }
             })
         }

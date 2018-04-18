@@ -33,13 +33,15 @@
                 </div>
             </div>
             <div class="home-msg">
-                <ul class="home-msg-list">
-                    <li class="home-msg-item" v-for="(item, index) in systemNews" :key="index">
-                        <router-link :to="{name: 'systemNews', params: {json: item}}">
-                            <i class="hm-icon my-icon-broadcast"></i>{{item.content}}
-                        </router-link>
-                    </li>
-                </ul>
+                <div class="home-msg-box">
+                    <ul id="homeMsgList" class="home-msg-list">
+                        <li class="home-msg-item" v-for="(item, index) in systemNews" :key="index">
+                            <router-link :to="{name: 'systemNews', params: {json: item}}" class="home-msg-a">
+                                <i class="hm-icon my-icon-broadcast"></i>{{item.title}}
+                            </router-link>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
         <div class="home-menu">
@@ -78,7 +80,7 @@
             </span>
             <div slot="conent">
                 <div v-for="(item, index) in announceList" :key="index" class="block-slot-item">
-                    <div class="bsi-panel" @click="$router.push({name: 'homeDealInformation', params: { bid: item.bid}})">
+                    <div class="bsi-panel" @click="$router.push({name: 'transactionDetail', params: { id: item.id}})">
                         <div class="bsi-panel-l">
                             <p class="bsi-title">{{item.name}}</p>
                             <p class="bsi-type">{{item.purpose | purposeToString}}</p>
@@ -147,6 +149,7 @@ import blockSlot from '@/components/blockSlot'
 import { getRankList, getSystemNews, postSign, getLandBusinessList } from '@/api/home'
 import { getSearchDetail } from '@/api'
 import { mapState } from 'vuex'
+import $ from 'jquery'
 export default {
     name: 'home',
     components: { rankTop, blockSlot },
@@ -154,7 +157,8 @@ export default {
         return {
             firstIn: 0, // firstIn每日第一进入链接 !!!合接口之后启用, 使用返回字段is_sign 0 是未签 1 是已签
             rankList: '',
-            systemNews: '',
+            systemNews: [],
+            animate: false,
             newestList: [],
             newestListNum: 3, // home页最新地产展示上限数
             announceList: [],
@@ -183,6 +187,30 @@ export default {
         }
     },
     methods: {
+        initScroll() {
+            // ul
+            let $ulList = $('#homeMsgList')
+            let timer = null
+            clearInterval(timer)
+            timer = setInterval(() => {
+                this.scrollList($ulList)
+            }, 2000)
+        },
+        scrollList(el) {
+            // ul
+            let $ulList = $('#homeMsgList')
+            // 获得当前li的高度
+            let scrollH = $('#homeMsgList li:first').height()
+            // 滚动出一个li的高度
+            $ulList.stop().animate({
+                marginTop: -scrollH
+            }, 600, function() {
+                // 动画结束后, 将当前ul marginTop置为初始值
+                $ulList.css({
+                    marginTop: 0
+                }).find('li:first').appendTo($ulList)
+            })
+        },
         getRankList_data() {
             getRankList().then(res => {
                 if (res && res.Data) {
@@ -259,6 +287,9 @@ export default {
         this.getSystemNews_data()
         this.getLandEevaluate_data()
         this.getLandBusinessList_data()
+        this.$nextTick(function () {
+            this.initScroll()
+        })
     }
 }
 </script>
@@ -319,11 +350,20 @@ export default {
             line-height: 1;
             color: #333;
             text-ellipsis();
-            .home-msg-list {
+            .home-msg-box {
                 height: toRem(15);
+                line-height: toRem(15);
                 overflow: hidden;
-                .home-msg-item {
-                    height: toRem(15);
+                .home-msg-list {
+                    .home-msg-item {
+                        height: toRem(15);
+                        line-height: toRem(15);
+                        .home-msg-a {
+                            display: inline-block;
+                            height: toRem(15);
+                            line-height: toRem(15);
+                        }
+                    }
                 }
             }
             .hm-icon {

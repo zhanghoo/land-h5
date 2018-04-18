@@ -94,17 +94,46 @@ export default {
             }
         },
         publish() {
-            var _self = this
+            let _self = this
+            if (_self.isWeiXin) {
+                // alert('isWeiXin')
+                // 微信端
+                if (_self.localId) {
+                    // alert('localId = ' + _self.localId)
+                    // 如果 localId 存在 获取微信端 serverId
+                    wx.uploadVoice({
+                        localId: _self.localId,
+                        success: function (res) {
+                            // alert('上传语音成功，serverId 为' + res.serverId)
+                            _self.serverId = res.serverId
+                            // 获得serverId
+                            _self._postPublish()
+                        }
+                    })
+                } else {
+                    // 不存在 直接上传
+                    _self._postPublish()
+                }
+            } else {
+                // alert('非微信')
+                // 其他端测试用
+                _self._postPublish()
+            }
+        },
+        _postPublish() {
+            let _self = this
             // 房产id为空传0
             let params = {
-                pid: this.$route.query.pid || 0,
-                uid: this.$store.state.mine.user_id,
-                title: this.title,
-                text: this.content,
-                is_pay: this.chargeVisible ? 1 : 0,
-                money: this.chargeVisible ? this.moneyActive : 0,
-                images: this.pictureFile
+                pid: _self.$route.query.pid || 0,
+                uid: _self.$store.state.mine.user_id,
+                title: _self.title,
+                text: _self.content,
+                is_pay: _self.chargeVisible ? 1 : 0,
+                money: _self.chargeVisible ? _self.moneyActive : 0,
+                images: _self.pictureFile,
+                voice_id: _self.serverId ? _self.serverId : 0
             }
+            console.log(params)
             postPublish(params).then(res => {
                 // console.log(typeof (res.Code)) -> string
                 if (res.Code === '0') {
@@ -143,7 +172,7 @@ export default {
                         // 录音时间超过一分钟没有停止的时候会执行 complete 回调
                         complete(res) {
                             _self.localId = res.localId
-                            alert('onVoiceRecordEnd, localId = ' + _self.localId)
+                            // alert('onVoiceRecordEnd, localId = ' + _self.localId)
                             _self.recordStep = 2
                             _self.voiceTip = '已停止录音，再次点击可试听录音'
                         }
@@ -153,7 +182,7 @@ export default {
                     wx.stopRecord({
                         success(res) {
                             _self.localId = res.localId
-                            alert('stopRecord, localId = ' + _self.localId)
+                            // alert('stopRecord, localId = ' + _self.localId)
                             _self.recordStep = 2
                             _self.voiceTip = '已停止录音，再次点击可试听录音'
                         },
@@ -166,12 +195,12 @@ export default {
                     wx.playVoice({
                         localId: _self.localId
                     })
-                    alert('playVoice, localId = ' + _self.localId)
+                    // alert('playVoice, localId = ' + _self.localId)
                     _self.recordStep = 3
                     _self.voiceTip = '正在播放，再次点击可停止播放'
                     wx.onVoicePlayEnd({
                         complete(res) {
-                            alert('onVoicePlayEnd, localId = ' + _self.localId)
+                            // alert('onVoicePlayEnd, localId = ' + _self.localId)
                             _self.recordStep = 0
                             _self.voiceTip = '播放完毕，再次点击可重新录音'
                         }
@@ -181,7 +210,7 @@ export default {
                     wx.stopVoice({
                         localId: _self.localId
                     })
-                    alert('stopVoice, localId = ' + _self.localId)
+                    // alert('stopVoice, localId = ' + _self.localId)
                     _self.recordStep = 0
                     _self.voiceTip = '停止播放，再次点击可重新录音'
                 }
