@@ -80,7 +80,7 @@
             </span>
             <div slot="conent">
                 <div v-for="(item, index) in announceList" :key="index" class="block-slot-item">
-                    <div class="bsi-panel" @click="$router.push({name: 'transactionDetail', params: { id: item.id}})">
+                    <div class="bsi-panel" @click="$router.push({name: 'transactionDetail', query: { id: item.id}})">
                         <div class="bsi-panel-l">
                             <p class="bsi-title">{{item.name}}</p>
                             <p class="bsi-type">{{item.purpose | purposeToString}}</p>

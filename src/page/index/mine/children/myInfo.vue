@@ -55,6 +55,7 @@ export default {
                     username: this.username,
                     avatar: this.avatar
                 }
+                console.log(params)
                 postUserInfo(params).then(res => {
                     if (res && (res.Code === 0 || res.data.Code === 0)) {
                         this.$toast('修改成功')

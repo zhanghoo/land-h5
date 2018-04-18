@@ -71,6 +71,7 @@ export default {
     },
     methods: {
         upload(ev) {
+            // this.pictureFile = ev.target.files[0]
             let picture = Array.from(ev.target.files)
             let emptyNum = 3 - this.picture_preview.length
             picture = picture.slice(0, emptyNum)

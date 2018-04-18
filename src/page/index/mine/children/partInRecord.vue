@@ -21,7 +21,7 @@
                     </div>
                 </li> -->
                 <li class="record-item" v-for="item in filterRecord" :key="item.id">
-                    <router-link class="record-item-panel" tag="div" :to="{path: '/transactionDetail', query: {'id': item.id}}">
+                    <router-link class="record-item-panel" tag="div" :to="{path: '/transactionDetail', query: {'id': item.product_id}}">
                         <div class="record-head">
                             <span class="rh-address">{{item.name}}</span>
                             <span class="rh-status" v-if="item.estatus === '0'">待公布</span>
