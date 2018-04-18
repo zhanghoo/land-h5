@@ -4,11 +4,12 @@
         <div class="w-a-from">
             <mt-field class="w-a-block" label="银行卡号" placeholder="请绑定持卡本人的银行卡" v-model="card"></mt-field>
             <mt-field class="w-a-block" label="持卡人" placeholder="持卡人真实姓名" v-model="name"></mt-field>
-            <div class="w-a-block" @click.stop="choiceBank">
+            <mt-field class="w-a-block" label="银行名称" placeholder="请输入银行名称" v-model="bank"></mt-field>
+            <!-- <div class="w-a-block" @click.stop="choiceBank">
                 <mt-field label="银行名称" placeholder="请选择银行" readonly v-model="bank">
                     <span class="my-icon-more"></span>
                 </mt-field>
-            </div>
+            </div> -->
             <div class="w-a-block bank-type">
                 <div class="w-a-title">银行卡种类</div>
                 <div class="w-a-value">

@@ -80,7 +80,7 @@
             </span>
             <div slot="conent">
                 <div v-for="(item, index) in announceList" :key="index" class="block-slot-item">
-                    <div class="bsi-panel" @click="$router.push({name: 'homeDealInformation', params: { bid: item.bid}})">
+                    <div class="bsi-panel" @click="$router.push({name: 'transactionDetail', params: { id: item.id}})">
                         <div class="bsi-panel-l">
                             <p class="bsi-title">{{item.name}}</p>
                             <p class="bsi-type">{{item.purpose | purposeToString}}</p>
@@ -191,15 +191,10 @@ export default {
             // ul
             let $ulList = $('#homeMsgList')
             let timer = null
-            $ulList.hover(() => {
-                // 触摸清空定时器
-                clearInterval(timer)
-            }, () => {
-                // 离开启动定时器
-                timer = setInterval(() => {
-                    this.scrollList($ulList)
-                }, 2000)
-            }).trigger('mouseleave') // 自动触发触摸事件
+            clearInterval(timer)
+            timer = setInterval(() => {
+                this.scrollList($ulList)
+            }, 2000)
         },
         scrollList(el) {
             // ul

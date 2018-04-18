@@ -96,7 +96,7 @@ router.beforeEach((to, from, next) => {
                             next()
                         })
                     } else {
-                        console.log('不是微信环境')
+                        // console.log('不是微信环境')
                         next()
                     }
                 })

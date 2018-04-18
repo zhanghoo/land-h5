@@ -25,7 +25,7 @@ export function postZan({ cid, uid }) {
 }
 
 // 发布评论
-export async function postPublish({ pid, uid, title, text, is_pay, money, images }) {
+export async function postPublish({ pid, uid, title, text, is_pay, money, images, voice_id }) {
     let params = {
         'pid': pid,
         'uid': uid,
@@ -33,7 +33,8 @@ export async function postPublish({ pid, uid, title, text, is_pay, money, images
         'text': text,
         'is_pay': is_pay,
         'money': money,
-        'images': images
+        'images': images,
+        'voice_id': voice_id
     }
     let form = new FormData()
     Object.keys(params).forEach(key => {

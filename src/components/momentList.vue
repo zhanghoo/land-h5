@@ -80,14 +80,18 @@ export default {
     methods: {
         addZan(item) {
             if (item.is_like === '0') {
-                item.lnum++
-                item.is_like = true
                 let params = {
                     cid: item.cid,
                     uid: this.$store.state.mine.user_id
                 }
                 postZan(params).then(res => {
-                    console.log(res)
+                    if (res.Code === '0' || res.Code === 0) {
+                        this.$toast('-10大师积分')
+                        item.lnum++
+                        item.is_like = true
+                    } else {
+                        this.$toast(res.Msg)
+                    }
                 })
             }
         },

@@ -3,7 +3,7 @@
         <div class="avatar">
             <div class="avatar-wrapper">
                 <img class="avatar-img" v-if="mine.avatar" :src="avatar_preview">
-                <input id="upload" type="file" accept="image/*" capture="camera" @change="upload($event)" style="display: none;">
+                <input id="upload" type="file" accept="image/*" @change="upload($event)" style="display: none;">
                 <label class="upload-btn" for="upload"></label>
             </div>
             <div class="avatar-label">点击图标，更换头像</div>
@@ -55,7 +55,6 @@ export default {
                     username: this.username,
                     avatar: this.avatar
                 }
-                // console.log(params)
                 postUserInfo(params).then(res => {
                     if (res && (res.Code === 0 || res.data.Code === 0)) {
                         this.$toast('修改成功')

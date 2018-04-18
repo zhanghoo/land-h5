@@ -46,8 +46,8 @@
         <div class="list">
             <div class="list-title">全平台预估均为
                 <i class="my-icon-zuanshi"></i>100/次</div>
-            <div class="list-item" v-for="(item, index) in landList" :key="index">
-                <div class="item-title" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">{{item.name}}</div>
+            <div class="list-item" v-for="(item, index) in landList" :key="index" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">
+                <div class="item-title">{{item.name}}</div>
                 <div class="item-adress">
                     <i class="my-icon-adress"></i>{{item.province}}</div>
                 <div class="item-label">
