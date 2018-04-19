@@ -30,7 +30,7 @@
                             <span class="rh-status" v-else-if="item.estatus === '3'">已关闭</span>
                         </div>
                         <div class="record-content">
-                            <p>预估大师币：200</p>
+                            <p>预估大师积分：200</p>
                             <p>预估成交楼面价: {{item.evaluate_num}}/m²</p>
                             <p>估计时间：{{item.evaluate_time}}</p>
                         </div>

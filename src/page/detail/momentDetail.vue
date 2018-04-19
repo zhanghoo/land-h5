@@ -112,6 +112,7 @@ export default {
             margin-bottom: toRem(10);
         }
         .content-text {
+            margin-bottom: toRem(5);
             color: #666;
             font-size: toRem(14);
             text-align: justify;

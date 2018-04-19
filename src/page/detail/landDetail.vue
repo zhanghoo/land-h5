@@ -17,7 +17,7 @@
                         <div class="lds-shows">
                             <div class="lds-shows-map" v-if="type === 0" :key="0">
                                 <el-amap vid="amap-vue" :center="center">
-                                    <el-amap-marker vid="component-marker"></el-amap-marker>
+                                    <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position"></el-amap-marker>
                                 </el-amap>
                             </div>
                             <div class="lds-shows-img" v-else :key="1"></div>
@@ -33,7 +33,7 @@
                             <span @click="$router.push({path: '/publish', query: { 'pid': $route.query.pid}})" class="land-detail-publish">发表评论</span>
                         </div>
                         <div slot="conent">
-                            <moment-list :json="landAbstractJson.comment"></moment-list>
+                            <moment-list :page="'landDetail'"></moment-list>
                         </div>
                     </block-slot>
                 </mt-tab-container-item>
@@ -182,10 +182,10 @@ export default {
             deadlineYN: 'N',
             center: [121.59996, 31.197646],
             markers: [
-            {
-                position: [121.59996, 31.197646]
-            }
-          ]
+                {
+                    position: [121.59996, 31.197646]
+                }
+            ]
         }
     },
     computed: {
@@ -230,7 +230,7 @@ export default {
                     let lat = Number(res.Data.latitude)
                     if (lng && lat) {
                         this.center = [lng, lat]
-                        this.markers[0].position = [lng + 0.012, lat + 0.012]
+                        this.markers[0].position = [lng, lat]
                     }
                 }
             })
@@ -254,28 +254,42 @@ export default {
             })
         },
         buy() {
-            if (!this.evaluatePrice) {
-                this.$toast('请填写金额')
+            let _self = this
+            if (!_self.evaluatePrice) {
+                _self.$toast('请填写金额')
             } else {
                 let params = {
-                    pid: this.$route.query.pid,
-                    uid: this.$store.state.mine.user_id,
-                    money: this.evaluatePrice
+                    pid: _self.$route.query.pid,
+                    uid: _self.$store.state.mine.user_id,
+                    money: _self.evaluatePrice
                 }
+                // if (this.operation === 0) {
+                //     // 初次估价 播放金币动画 这里还没播放
+                //     this.goldDrop = true
+                //     // !!!PS播放完毕 跳到 成交详情页面 动画播放时间为 9s
+                //     // setTimeout(() => {
+                //     //     this.$router.push({ path: 'transactionDetail', query: { id: 1 } })
+                //     // }, 9000)
+                // }
                 postLandEvaluation(params).then(res => {
                     if (res.Code === '0') {
-                        // 估价成功 关闭 覆盖层
-                        this.clickInvitation()
-                        if (this.operation === 2) {
+                        if (_self.operation === 2) {
+                            // 估价成功 关闭 覆盖层 !!!要在这里关闭 因为不传 operation 为undefined
+                            _self.clickInvitation()
                             // 重新修改估计触发
-                            this.$toast('已重新修改估价')
-                        } else if (this.operation === 0) {
+                            _self.$toast('已重新修改估价')
+                        } else if (_self.operation === 0) {
+                            // 估价成功 关闭 覆盖层 !!!要在这里关闭 因为不传 operation 为undefined
+                            _self.clickInvitation()
                             // 初次估价 播放金币动画 这里还没播放
-                            this.goldDrop = true
-                            // !!!PS播放完毕 跳到 成交详情页面
+                            _self.goldDrop = true
+                            // !!!PS播放完毕 跳到 成交详情页面 动画播放时间为 9s
+                            setTimeout(() => {
+                                _self.$router.push({ path: 'transactionDetail', query: { id: res.Data } })
+                            }, 9000)
                         }
                     } else {
-                        this.$toast(res.Msg)
+                        _self.$toast(res.Msg)
                     }
                 })
             }

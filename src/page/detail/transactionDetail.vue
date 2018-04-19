@@ -1,6 +1,7 @@
 <template>
     <div id="transactionDetail">
-        <div class="trans-detail-top">
+        <div v-if="json.is_parp === '1'" class="trans-detail-top">
+            <!-- 如果本人参加了, 才显示 -->
             <div class="trans-detail-avatar">
                 <img class="avatar-img" v-if="mine.avatar" :src="mine.avatar">
             </div>
@@ -19,7 +20,7 @@
                 <mt-button class="label" plain>{{json.sold_area}}平方米</mt-button>
             </p>
         </div>
-        <div class="trans-detail-dealinfo">
+        <div v-if="json.is_parp === '1'" class="trans-detail-dealinfo">
             <!-- PS: 据0412需求大师币改为大师积分, 是固定的 100 -->
             <p class="tdd-line">预估大师积分：100</p>
             <p class="tdd-line">预估成交楼面价：{{json.evaluate_num}}元/m²</p>
@@ -39,11 +40,13 @@
                 </div>
                 <span class="my-icon-more"></span>
             </router-link>
-            <div v-if="json.estatus == 1" class="trans-detail-tips">
-                <span class="tip">恭喜你，赢得了{{json.get_coin}}大师币！</span>
-                <mt-button class="tds-btn" type="primary" @click="share">分享</mt-button>
-            </div>
-            <p v-else class="trans-detail-tips fail">当工作变成游戏，生活就充满快乐！</p>
+            <template v-if="json.is_parp === '1'">
+                <div v-if="json.estatus == 1" class="trans-detail-tips">
+                    <span class="tip">恭喜你，赢得了{{json.get_coin}}大师积分！</span>
+                    <mt-button class="tds-btn" type="primary" @click="share">分享</mt-button>
+                </div>
+                <p v-else class="trans-detail-tips fail">当工作变成游戏，生活就充满快乐！</p>
+            </template>
             <!-- rank-list -->
             <div class="rank-list-wrapper" v-if="json.rank_list && json.rank_list != 'null'">
                 <block-slot class="rank-list first">
@@ -62,7 +65,7 @@
                             <div class="bs-col">{{item.rank_num}}</div>
                             <div class="bs-col">{{item.nick_name}}</div>
                             <div class="bs-col">{{item.evaluate_num}}元/m²</div>
-                            <div class="bs-col">无字段</div>
+                            <div class="bs-col">{{item.master_score}}</div>
                             <div class="bs-col">{{item.evaluate_time}}</div>
                         </div>
                     </div>
@@ -152,6 +155,7 @@ export default {
     },
     methods: {
         getEvaluateDetail_data() {
+            // console.log(this.$route.query.id)
             getEvaluateDetail(this.$route.query.id).then(res => {
                 if (res && res.Data) {
                     this.json = res.Data

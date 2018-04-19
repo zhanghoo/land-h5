@@ -1,46 +1,103 @@
 <template>
-    <ul class="moment-list">
-        <li class="list-item" v-for="(item,index) in json" :key="index">
-            <div class="item-user">
-                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
-                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
-                <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
-            </div>
-            <div class="item-title">{{item.title}}</div>
-            <div class="item-content">
-                <!-- 封面 -->
-                <template v-if="item.image && item.image != null && item.image != 'null'">
-                    <router-link class="content-cover"
-                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
-                     :class="`item-content-${item.image.length}`"
-                      tag="div">
-                         <img v-for="(item, index) in item.image"
-                              :src="item"
-                              :key="index"
-                              class="cover-img">
-                     </router-link>
-                </template>
-                <!-- 需支付 -->
-                <template v-if="item.is_pay === '1'">
-                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
-                </template>
-                <!-- 概览 -->
-                <template v-if="item.mode === 'overview'">
-                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
-                        <div class="overview-title">{{item.subTitle}}</div>
-                        <div class="overview-adress">
-                            <i class="my-icon-adress"></i>{{item.adress}}</div>
-                        <div class="overview-label" v-if="item.subLabel">
-                            <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
-                        </div>
-                    </router-link>
-                </template>
-            </div>
-            <div class="item-info">
-                <i class="my-icon-zan" :class="{'active': item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
-                <span class="info-time">{{item.pub_time}}</span>
-            </div>
-        </li>
+    <div class="moment-list">
+        <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
+            <mt-loadmore :bottom-method="loadBottom" @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded" ref="loadmore">
+                <ul class="page-loadmore-list">
+                    <template v-if="json">
+                        <li class="list-item" v-for="(item,index) in json" :key="index">
+                            <div class="item-user">
+                                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
+                                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
+                                <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
+                            </div>
+                            <div class="item-title">{{item.title}}</div>
+                            <div class="item-content">
+                                <!-- 封面 -->
+                                <template v-if="item.image && item.image != null && item.image != 'null'">
+                                    <router-link class="content-cover"
+                                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
+                                     :class="`item-content-${item.image.length}`"
+                                      tag="div">
+                                         <img v-for="(item, index) in item.image"
+                                              :src="item"
+                                              :key="index"
+                                              class="cover-img">
+                                     </router-link>
+                                </template>
+                                <!-- 需支付 -->
+                                <template v-if="item.is_pay === '1'">
+                                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
+                                </template>
+                                <!-- 概览 -->
+                                <template v-if="item.mode === 'overview'">
+                                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
+                                        <div class="overview-title">{{item.subTitle}}</div>
+                                        <div class="overview-adress">
+                                            <i class="my-icon-adress"></i>{{item.adress}}</div>
+                                        <div class="overview-label" v-if="item.subLabel">
+                                            <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
+                                        </div>
+                                    </router-link>
+                                </template>
+                            </div>
+                            <div class="item-info">
+                                <i class="my-icon-zan" :class="{'active': item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                                <span class="info-time">{{item.pub_time}}</span>
+                            </div>
+                        </li>
+                    </template>
+                    <template v-else>
+                        <li v-for="(item, index) in momentList" :key="index" class="list-item page-loadmore-listitem">
+                            <div class="item-user">
+                                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
+                                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
+                                <mt-button class="label" plain type="primary" v-if="item.level">{{item.level.level_name}}</mt-button>
+                            </div>
+                            <div class="item-title">{{item.title}}</div>
+                            <div class="item-content">
+                                <!-- 封面 -->
+                                <template v-if="item.image && item.image != null && item.image != 'null'">
+                                    <router-link class="content-cover"
+                                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
+                                     :class="`item-content-${item.image.length}`"
+                                      tag="div">
+                                         <img v-for="(item, index) in item.image"
+                                              :src="item"
+                                              :key="index"
+                                              class="cover-img">
+                                     </router-link>
+                                </template>
+                                <!-- 需支付 -->
+                                <template v-if="item.is_pay === '1'">
+                                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
+                                </template>
+                                <!-- 概览 -->
+                                <template v-if="item.mode === 'overview'">
+                                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
+                                        <div class="overview-title">{{item.subTitle}}</div>
+                                        <div class="overview-adress">
+                                            <i class="my-icon-adress"></i>{{item.adress}}</div>
+                                        <div class="overview-label" v-if="item.subLabel">
+                                            <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
+                                        </div>
+                                    </router-link>
+                                </template>
+                            </div>
+                            <div class="item-info">
+                                <i class="my-icon-zan" :class="{'active': item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                                <span class="info-time">{{item.pub_time}}</span>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+                <div slot="bottom" class="mint-loadmore-bottom">
+                    <span v-show="bottomStatus !== 'loading'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
+                    <span v-show="bottomStatus === 'loading'">
+                        <mt-spinner type="snake"></mt-spinner>
+                    </span>
+                </div>
+            </mt-loadmore>
+        </div>
         <!-- 支付弹框 -->
         <div class="pay-msgbox-wrapper">
             <transition name="bounce">
@@ -63,15 +120,19 @@
             </transition>
             <div class="pay-msgbox-modal" v-show="payMsgBox" @click="payMsgBox = false"></div>
         </div>
-    </ul>
+    </div>
 </template>
 <script>
-import { postZan } from '@/api/moment'
+import { postZan, getMomentList } from '@/api/moment'
+import { getLandAbstract } from '@/api'
 export default {
     name: 'momentList',
     props: {
         json: {
-            type: Array
+            type: Array // json传时用json 不传是 用 本页的 momentList
+        },
+        page: {
+            type: String
         }
     },
     computed: {
@@ -79,11 +140,50 @@ export default {
     },
     data() {
         return {
+            list: [],
+            momentList: [],
+            allLoaded: false,
+            bottomStatus: '',
+            wrapperHeight: 0,
             payMsgBox: false,
-            payToWatchItem: ''
+            payToWatchItem: '',
+            p: 1
         }
     },
+    created() {
+        for (let i = 1; i <= 20; i++) {
+            this.list.push(i)
+        }
+        if (this.page === 'moment') {
+            // 动态页
+            this.getMomentList_data()
+        } else if (this.page === 'landDetail') {
+            // 评论
+            // this.getLandAbstract_data()
+        }
+    },
+    mounted() {
+        this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top
+    },
     methods: {
+        handleBottomChange(status) {
+            this.bottomStatus = status
+        },
+        loadBottom() {
+            setTimeout(() => {
+                if (this.page === 'moment') {
+                    // 动态页
+                    this.getMomentList_data()
+                    // this.allLoaded = true
+                    this.$refs.loadmore.onBottomLoaded()
+                } else if (this.page === '') {
+                    // 评论
+                    // this.getLandAbstract_data()
+                    // this.allLoaded = true
+                    this.$refs.loadmore.onBottomLoaded()
+                }
+            }, 1500)
+        },
         addZan(item) {
             if (item.is_like === '0') {
                 let params = {
@@ -114,6 +214,34 @@ export default {
             this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
             // }
             this.payMsgBox = false
+        },
+        // 获取动态列表
+        getMomentList_data() {
+            let params = {
+                page: this.p,
+                uid: this.$store.state.mine.user_id
+            }
+            console.log(params)
+            getMomentList(params).then(res => {
+                if (res && res.Data && res.Data !== 'null') {
+                    this.momentList.push.apply(this.momentList, res.Data)
+                    this.p++
+                }
+            })
+        },
+        // 获取评论列表
+        getLandAbstract_data() {
+            let params = {
+                pid: this.$route.query.pid,
+                uid: this.$store.state.mine.user_id
+            }
+            // console.log(params)
+            getLandAbstract(params).then(res => {
+                if (res && res.Data && res.Data !== 'null' && res.Data.comment !== null) {
+                    this.momentList.push.apply(this.momentList, res.Data.comment)
+                    this.p++
+                }
+            })
         }
     }
 }
@@ -123,6 +251,9 @@ $mainText = #333;
 $subText = #666;
 .moment-list {
     margin: 0;
+    .page-loadmore-wrapper {
+        overflow: scroll;
+    }
     .list-item {
         padding: toRem(15) toRem(18) toRem(12);
         margin-bottom: toRem(10);
@@ -243,6 +374,16 @@ $subText = #666;
                 color: #ccc;
                 font-size: toRem(12);
                 transform: scale(0.9);
+            }
+        }
+    }
+    .mint-loadmore-bottom {
+        span {
+            display: inline-block;
+            transition: .2s linear;
+            vertical-align: middle;
+            &.is-rotate {
+                transform: rotate(180deg);
             }
         }
     }

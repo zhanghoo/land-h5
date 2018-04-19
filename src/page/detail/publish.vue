@@ -134,16 +134,16 @@ export default {
                 images: _self.pictureFile,
                 voice_id: _self.serverId ? _self.serverId : 0
             }
-            console.log(params)
+            // console.log(params)
             postPublish(params).then(res => {
                 // console.log(typeof (res.Code)) -> string
                 if (res.Code === '0') {
-                    this.$toast('提交成功')
+                    this.$toast('发布成功')
                     if (!this.$route.query.pid) {
                         // 操作为发布动态时, 成功 3s 跳转到回动态页面
                         setTimeout(function() {
                             _self.$router.push({ name: 'moment' })
-                        }, 3000)
+                        }, 2000)
                     } else {
                         _self.$router.go(-1)
                     }

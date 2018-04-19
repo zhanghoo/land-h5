@@ -4,10 +4,9 @@
             <router-link :to="{name: 'publish'}"><i class="my-icon-add"></i>发布新动态</router-link>
         </header>
         <!-- 列表 -->
-        <momentList :json="moments"></momentList>
-
+        <momentList :page="'moment'"></momentList>
         <!-- 支付弹框 -->
-        <div class="pay-msgbox-wrapper">
+        <!-- <div class="pay-msgbox-wrapper">
             <transition name="bounce">
                 <div class="pay-msgbox" v-if="payMsgBox">
                     <div class="pay-msgbox-header">确认支付</div>
@@ -27,7 +26,7 @@
                 </div>
             </transition>
             <div class="pay-msgbox-modal" v-show="payMsgBox" @click="payMsgBox = false"></div>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
