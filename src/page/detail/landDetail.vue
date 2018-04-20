@@ -221,10 +221,12 @@ export default {
         getLandAbstract_data() {
             let params = {
                 pid: this.$route.query.pid,
-                uid: this.$store.state.mine.user_id
+                uid: this.$store.state.mine.user_id,
+                page: 1
             }
             getLandAbstract(params).then(res => {
                 if (res && res.Data) {
+                    // console.log('landDetail')
                     this.landAbstractJson = res.Data
                     let lng = Number(res.Data.longitude)
                     let lat = Number(res.Data.latitude)

@@ -90,6 +90,7 @@
                         </li>
                     </template>
                 </ul>
+                <div v-show="allLoaded" class="mint-nomore">没有更多了...</div>
                 <div slot="bottom" class="mint-loadmore-bottom">
                     <span v-show="bottomStatus !== 'loading'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
                     <span v-show="bottomStatus === 'loading'">
@@ -142,6 +143,7 @@ export default {
         return {
             list: [],
             momentList: [],
+            pageCount: 0,
             allLoaded: false,
             bottomStatus: '',
             wrapperHeight: 0,
@@ -151,15 +153,12 @@ export default {
         }
     },
     created() {
-        for (let i = 1; i <= 20; i++) {
-            this.list.push(i)
-        }
         if (this.page === 'moment') {
             // 动态页
             this.getMomentList_data()
         } else if (this.page === 'landDetail') {
             // 评论
-            // this.getLandAbstract_data()
+            this.getLandAbstract_data()
         }
     },
     mounted() {
@@ -176,9 +175,14 @@ export default {
                     this.getMomentList_data()
                     // this.allLoaded = true
                     this.$refs.loadmore.onBottomLoaded()
-                } else if (this.page === '') {
+                } else if (this.page === 'landDetail') {
                     // 评论
-                    // this.getLandAbstract_data()
+                    // console.log('loadBottom', this.pageCount)
+                    if (this.pageCount === 0) {
+                        this.allLoaded = true
+                    } else {
+                        this.getLandAbstract_data()
+                    }
                     // this.allLoaded = true
                     this.$refs.loadmore.onBottomLoaded()
                 }
@@ -221,11 +225,13 @@ export default {
                 page: this.p,
                 uid: this.$store.state.mine.user_id
             }
-            console.log(params)
+            // console.log(params)
             getMomentList(params).then(res => {
-                if (res && res.Data && res.Data !== 'null') {
+                if (res && res.Data && res.Data !== 'null' && this.p > 0) {
                     this.momentList.push.apply(this.momentList, res.Data)
                     this.p++
+                } else {
+                    this.allLoaded = true
                 }
             })
         },
@@ -233,12 +239,21 @@ export default {
         getLandAbstract_data() {
             let params = {
                 pid: this.$route.query.pid,
-                uid: this.$store.state.mine.user_id
+                uid: this.$store.state.mine.user_id,
+                page: this.p
             }
-            // console.log(params)
             getLandAbstract(params).then(res => {
                 if (res && res.Data && res.Data !== 'null' && res.Data.comment !== null) {
-                    this.momentList.push.apply(this.momentList, res.Data.comment)
+                    if (res.Data.comment.length > 0 && this.p > 0) {
+                        // console.log(res.Data.comment.length)
+                        if (res.Data.comment.length >= 10) {
+                            // 返回的评论数 为 后台页数每页评论数 视为还有下一页
+                            this.pageCount++
+                        }
+                        this.momentList.push.apply(this.momentList, res.Data.comment)
+                    } else {
+                        this.allLoaded = true
+                    }
                     this.p++
                 }
             })
@@ -252,7 +267,7 @@ $subText = #666;
 .moment-list {
     margin: 0;
     .page-loadmore-wrapper {
-        overflow: scroll;
+        overflow-y: scroll;
     }
     .list-item {
         padding: toRem(15) toRem(18) toRem(12);
@@ -377,11 +392,19 @@ $subText = #666;
             }
         }
     }
+    .mint-nomore {
+        padding-bottom: toRem(10);
+        text-align: center;
+        font-size: toRem(12);
+        color: #999;
+    }
     .mint-loadmore-bottom {
         span {
             display: inline-block;
             transition: .2s linear;
             vertical-align: middle;
+            color: #999;
+            font-size: toRem(14);
             &.is-rotate {
                 transform: rotate(180deg);
             }

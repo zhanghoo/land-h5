@@ -24,6 +24,12 @@ export function postZan({ cid, uid }) {
     return res
 }
 
+// 是否显示收费勾选项
+export function getCommentLevel({ userID }) {
+    let res = request('/home/dynamic/commentLevel', 'POST', { 'uid': userID })
+    return res
+}
+
 // 发布评论
 export async function postPublish({ pid, uid, title, text, is_pay, money, images, voice_id }) {
     let params = {

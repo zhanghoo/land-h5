@@ -106,6 +106,8 @@
                 </div>
             </div>
         </block-slot>
+        <!-- is_sign 0 当天首次未签， 1 当天首次已签
+             init popupVisible = ture，默认显示-->
         <template v-if="!mine.is_sign">
             <mt-popup v-model="popupVisible"
                       popup-transition="popup-fade"
@@ -163,7 +165,7 @@ export default {
             newestListNum: 3, // home页最新地产展示上限数
             announceList: [],
             announceListNum: 3, // home页最近优胜名单展示上限数
-            popupVisible: false,
+            popupVisible: true,
             scoreBtnClicked: false,
             boxOpen: false,
             page: 1
@@ -269,20 +271,19 @@ export default {
         getScore() {
             var _self = this
             // _self.scoreBtnClicked = true
-            setTimeout(function() {
-                // 定时关闭弹框
-                _self.clickInvitation()
-            }, 2000)
             postSign().then(res => {
                 // console.log(res.Msg)
                 _self.boxOpen = true
+                setTimeout(() => {
+                    // 定时关闭弹框
+                    _self.clickInvitation()
+                }, 2000)
             })
         }
     },
     mounted() {
-        if (this.firstIn) {
-            this.popupVisible = true
-        }
+        // let t = this.mine.is_sign === 1 ? '今日已签到' : '今日未签到'
+        // alert(this.mine.is_sign + '=>' + t)
         this.getRankList_data()
         this.getSystemNews_data()
         this.getLandEevaluate_data()

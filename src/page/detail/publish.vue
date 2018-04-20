@@ -19,13 +19,17 @@
                 </span>
             </div>
         </div>
-        <div class=publish-charge>
-            <i class="my-icon-renminbi3"></i>
-            <span>收费查看</span>
-            <div class="charge-btn">
-                <input type="checkbox" v-model="chargeVisible">
+        <!-- 排名前18%的用户发布动态可设置收费查看。
+             v8 排名18%-22%   地产大师五级-->
+        <template v-if="showRecharge">
+            <div class=publish-charge>
+                <i class="my-icon-renminbi3"></i>
+                <span>收费查看</span>
+                <div class="charge-btn">
+                    <input type="checkbox" v-model="chargeVisible">
+                </div>
             </div>
-        </div>
+        </template>
         <div class="charge-list" v-if="chargeVisible">
             <div class="list-label">大师币：
                 <span class="label-numer">{{moneyActive}}</span>
@@ -40,7 +44,8 @@
     </div>
 </template>
 <script>
-import { postPublish } from '@/api/moment'
+import { postPublish, getCommentLevel } from '@/api/moment'
+import { mapState } from 'vuex'
 export default {
     name: 'publish',
     data() {
@@ -55,10 +60,14 @@ export default {
             voiceTip: '发表语音信息',
             localId: '',
             serverId: '',
-            recordStep: 0 // 录音操作 0 开始录音 1 结束录音
+            recordStep: 0, // 录音操作 0 开始录音 1 结束录音
+            showRecharge: false
         }
     },
     computed: {
+        ...mapState([
+            'mine'
+        ]),
         isWeiXin() {
             // 判断是否是微信
             let ua = window.navigator.userAgent.toLowerCase()
@@ -243,7 +252,23 @@ export default {
                     _self.voiceTip = '停止播放，再次点击可重新录音'
                 }
             }
+        },
+        get_CommentLevel() {
+            getCommentLevel(this.mine.user_id).then(res => {
+                // 排名前18%的用户发布动态可设置收费查看。
+                // v8 排名18%-22%   地产大师五级
+                if (res && res.Data && res.Data) {
+                    if (res.Data.level >= 8) {
+                        this.showRecharge = true
+                    } else {
+                        this.showRecharge = false
+                    }
+                }
+            })
         }
+    },
+    mounted() {
+        this.get_CommentLevel()
     }
 }
 </script>

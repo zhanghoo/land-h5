@@ -70,6 +70,12 @@ export function getAccount() {
     return res
 }
 
+// 立即充值
+export function postRecharge(money) {
+    let res = request('/home/Pay/charge', 'POST', { 'goods_id': money })
+    return res
+}
+
 // 身份验证
 export async function postAuthValidate({ company, file }) {
     let params = {

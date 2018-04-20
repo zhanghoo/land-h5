@@ -33,12 +33,12 @@
             充值比例1:1，充值后还可获得相应积分。大师币可提现。
         </div>
         <p class="r-btn-do">
-            <mt-button class="rbd-btn" type="primary">立即充值</mt-button>
+            <mt-button class="rbd-btn" type="primary" @click="post_Recharge">立即充值</mt-button>
         </p>
     </div>
 </template>
 <script>
-import { getAccount } from '@/api/mine'
+import { getAccount, postRecharge } from '@/api/mine'
 import { mapState } from 'vuex'
 export default {
     name: 'recharge',
@@ -51,7 +51,7 @@ export default {
     },
     computed: {
         ...mapState([
-            'mine'
+            'mine', 'isWeiXin'
         ])
     },
     methods: {
@@ -62,6 +62,35 @@ export default {
                     this.rechargeMoneys = res.Data.charge_num
                 }
             })
+        },
+        post_Recharge() {
+            let _self = this
+            if (_self.selectMoney > 0) {
+                if (_self.isWeiXin) {
+                    postRecharge(_self.selectMoney).then(res => {
+                        if (res && res.Data) {
+                            let wxPayConfig = res.Data
+                            wx.chooseWXPay({
+                                appId: wxPayConfig.appId,
+                                timestamp: wxPayConfig.timeStamp,
+                                nonceStr: wxPayConfig.nonceStr,
+                                package: wxPayConfig.package,
+                                signType: wxPayConfig.signType,
+                                paySign: wxPayConfig.paySign,
+                                success(res) {
+                                    // _self.$toast('充值成功')
+                                }
+                            })
+                        } else {
+                            _self.$toast(res.Msg)
+                        }
+                    })
+                } else {
+                    _self.$toast('请使用微信浏览器打开')
+                }
+            } else {
+                _self.$toast('请选择充值金额')
+            }
         }
     },
     mounted() {
