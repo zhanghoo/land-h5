@@ -11,6 +11,7 @@
                 </div>
                 <input id="upload" type="file" accept="image/*" multiple="multiple" @change="upload($event)">
                 <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
+                <!-- <label class="upload-btn my-icon-add1" for="upload"></label> -->
             </div>
             <div class=publish-voice>
                 <span>
@@ -80,19 +81,27 @@ export default {
     },
     methods: {
         upload(ev) {
-            // this.pictureFile = ev.target.files[0]
             let picture = Array.from(ev.target.files)
-            let emptyNum = 3 - this.picture_preview.length
-            picture = picture.slice(0, emptyNum)
-            for (let i = 0; i < picture.length; i++) {
-                if (picture[i]) {
-                    let reader = new FileReader()
-                    reader.readAsDataURL(picture[i])
-                    reader.onload = (e) => {
-                        this.picture_preview.unshift(e.target.result)
-                        this.pictureFile.unshift(ev.target.files[i])
+            if (picture.length <= 3) {
+                // 一次选择超过3张事
+                let emptyNum = 3 - this.picture_preview.length
+                picture = picture.slice(0, emptyNum)
+                if (this.picture_preview.length < 3) {
+                    for (let i = 0; i < picture.length; i++) {
+                        if (picture[i]) {
+                            let reader = new FileReader()
+                            reader.readAsDataURL(picture[i])
+                            reader.onload = (e) => {
+                                this.picture_preview.unshift(e.target.result)
+                                this.pictureFile.unshift(ev.target.files[i])
+                            }
+                        }
                     }
+                } else {
+                    this.$toast('最多只能选择3张图片')
                 }
+            } else {
+                this.$toast('最多只能选择3张图片，请重新选择')
             }
         },
         changePreview(ev, index) {

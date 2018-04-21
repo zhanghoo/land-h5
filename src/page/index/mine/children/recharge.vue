@@ -86,7 +86,7 @@ export default {
                         }
                     })
                 } else {
-                    _self.$toast('请使用微信浏览器打开')
+                    _self.$toast('请在微信客户端打开链接')
                 }
             } else {
                 _self.$toast('请选择充值金额')
