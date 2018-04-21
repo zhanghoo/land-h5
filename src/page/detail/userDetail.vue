@@ -18,7 +18,7 @@
             <block-slot :title-icon="true" class="publish-newest-list">
                 <span slot="title">发布的动态</span>
                 <div slot="conent">
-                    <momentList :json="json"></momentList>
+                    <momentList :json="json" :isMySelf="mySelf"></momentList>
                 </div>
             </block-slot>
         </div>
@@ -35,12 +35,13 @@ export default {
     data() {
         return {
             json: [],
-            userinfo: []
+            userinfo: [],
+            mySelf: false
         }
     },
     computed: {
         ...mapState([
-            'user'
+            'mine'
         ])
     },
     methods: {
@@ -51,6 +52,10 @@ export default {
                 if (res && res.Data) {
                     this.json = res.Data.userstate
                     this.userinfo = res.Data.userinfo
+                    if (this.userinfo.user_id === this.mine.user_id) {
+                        // 用户查看自己的主页
+                        this.mySelf = true
+                    }
                 }
             })
         }

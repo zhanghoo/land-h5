@@ -13,6 +13,12 @@
             <span class="text">昵称</span>
             <input class="input" type="text" v-model="username">
         </div>
+        <!-- 0420反馈新增手机号 -->
+        <div class="phone">
+            <div class="icon my-icon-phone"></div>
+            <span class="text">手机号码</span>
+            <input class="input" type="text" v-model="phone">
+        </div>
         <div class="button">
             <mt-button @click="changeUserInfo">确认修改</mt-button>
         </div>
@@ -27,7 +33,8 @@ export default {
         return {
             avatar_preview: '',
             avatar: '',
-            username: ''
+            username: '',
+            phone: ''
         }
     },
     computed: {
@@ -49,10 +56,15 @@ export default {
                 this.$toast('请上传头像')
             } else if (!this.username) {
                 this.$toast('昵称不能为空')
+            } else if (!this.phone) {
+                this.$toast('手机号码不能为空')
+            } else if (this.phone.length !== 11 || !(/^(1[3,4,5,6,7,8,9])\d{9}$/.test(this.phone))) {
+                this.$toast('请填写正确的手机号码！')
             } else {
                 let params = {
                     userid: this.mine.user_id,
                     username: this.username,
+                    phone: this.phone,
                     avatar: this.avatar
                 }
                 console.log(params)
@@ -67,6 +79,7 @@ export default {
     mounted() {
         this.avatar_preview = this.mine.avatar
         this.username = this.mine.nick_name
+        this.phone = this.mine.phone
     }
 }
 </script>
@@ -108,7 +121,8 @@ export default {
             text-align: center;
         }
     }
-    .username {
+    .username,
+    .phone {
         display: flex;
         align-items: center;
         margin: toRem(20) toRem(18);
@@ -119,10 +133,12 @@ export default {
         font-size: toRem(14);
         ver, .icon {
             margin-left: toRem(18);
+            font-size: toRem(16);
+            color: #666;
         }
         .text {
             margin-left: toRem(6);
-            color: #333;
+            color: #666;
         }
         .input {
             flex: 1;

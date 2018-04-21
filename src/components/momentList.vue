@@ -4,13 +4,13 @@
             <mt-loadmore :bottom-method="loadBottom" @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded" ref="loadmore">
                 <ul class="page-loadmore-list">
                     <template v-if="json">
-                        <li class="list-item" v-for="(item,index) in json" :key="index">
+                        <li class="list-item" v-for="(item, index) in json" :key="index">
                             <div class="item-user">
                                 <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
                                 <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
                                 <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
                             </div>
-                            <div class="item-title">{{item.title}}</div>
+                            <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.id}})">{{item.title}}</div>
                             <div class="item-content">
                                 <!-- 封面 -->
                                 <template v-if="item.image && item.image != null && item.image != 'null'">
@@ -18,14 +18,14 @@
                                      :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
                                      :class="`item-content-${item.image.length}`"
                                       tag="div">
-                                         <img v-for="(item, index) in item.image"
-                                              :src="item"
+                                         <img v-for="(imgItem, index) in imgItem.image"
+                                              :src="imgItem"
                                               :key="index"
                                               class="cover-img">
                                      </router-link>
                                 </template>
                                 <!-- 需支付 -->
-                                <template v-if="item.is_pay === '1'">
+                                <template v-if="item.is_pay === '1' && isMySelf !== true">
                                     <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
                                 </template>
                                 <!-- 概览 -->
@@ -41,7 +41,7 @@
                                 </template>
                             </div>
                             <div class="item-info">
-                                <i class="my-icon-zan" :class="{'active': item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                                <i class="my-icon-zan" :class="{'active': item.is_like === '1'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
                                 <span class="info-time">{{item.pub_time}}</span>
                             </div>
                         </li>
@@ -53,7 +53,7 @@
                                 <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
                                 <mt-button class="label" plain type="primary" v-if="item.level">{{item.level.level_name}}</mt-button>
                             </div>
-                            <div class="item-title">{{item.title}}</div>
+                            <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.title}}</div>
                             <div class="item-content">
                                 <!-- 封面 -->
                                 <template v-if="item.image && item.image != null && item.image != 'null'">
@@ -71,20 +71,23 @@
                                 <template v-if="item.is_pay === '1'">
                                     <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
                                 </template>
-                                <!-- 概览 -->
-                                <template v-if="item.mode === 'overview'">
-                                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
-                                        <div class="overview-title">{{item.subTitle}}</div>
-                                        <div class="overview-adress">
-                                            <i class="my-icon-adress"></i>{{item.adress}}</div>
-                                        <div class="overview-label" v-if="item.subLabel">
-                                            <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
-                                        </div>
-                                    </router-link>
+                                <!-- 文本内容 -->
+                                <template v-else>
+                                    <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
                                 </template>
+                                <!-- 地块 这里只有动态页才会有 但是 动态返回的页面里面返回product是object, 里面有purpose landDetail 里面也有 但是 是 string 此时 再用到router-link 就会报错 !!!这里需要后台支持 改一下动态页这个返回的字段 0421 -->
+                                <!-- <template v-if="typeof(item.product) !== 'string'" >
+                                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product.purpose}}" tag="div">
+                                        <div class="overview-title">{{item.product.name}}</div>
+                                        <div class="overview-adress">
+                                            <i class="my-icon-adress"></i>{{item.product.province}}
+                                        </div>
+                                        <mt-button class="overview-type" plain type="primary">{{item.product.sold_type}}</mt-button>
+                                    </router-link>
+                                </template> -->
                             </div>
                             <div class="item-info">
-                                <i class="my-icon-zan" :class="{'active': item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                                <i class="my-icon-zan" :class="{'active': item.is_like === '1'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
                                 <span class="info-time">{{item.pub_time}}</span>
                             </div>
                         </li>
@@ -134,6 +137,10 @@ export default {
         },
         page: {
             type: String
+        },
+        isMySelf: {
+            type: Boolean, // 是否为用户自己的主页
+            default: false
         }
     },
     computed: {
@@ -344,8 +351,14 @@ $subText = #666;
                 font-size: toRem(12);
                 margin-bottom: toRem(10);
             }
+            .content-text {
+                margin-top: toRem(10);
+                color: $subText;
+                font-size: toRem(14);
+            }
             .content-overview {
                 padding: toRem(14) toRem(12);
+                margin-top: toRem(10);
                 background: #f5f5f5;
                 .overview-title {
                     color: $mainText;
@@ -358,17 +371,16 @@ $subText = #666;
                     align-items: center;
                     color: $subText;
                     font-size: toRem(13);
-                    margin-bottom: toRem(10);
                     i {
                         color: $appColor;
                         margin-right: toRem(5);
                     }
                 }
-                .overview-label {
-                    font-size: 0;
-                    > .label {
-                        margin: 0 toRem(5) toRem(4) 0;
-                    }
+                .overview-type {
+                    margin: 0 toRem(5) toRem(4) 0;
+                    height: toRem(18);
+                    border-radius: toRem(2);
+                    font-size: toRem(12);
                 }
             }
         }

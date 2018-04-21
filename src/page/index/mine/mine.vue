@@ -1,16 +1,22 @@
 <template>
     <div id="mine">
-        <div class="mine-info">
-            <router-link class="info-wrapper" :to="{name: 'userDetail', params: { userId: mine.user_id}}" tag="div">
+        <!-- 0420反馈修改: 点击顶部整块区域跳转到用户信息页面 -->
+        <div class="mine-info" @click="$router.push({name: 'myInfo'})">
+            <div class="info-wrapper">
                 <div class="avatar">
                     <img class="avatar-img" v-if="mine.avatar" :src="mine.avatar">
                 </div>
                 <div class="info">
-                    <p class="name">{{mine.nick_name}}</p>
+                    <div class="name">
+                        <span>{{mine.nick_name}}</span>
+                        <!-- 0420反馈添加 -->
+                        <span v-if="mine.is_charge === '1'" class="is-charge my-icon-huizhanghuiyuan"></span>
+                        <span v-else class="isnt-charge">（首次充值即可成为会员）</span>
+                    </div>
                     <mt-button class="info-label" plain type="primary">{{mine.level}}</mt-button>
                 </div>
-            </router-link>
-            <router-link class="my-icon-more" :to="{name: 'myInfo'}"></router-link>
+            </div>
+            <span class="my-icon-more"></span>
         </div>
         <div class="mine-count">
             <ul class="count-list">
@@ -67,6 +73,21 @@
                     <router-link class="sets-item-a" :to="{name: 'idAuth'}">
                         <div class="sets-item-icon my-icon-idAuth"></div>
                         <span class="sets-item-text">身份验证</span>
+                        <div class="my-icon-more"></div>
+                    </router-link>
+                </li>
+                <!-- 0420反馈添加: 增加用户动态和排行的跳转链接 -->
+                <li class="sets-item">
+                    <router-link class="sets-item-a" :to="{name: 'userDetail', params: { userId: mine.user_id}}">
+                        <div class="sets-item-icon my-icon-i18n"></div>
+                        <span class="sets-item-text">用户动态</span>
+                        <div class="my-icon-more"></div>
+                    </router-link>
+                </li>
+                <li class="sets-item">
+                    <router-link class="sets-item-a" :to="{name: 'rankList'}">
+                        <div class="sets-item-icon my-icon-paixingbang"></div>
+                        <span class="sets-item-text">排行榜</span>
                         <div class="my-icon-more"></div>
                     </router-link>
                 </li>
@@ -234,6 +255,14 @@ export default {
                     margin: toRem(8.5) 0 toRem(12);
                     font-size: toRem(18);
                     line-height: 1;
+                    .is-charge {
+                        font-size: toRem(22);
+                        vertical-align: middle;
+                    }
+                    .isnt-charge {
+                        font-size: toRem(12);
+                        color: $appColor;
+                    }
                 }
                 .info-label {
                     position: relative;
