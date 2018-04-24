@@ -38,9 +38,9 @@
                         </thead>
                         <tbody>
                             <tr v-for="(item, index) in scoreRule" :key="index">
-                                <th class="st-h1">v{{item.level}}</th>
-                                <th class="st-h2">{{item.score}}</th>
-                                <th class="st-h3">{{item.level_name}}</th>
+                                <td class="st-1">v{{item.level}}</td>
+                                <td class="st-2">{{item.score}}</td>
+                                <td class="st-3">{{item.level_name}}</td>
                             </tr>
                         </tbody>
                     </table>

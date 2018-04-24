@@ -1,40 +1,111 @@
 <template>
-    <ul class="moment-list">
-        <li class="list-item" v-for="(item,index) in json" :key="index">
-            <div class="item-user">
-                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
-                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
-                <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
-            </div>
-            <div class="item-title">{{item.title}}</div>
-            <div class="item-content">
-                <!-- 封面 -->
-                <template v-if="item.image && item.image != null && item.image != 'null'">
-                    <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
-                        <img :src="item.image">
-                    </router-link>
-                </template>
-                <!-- 需支付 -->
-                <template v-if="item.is_pay === '1'">
-                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
-                </template>
-                <!-- 概览 -->
-                <template v-if="item.mode === 'overview'">
-                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
-                        <div class="overview-title">{{item.subTitle}}</div>
-                        <div class="overview-adress">
-                            <i class="my-icon-adress"></i>{{item.adress}}</div>
-                        <div class="overview-label" v-if="item.subLabel">
-                            <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
-                        </div>
-                    </router-link>
-                </template>
-            </div>
-            <div class="item-info">
-                <i class="my-icon-zan" :class="{'active': item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
-                <span class="info-time">{{item.pub_time}}</span>
-            </div>
-        </li>
+    <div class="moment-list">
+        <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
+            <mt-loadmore :bottom-method="loadBottom" @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded" ref="loadmore">
+                <ul class="page-loadmore-list">
+                    <template v-if="json">
+                        <li class="list-item" v-for="(item, index) in json" :key="index">
+                            <div class="item-user">
+                                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
+                                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
+                                <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
+                            </div>
+                            <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.id}})">{{item.title}}</div>
+                            <div class="item-content">
+                                <!-- 封面 -->
+                                <template v-if="item.image && item.image != null && item.image != 'null'">
+                                    <router-link class="content-cover"
+                                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
+                                     :class="`item-content-${item.image.length}`"
+                                      tag="div">
+                                         <img v-for="(imgItem, index) in imgItem.image"
+                                              :src="imgItem"
+                                              :key="index"
+                                              class="cover-img">
+                                     </router-link>
+                                </template>
+                                <!-- 需支付 -->
+                                <template v-if="item.is_pay === '1' && isMySelf !== true">
+                                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
+                                </template>
+                                <!-- 文本内容 -->
+                                <template v-else>
+                                    <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.id}})">{{item.content}}</div>
+                                </template>
+                                <!-- 概览 -->
+                                <template v-if="item.mode === 'overview'">
+                                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
+                                        <div class="overview-title">{{item.subTitle}}</div>
+                                        <div class="overview-adress">
+                                            <i class="my-icon-adress"></i>{{item.adress}}</div>
+                                        <div class="overview-label" v-if="item.subLabel">
+                                            <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
+                                        </div>
+                                    </router-link>
+                                </template>
+                            </div>
+                            <div class="item-info">
+                                <i class="my-icon-zan" :class="{'active': item.is_like === '1'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                                <span class="info-time">{{item.pub_time}}</span>
+                            </div>
+                        </li>
+                    </template>
+                    <template v-else>
+                        <li v-for="(item, index) in momentList" :key="index" class="list-item page-loadmore-listitem">
+                            <div class="item-user">
+                                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
+                                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
+                                <mt-button class="label" plain type="primary" v-if="item.level">{{item.level.level_name}}</mt-button>
+                            </div>
+                            <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.title}}</div>
+                            <div class="item-content">
+                                <!-- 封面 -->
+                                <template v-if="item.image && item.image != null && item.image != 'null'">
+                                    <router-link class="content-cover"
+                                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
+                                     :class="`item-content-${item.image.length}`"
+                                      tag="div">
+                                         <img v-for="(item, index) in item.image"
+                                              :src="item"
+                                              :key="index"
+                                              class="cover-img">
+                                     </router-link>
+                                </template>
+                                <!-- 需支付 -->
+                                <template v-if="item.is_pay === '1'">
+                                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
+                                </template>
+                                <!-- 文本内容 -->
+                                <template v-else>
+                                    <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
+                                </template>
+                                <!-- 地块 这里只有动态页才会有 但是 动态返回的页面里面返回product是object, 里面有purpose landDetail 里面也有 但是 是 string 此时 再用到router-link 就会报错 !!!这里需要后台支持 改一下动态页这个返回的字段 0421 -->
+                                <template v-if="item.product_moment && item.product_moment !== 'null'" >
+                                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose}}" tag="div">
+                                        <div class="overview-title">{{item.product_moment.name}}</div>
+                                        <div class="overview-adress">
+                                            <i class="my-icon-adress"></i>{{item.product_moment.province}}
+                                        </div>
+                                        <mt-button class="overview-type" plain type="primary">{{item.product_moment.sold_type}}</mt-button>
+                                    </router-link>
+                                </template>
+                            </div>
+                            <div class="item-info">
+                                <i class="my-icon-zan" :class="{'active': item.is_like === '1'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                                <span class="info-time">{{item.pub_time}}</span>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+                <div v-show="allLoaded" class="mint-nomore">没有更多了...</div>
+                <div slot="bottom" class="mint-loadmore-bottom">
+                    <span v-show="bottomStatus !== 'loading'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
+                    <span v-show="bottomStatus === 'loading'">
+                        <mt-spinner type="snake"></mt-spinner>
+                    </span>
+                </div>
+            </mt-loadmore>
+        </div>
         <!-- 支付弹框 -->
         <div class="pay-msgbox-wrapper">
             <transition name="bounce">
@@ -57,15 +128,23 @@
             </transition>
             <div class="pay-msgbox-modal" v-show="payMsgBox" @click="payMsgBox = false"></div>
         </div>
-    </ul>
+    </div>
 </template>
 <script>
-import { postZan } from '@/api/moment'
+import { postZan, getMomentList } from '@/api/moment'
+import { getLandAbstract } from '@/api'
 export default {
     name: 'momentList',
     props: {
         json: {
-            type: Array
+            type: Array // json传时用json 不传是 用 本页的 momentList
+        },
+        page: {
+            type: String
+        },
+        isMySelf: {
+            type: Boolean, // 是否为用户自己的主页
+            default: false
         }
     },
     computed: {
@@ -73,11 +152,53 @@ export default {
     },
     data() {
         return {
+            list: [],
+            momentList: [],
+            pageCount: 0,
+            allLoaded: false,
+            bottomStatus: '',
+            wrapperHeight: 0,
             payMsgBox: false,
-            payToWatchItem: ''
+            payToWatchItem: '',
+            p: 1
         }
     },
+    created() {
+        if (this.page === 'moment') {
+            // 动态页
+            this.getMomentList_data()
+        } else if (this.page === 'landDetail') {
+            // 评论
+            this.getLandAbstract_data()
+        }
+    },
+    mounted() {
+        this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top
+    },
     methods: {
+        handleBottomChange(status) {
+            this.bottomStatus = status
+        },
+        loadBottom() {
+            setTimeout(() => {
+                if (this.page === 'moment') {
+                    // 动态页
+                    this.getMomentList_data()
+                    // this.allLoaded = true
+                    this.$refs.loadmore.onBottomLoaded()
+                } else if (this.page === 'landDetail') {
+                    // 评论
+                    // console.log('loadBottom', this.pageCount)
+                    if (this.pageCount === 0) {
+                        this.allLoaded = true
+                    } else {
+                        this.getLandAbstract_data()
+                    }
+                    // this.allLoaded = true
+                    this.$refs.loadmore.onBottomLoaded()
+                }
+            }, 1500)
+        },
         addZan(item) {
             if (item.is_like === '0') {
                 let params = {
@@ -108,6 +229,45 @@ export default {
             this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
             // }
             this.payMsgBox = false
+        },
+        // 获取动态列表
+        getMomentList_data() {
+            let params = {
+                page: this.p,
+                uid: this.$store.state.mine.user_id
+            }
+            // console.log(params)
+            getMomentList(params).then(res => {
+                if (res && res.Data && res.Data !== 'null' && this.p > 0) {
+                    this.momentList.push.apply(this.momentList, res.Data)
+                    this.p++
+                } else {
+                    this.allLoaded = true
+                }
+            })
+        },
+        // 获取评论列表
+        getLandAbstract_data() {
+            let params = {
+                pid: this.$route.query.pid,
+                uid: this.$store.state.mine.user_id,
+                page: this.p
+            }
+            getLandAbstract(params).then(res => {
+                if (res && res.Data && res.Data !== 'null' && res.Data.comment !== null) {
+                    if (res.Data.comment.length > 0 && this.p > 0) {
+                        // console.log(res.Data.comment.length)
+                        if (res.Data.comment.length >= 10) {
+                            // 返回的评论数 为 后台页数每页评论数 视为还有下一页
+                            this.pageCount++
+                        }
+                        this.momentList.push.apply(this.momentList, res.Data.comment)
+                    } else {
+                        this.allLoaded = true
+                    }
+                    this.p++
+                }
+            })
         }
     }
 }
@@ -117,6 +277,9 @@ $mainText = #333;
 $subText = #666;
 .moment-list {
     margin: 0;
+    .page-loadmore-wrapper {
+        overflow-y: scroll;
+    }
     .list-item {
         padding: toRem(15) toRem(18) toRem(12);
         margin-bottom: toRem(10);
@@ -146,11 +309,45 @@ $subText = #666;
         .item-content {
             margin-bottom: toRem(12);
             .content-cover {
-                height: toRem(180);
+                display: flex;
+                align-items: center;
+                justify-content: space-around;
+                max-height: toRem(180);
                 overflow: hidden;
-                img {
-                    display: block;
+                .cover-img {
+                    display: inline-block;
                     width: 100%;
+                    border-width: 0 toRem(5);
+                    border-style: solid;
+                    border-color: transparent;
+                }
+                &.item-content-1 {
+                    border: none;
+                }
+                &.item-content-2 {
+                    .cover-img {
+                        width: 50%;
+                        &:nth-child(1) {
+                            border-width: 0 toRem(5) 0 0;
+                        }
+                        &:nth-child(2) {
+                            border-width: 0 0 0 toRem(5);
+                        }
+                    }
+                }
+                &.item-content-3 {
+                    .cover-img {
+                        width: 33.33%;
+                        &:nth-child(1) {
+                            border-width: 0 toRem(6.6) 0 0;
+                        }
+                        &:nth-child(2) {
+                            border-width: 0 toRem(3.3);
+                        }
+                        &:nth-child(3) {
+                            border-width: 0 0 0 toRem(6.6);
+                        }
+                    }
                 }
             }
             .content-pay {
@@ -158,8 +355,14 @@ $subText = #666;
                 font-size: toRem(12);
                 margin-bottom: toRem(10);
             }
+            .content-text {
+                margin-top: toRem(10);
+                color: $subText;
+                font-size: toRem(14);
+            }
             .content-overview {
                 padding: toRem(14) toRem(12);
+                margin-top: toRem(10);
                 background: #f5f5f5;
                 .overview-title {
                     color: $mainText;
@@ -172,17 +375,16 @@ $subText = #666;
                     align-items: center;
                     color: $subText;
                     font-size: toRem(13);
-                    margin-bottom: toRem(10);
                     i {
                         color: $appColor;
                         margin-right: toRem(5);
                     }
                 }
-                .overview-label {
-                    font-size: 0;
-                    > .label {
-                        margin: 0 toRem(5) toRem(4) 0;
-                    }
+                .overview-type {
+                    margin: 0 toRem(5) toRem(4) 0;
+                    height: toRem(18);
+                    border-radius: toRem(2);
+                    font-size: toRem(12);
                 }
             }
         }
@@ -203,6 +405,24 @@ $subText = #666;
                 color: #ccc;
                 font-size: toRem(12);
                 transform: scale(0.9);
+            }
+        }
+    }
+    .mint-nomore {
+        padding-bottom: toRem(10);
+        text-align: center;
+        font-size: toRem(12);
+        color: #999;
+    }
+    .mint-loadmore-bottom {
+        span {
+            display: inline-block;
+            transition: .2s linear;
+            vertical-align: middle;
+            color: #999;
+            font-size: toRem(14);
+            &.is-rotate {
+                transform: rotate(180deg);
             }
         }
     }

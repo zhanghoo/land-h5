@@ -21,7 +21,7 @@
                     </div>
                 </li> -->
                 <li class="record-item" v-for="item in filterRecord" :key="item.id">
-                    <router-link class="record-item-panel" tag="div" :to="{path: '/transactionDetail', query: {'id': item.id}}">
+                    <router-link class="record-item-panel" tag="div" :to="{path: '/transactionDetail', query: {'id': item.product_id}}">
                         <div class="record-head">
                             <span class="rh-address">{{item.name}}</span>
                             <span class="rh-status" v-if="item.estatus === '0'">待公布</span>
@@ -30,7 +30,7 @@
                             <span class="rh-status" v-else-if="item.estatus === '3'">已关闭</span>
                         </div>
                         <div class="record-content">
-                            <p>预估大师币：200</p>
+                            <p>预估大师积分：200</p>
                             <p>预估成交楼面价: {{item.evaluate_num}}/m²</p>
                             <p>估计时间：{{item.evaluate_time}}</p>
                         </div>

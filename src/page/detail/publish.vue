@@ -8,9 +8,11 @@
                     <img class="preview-img" :src="item">
                     <input class="preview-input" :id="`preview-${index}`" type="file" accept="image/*" @change="changePreview($event,index)">
                     <label class="preview-label" :for="`preview-${index}`"></label>
+                    <span class="preview-close my-icon-baocuo" @click="deletePic(index)"></span>
                 </div>
                 <input id="upload" type="file" accept="image/*" multiple="multiple" @change="upload($event)">
                 <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
+                <!-- <label class="upload-btn my-icon-add1" for="upload"></label> -->
             </div>
             <div class=publish-voice>
                 <span>
@@ -19,13 +21,17 @@
                 </span>
             </div>
         </div>
-        <div class=publish-charge>
-            <i class="my-icon-renminbi3"></i>
-            <span>收费查看</span>
-            <div class="charge-btn">
-                <input type="checkbox" v-model="chargeVisible">
+        <!-- 排名前18%的用户发布动态可设置收费查看。
+             v8 排名18%-22%   地产大师五级-->
+        <template v-if="showRecharge">
+            <div class=publish-charge>
+                <i class="my-icon-renminbi3"></i>
+                <span>收费查看</span>
+                <div class="charge-btn">
+                    <input type="checkbox" v-model="chargeVisible">
+                </div>
             </div>
-        </div>
+        </template>
         <div class="charge-list" v-if="chargeVisible">
             <div class="list-label">大师币：
                 <span class="label-numer">{{moneyActive}}</span>
@@ -40,7 +46,8 @@
     </div>
 </template>
 <script>
-import { postPublish } from '@/api/moment'
+import { postPublish, getCommentLevel } from '@/api/moment'
+import { mapState } from 'vuex'
 export default {
     name: 'publish',
     data() {
@@ -55,10 +62,14 @@ export default {
             voiceTip: '发表语音信息',
             localId: '',
             serverId: '',
-            recordStep: 0 // 录音操作 0 开始录音 1 结束录音
+            recordStep: 0, // 录音操作 0 开始录音 1 结束录音
+            showRecharge: false
         }
     },
     computed: {
+        ...mapState([
+            'mine'
+        ]),
         isWeiXin() {
             // 判断是否是微信
             let ua = window.navigator.userAgent.toLowerCase()
@@ -72,18 +83,32 @@ export default {
     methods: {
         upload(ev) {
             let picture = Array.from(ev.target.files)
-            let emptyNum = 3 - this.picture_preview.length
-            picture = picture.slice(0, emptyNum)
-            for (let i = 0; i < picture.length; i++) {
-                if (picture[i]) {
-                    let reader = new FileReader()
-                    reader.readAsDataURL(picture[i])
-                    reader.onload = (e) => {
-                        this.picture_preview.unshift(e.target.result)
-                        this.pictureFile.unshift(ev.target.files[i])
+            if (picture.length <= 3) {
+                // 一次选择超过3张事
+                let emptyNum = 3 - this.picture_preview.length
+                picture = picture.slice(0, emptyNum)
+                if (this.picture_preview.length < 3) {
+                    for (let i = 0; i < picture.length; i++) {
+                        if (picture[i]) {
+                            let reader = new FileReader()
+                            reader.readAsDataURL(picture[i])
+                            reader.onload = (e) => {
+                                this.picture_preview.unshift(e.target.result)
+                                this.pictureFile.unshift(ev.target.files[i])
+                            }
+                        }
                     }
+                } else {
+                    this.$toast('最多只能选择3张图片')
                 }
+            } else {
+                this.$toast('最多只能选择3张图片，请重新选择')
             }
+        },
+        deletePic(index) {
+            // 0421 删除图片
+            this.$delete(this.picture_preview, index)
+            this.$delete(this.pictureFile, index)
         },
         changePreview(ev, index) {
             let img = ev.target.files[0]
@@ -133,16 +158,16 @@ export default {
                 images: _self.pictureFile,
                 voice_id: _self.serverId ? _self.serverId : 0
             }
-            console.log(params)
+            // console.log(params)
             postPublish(params).then(res => {
                 // console.log(typeof (res.Code)) -> string
                 if (res.Code === '0') {
-                    this.$toast('提交成功')
+                    this.$toast('发布成功')
                     if (!this.$route.query.pid) {
                         // 操作为发布动态时, 成功 3s 跳转到回动态页面
                         setTimeout(function() {
                             _self.$router.push({ name: 'moment' })
-                        }, 3000)
+                        }, 2000)
                     } else {
                         _self.$router.go(-1)
                     }
@@ -242,7 +267,23 @@ export default {
                     _self.voiceTip = '停止播放，再次点击可重新录音'
                 }
             }
+        },
+        get_CommentLevel() {
+            getCommentLevel(this.mine.user_id).then(res => {
+                // 排名前18%的用户发布动态可设置收费查看。
+                // v8 排名18%-22%   地产大师五级
+                if (res && res.Data && res.Data) {
+                    if (res.Data.level >= 8) {
+                        this.showRecharge = true
+                    } else {
+                        this.showRecharge = false
+                    }
+                }
+            })
         }
+    },
+    mounted() {
+        this.get_CommentLevel()
     }
 }
 </script>
@@ -290,13 +331,13 @@ export default {
                 height: toRem(55);
                 border: 1px solid #e0e0e0;
                 border-radius: toRem(5);
-                overflow: hidden;
                 margin-right: toRem(12);
                 margin-bottom: toRem(10);
                 img {
                     display: block;
                     width: 100%;
                     height: 100%;
+                    border-radius: toRem(5);
                 }
                 .preview-input {
                     display: none;
@@ -309,6 +350,18 @@ export default {
                     bottom: 0;
                     background: transparent;
                     z-index: 10;
+                }
+                .preview-close {
+                    display: block;
+                    position: absolute;
+                    top: toRem(-8);
+                    right: toRem(-8);
+                    width: toRem(16);
+                    height: toRem(16);
+                    line-height: toRem(16);
+                    font-size: toRem(14);
+                    text-align: center;
+                    opacity: 0.7;
                 }
             }
             #upload {

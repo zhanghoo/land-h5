@@ -74,7 +74,8 @@ const actions = {
                     'pauseVoice',
                     'stopVoice',
                     'uploadVoice',
-                    'downloadVoice'
+                    'downloadVoice',
+                    'chooseWXPay'
                 ]
             }
             commit('setWxConfig', _wxConfig)

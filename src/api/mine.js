@@ -13,8 +13,8 @@ export function getUserDetail(userid) {
 }
 
 // 修改个人资料
-export async function postUserInfo({ userid, username, avatar }) {
-    let params = { 'user_id': userid, 'nick_name': username, 'avatar': avatar }
+export async function postUserInfo({ userid, username, phone, avatar }) {
+    let params = { 'user_id': userid, 'nick_name': username, 'phone': phone, 'avatar': avatar }
     let form = new FormData()
     Object.keys(params).forEach(key => {
         form.append(key, params[key])
@@ -67,6 +67,12 @@ export function getScoreRule() {
 // 充值
 export function getAccount() {
     let res = request('/home/user/getAccount', 'POST')
+    return res
+}
+
+// 立即充值
+export function postRecharge(money) {
+    let res = request('/home/Pay/charge', 'POST', { 'goods_id': money })
     return res
 }
 

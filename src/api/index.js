@@ -8,8 +8,8 @@ export function getSearchDetail({ keyWord, cityID, type, page }) {
 }
 
 // 房产地块概况
-export function getLandAbstract({ pid, uid }) {
-    let res = request('/home/index/landDescAbstract', 'POST', { 'pid': pid, 'uid': uid })
+export function getLandAbstract({ pid, uid, page }) {
+    let res = request('/home/index/landDescAbstract', 'POST', { 'pid': pid, 'uid': uid, 'p': page })
     return res
 }
 

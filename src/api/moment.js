@@ -24,6 +24,12 @@ export function postZan({ cid, uid }) {
     return res
 }
 
+// 是否显示收费勾选项
+export function getCommentLevel({ userID }) {
+    let res = request('/home/dynamic/commentLevel', 'POST', { 'uid': userID })
+    return res
+}
+
 // 发布评论
 export async function postPublish({ pid, uid, title, text, is_pay, money, images, voice_id }) {
     let params = {
@@ -33,8 +39,11 @@ export async function postPublish({ pid, uid, title, text, is_pay, money, images
         'text': text,
         'is_pay': is_pay,
         'money': money,
-        'images': images,
         'voice_id': voice_id
+    }
+    // 将图片以字段形式将文件上传, form-data对数组可能解析有问题
+    for (let i = 0, len = images.length; i < len; i++) {
+        params[`images[${i}]`] = images[i]
     }
     let form = new FormData()
     Object.keys(params).forEach(key => {
