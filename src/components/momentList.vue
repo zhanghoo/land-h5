@@ -28,6 +28,10 @@
                                 <template v-if="item.is_pay === '1' && isMySelf !== true">
                                     <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
                                 </template>
+                                <!-- 文本内容 -->
+                                <template v-else>
+                                    <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.id}})">{{item.content}}</div>
+                                </template>
                                 <!-- 概览 -->
                                 <template v-if="item.mode === 'overview'">
                                     <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
@@ -76,15 +80,15 @@
                                     <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
                                 </template>
                                 <!-- 地块 这里只有动态页才会有 但是 动态返回的页面里面返回product是object, 里面有purpose landDetail 里面也有 但是 是 string 此时 再用到router-link 就会报错 !!!这里需要后台支持 改一下动态页这个返回的字段 0421 -->
-                                <!-- <template v-if="typeof(item.product) !== 'string'" >
-                                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product.purpose}}" tag="div">
-                                        <div class="overview-title">{{item.product.name}}</div>
+                                <template v-if="item.product_moment && item.product_moment !== 'null'" >
+                                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose}}" tag="div">
+                                        <div class="overview-title">{{item.product_moment.name}}</div>
                                         <div class="overview-adress">
-                                            <i class="my-icon-adress"></i>{{item.product.province}}
+                                            <i class="my-icon-adress"></i>{{item.product_moment.province}}
                                         </div>
-                                        <mt-button class="overview-type" plain type="primary">{{item.product.sold_type}}</mt-button>
+                                        <mt-button class="overview-type" plain type="primary">{{item.product_moment.sold_type}}</mt-button>
                                     </router-link>
-                                </template> -->
+                                </template>
                             </div>
                             <div class="item-info">
                                 <i class="my-icon-zan" :class="{'active': item.is_like === '1'}" @click="addZan(item)"> {{item.lnum || 0}}</i>

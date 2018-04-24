@@ -359,6 +359,7 @@ export default {
                     width: toRem(16);
                     height: toRem(16);
                     line-height: toRem(16);
+                    font-size: toRem(14);
                     text-align: center;
                     opacity: 0.7;
                 }

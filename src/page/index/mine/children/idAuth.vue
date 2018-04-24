@@ -15,6 +15,7 @@
                         <img class="preview-img" :src="item">
                         <input class="preview-input" :id="`preview-${index}`" type="file" accept="image/*" @change="changePreview($event,index)">
                         <label class="preview-label" :for="`preview-${index}`"></label>
+                        <span class="preview-close my-icon-baocuo" @click="deletePic(index)"></span>
                     </div>
                     <input id="upload" type="file" accept="image/*" multiple="multiple" @change="upload($event)">
                     <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
@@ -44,18 +45,31 @@ export default {
     methods: {
         upload(ev) {
             let picture = Array.from(ev.target.files)
-            let emptyNum = 3 - this.picture_preview.length
-            picture = picture.slice(0, emptyNum)
-            for (let i = 0; i < picture.length; i++) {
-                if (picture[i]) {
-                    let reader = new FileReader()
-                    reader.readAsDataURL(picture[i])
-                    reader.onload = (e) => {
-                        this.picture_preview.unshift(e.target.result)
-                        this.pictureFile.unshift(ev.target.files[i])
+            if (picture.length <= 3) {
+                let emptyNum = 3 - this.picture_preview.length
+                picture = picture.slice(0, emptyNum)
+                if (this.picture_preview.length < 3) {
+                    for (let i = 0; i < picture.length; i++) {
+                        if (picture[i]) {
+                            let reader = new FileReader()
+                            reader.readAsDataURL(picture[i])
+                            reader.onload = (e) => {
+                                this.picture_preview.unshift(e.target.result)
+                                this.pictureFile.unshift(ev.target.files[i])
+                            }
+                        }
                     }
+                } else {
+                    this.$toast('最多只能选择3张图片')
                 }
+            } else {
+                this.$toast('最多只能选择3张图片，请重新选择')
             }
+        },
+        deletePic(index) {
+            // 0422 删除图片
+            this.$delete(this.picture_preview, index)
+            this.$delete(this.pictureFile, index)
         },
         changePreview(ev, index) {
             let img = ev.target.files[0]
@@ -138,12 +152,12 @@ export default {
                     height: toRem(55);
                     border: 1px solid #e0e0e0;
                     border-radius: toRem(5);
-                    overflow: hidden;
                     margin-right: toRem(12);
                     img {
                         display: block;
                         width: 100%;
                         height: 100%;
+                        border-radius: toRem(5);
                     }
                     .preview-input {
                         display: none;
@@ -156,6 +170,18 @@ export default {
                         bottom: 0;
                         background: transparent;
                         z-index: 10;
+                    }
+                    .preview-close {
+                        display: block;
+                        position: absolute;
+                        top: toRem(-8);
+                        right: toRem(-8);
+                        width: toRem(16);
+                        height: toRem(16);
+                        line-height: toRem(16);
+                        font-size: toRem(14);
+                        text-align: center;
+                        opacity: 0.7;
                     }
                 }
                 #upload {

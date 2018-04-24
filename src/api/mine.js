@@ -13,8 +13,8 @@ export function getUserDetail(userid) {
 }
 
 // 修改个人资料
-export async function postUserInfo({ userid, username, avatar }) {
-    let params = { 'user_id': userid, 'nick_name': username, 'avatar': avatar }
+export async function postUserInfo({ userid, username, phone, avatar }) {
+    let params = { 'user_id': userid, 'nick_name': username, 'phone': phone, 'avatar': avatar }
     let form = new FormData()
     Object.keys(params).forEach(key => {
         form.append(key, params[key])

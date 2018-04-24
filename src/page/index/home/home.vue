@@ -401,7 +401,11 @@ export default {
             }
         }
     }
+    .publish-newest-list .block-slot-item{
+        font-size: toRem(14);
+    }
     .winner-newest-list {
+        font-size: toRem(14);
         .bsi-panel {
             display: flex;
             justify-content: space-between;
@@ -410,11 +414,16 @@ export default {
                 max-width: 50%;
                 line-height: toRem(26);
                 .bsi-title {
+                    font-size: toRem(14);
                     width: 100%;
                     text-ellipsis();
                 }
                 .bsi-type {
+                    font-size: toRem(14);
                     color: $appColor;
+                }
+                .bsi-price {
+                    font-size: toRem(14);
                 }
                 .bsi-price-num {
                     padding: toRem(3.5) toRem(6);

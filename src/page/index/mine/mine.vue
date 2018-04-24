@@ -299,6 +299,9 @@ export default {
                     flex-direction: column;
                     font-size: toRem(13);
                     line-height: 1.38;
+                    .count-item-text {
+                        font-size: toRem(15);
+                    }
                 }
                 .count-item-num {
                     color: $appColor;
@@ -331,6 +334,9 @@ export default {
                     font-size: toRem(22);
                     text-align: center;
                     color: $appColor;
+                }
+                .cash-item-text {
+                    font-size: toRem(15);
                 }
                 & + .cash-item {
                     border-1px-left(#e6e6e6);
