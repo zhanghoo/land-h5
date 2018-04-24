@@ -1,5 +1,5 @@
 <template>
-    <div id="landDetail">
+    <div id="landDetail" v-infinite-scroll="getLandAbstract_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <div class="land-tab-nav">
             <mt-navbar class="page-land" v-model="selected">
                 <mt-tab-item id="summarize">
@@ -33,7 +33,12 @@
                             <span @click="$router.push({path: '/publish', query: { 'pid': $route.query.pid}})" class="land-detail-publish">发表评论</span>
                         </div>
                         <div slot="conent">
-                            <moment-list :page="'landDetail'"></moment-list>
+                            <moment-list :json="comment"></moment-list>
+                            <!-- 底部提示 -->
+                            <div class="bottomLoad" v-if="comment.length > 0">
+                                <div class="loading" v-show="loading === true">加载中...</div>
+                                <div class="noData" v-if="loading === 'nothing'">没有更多的内容了</div>
+                            </div>
                         </div>
                     </block-slot>
                 </mt-tab-container-item>
@@ -98,7 +103,9 @@
                             <div slot="conent">
                                 <div class="block-slot-item" v-for="(item,index) in landDetailJson.user" :key="index">
                                     <div class="bs-col">{{item.evaluate_num}}元/m²</div>
-                                    <div class="bs-col">100<span class="icon my-icon-zuanshi"></span></div>
+                                    <div class="bs-col">100
+                                        <span class="icon my-icon-zuanshi"></span>
+                                    </div>
                                     <div class="bs-col">{{item.evaluate_time}}</div>
                                 </div>
                             </div>
@@ -179,6 +186,10 @@ export default {
             goldDrop: false, // 金币掉落,第一估计和再次估价的时候为true
             landAbstractJson: '',
             landDetailJson: '',
+            comment: [],
+            page: 1,
+            bottomLock: false,
+            loading: false,
             deadlineYN: 'N',
             center: [121.59996, 31.197646],
             markers: [
@@ -219,10 +230,12 @@ export default {
             this.popupVisible = !this.popupVisible
         },
         getLandAbstract_data() {
+            this.loading = true
+            this.bottomLock = true
             let params = {
                 pid: this.$route.query.pid,
                 uid: this.$store.state.mine.user_id,
-                page: 1
+                page: this.page
             }
             getLandAbstract(params).then(res => {
                 if (res && res.Data) {
@@ -234,7 +247,19 @@ export default {
                         this.center = [lng, lat]
                         this.markers[0].position = [lng, lat]
                     }
+                    if (res.Data.comment && res.Data.comment.length > 0) {
+                        this.comment.push(...res.Data.comment)
+                        this.page++
+                        this.bottomLock = false
+                        this.loading = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
                 }
+            })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
             })
         },
         getLandDetail_data() {
@@ -305,6 +330,10 @@ export default {
 </script>
 <style lang='stylus'>
 #landDetail {
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     font-size: toRem(14);
     .land-tab-nav {
         background: $panelBg;

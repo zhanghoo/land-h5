@@ -18,6 +18,7 @@ export default {
 <style lang='stylus'>
 #index {
     position: relative;
+    height: 100vh;
     padding-bottom: toRem(56);
 }
 </style>

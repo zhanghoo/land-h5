@@ -1,37 +1,22 @@
 <template>
     <div id="moment">
         <header class="moment-header">
-            <router-link :to="{name: 'publish'}"><i class="my-icon-add"></i>发布新动态</router-link>
+            <router-link :to="{name: 'publish'}">
+                <i class="my-icon-add"></i>发布新动态</router-link>
         </header>
         <!-- 列表 -->
-        <momentList :page="'moment'"></momentList>
-        <!-- 支付弹框 -->
-        <!-- <div class="pay-msgbox-wrapper">
-            <transition name="bounce">
-                <div class="pay-msgbox" v-if="payMsgBox">
-                    <div class="pay-msgbox-header">确认支付</div>
-                    <div class="pay-msgbox-content">
-                        <div class="content-message">查看需支付{{payToWatchItem.price}}大师币,是否确认查看?</div>
-                        <div class="content-money">
-                            剩余：
-                            <i class="my-icon-tongqian"></i>
-                            <span class="text">{{$store.state.mine.money}}</span>
-                            <router-link :to="{name: 'recharge'}" class="my-icon-add"></router-link>
-                        </div>
-                    </div>
-                    <div class="pay-msgbox-btns">
-                        <div class="pay-msgbox-btn cancle" @click="payMsgBox = false">不看了</div>
-                        <div class="pay-msgbox-btn confirm" @click="confirmWatch">确认查看</div>
-                    </div>
-                </div>
-            </transition>
-            <div class="pay-msgbox-modal" v-show="payMsgBox" @click="payMsgBox = false"></div>
-        </div> -->
+        <div class="loadMore" v-infinite-scroll="getMomentList_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+            <momentList :json="moments"></momentList>
+            <!-- 底部提示 -->
+            <div class="bottomLoad" v-if="moments.length > 0">
+                <div class="loading" v-show="loading === true">加载中...</div>
+                <div class="noData" v-if="loading === 'nothing'">没有更多的内容了</div>
+            </div>
+        </div>
     </div>
 </template>
 <script>
 import momentList from '@/components/momentList'
-// import { getMomentList } from '@/api'
 import { getMomentList } from '@/api/moment'
 export default {
     name: 'moment',
@@ -39,23 +24,33 @@ export default {
     data() {
         return {
             moments: [],
-            payMsgBox: false,
-            payToWatchItem: ''
+            page: 1,
+            bottomLock: false,
+            loading: false
         }
     },
     methods: {
         // 获取动态列表
         getMomentList_data() {
+            this.loading = true
+            this.bottomLock = true
             let params = {
-                page: 1,
+                page: this.page,
                 uid: this.$store.state.mine.user_id
             }
             getMomentList(params).then(res => {
-                if (res && res.Data && res.Data !== 'null') {
-                    this.moments = res.Data
+                if (res && res.Data) {
+                    this.moments.push(...res.Data)
+                    this.page++
+                    this.loading = false
+                    this.bottomLock = false
                 } else {
-                    this.moments = []
+                    this.loading = 'nothing'
                 }
+            })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
             })
         }
     },
@@ -65,9 +60,10 @@ export default {
 }
 </script>
 <style lang='stylus'>
-$headerHeight = 42px;
+$headerHeight = 42;
 #moment {
     padding-top: toRem($headerHeight);
+    height: 100%;
     .moment-header {
         position: fixed !important;
         top: 0;
@@ -87,89 +83,11 @@ $headerHeight = 42px;
             margin-right: toRem(4);
         }
     }
-    .pay-msgbox-wrapper {
-        position absolute
-        z-index 3000
-        .pay-msgbox {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            background-color: #fff;
-            width: 80%;
-            border-radius: toRem(5);
-            font-size: toRem(15);
-            overflow: hidden;
-            backface-visibility: hidden;
-            padding: toRem(15) toRem(10);
-            z-index: 3002;
-            transform: translate3d(-50%, -50%, 0);
-            .pay-msgbox-header {
-                font-size: toRem(16);
-                font-weight: 700;
-                color: #666;
-                text-align: center;
-                padding-bottom: toRem(15);
-                border-1px-bottom(#eee);
-            }
-            .pay-msgbox-content {
-                position: relative;
-                color: #000;
-                padding: toRem(25) toRem(10);
-                .content-message {
-                    font-size: toRem(15);
-                    margin-bottom: toRem(10);
-                }
-                .content-money {
-                    .my-icon-tongqian {
-                        color: #f9c546;
-                    }
-                    .text {
-                        color: #666;
-                        margin: 0 toRem(10) 0 toRem(5);
-                    }
-                    .my-icon-add {
-                        color: $appColor;
-                    }
-                }
-            }
-            .pay-msgbox-btns {
-                display: flex;
-                height: 40px;
-                line-height: 40px;
-                justify-content: space-around;
-                .pay-msgbox-btn {
-                    display: block;
-                    background-color: #fff;
-                    flex: 1;
-                    text-align: center;
-                    color: #fff;
-                    border-radius: toRem(5);
-                }
-                .cancle {
-                    width: 50%;
-                    background: #ccc;
-                    margin-right: toRem(5);
-                }
-                .confirm {
-                    width: 50%;
-                    background: $appColor;
-                    margin-left: toRem(5);
-                }
-            }
-        }
-        .pay-msgbox-modal {
-            position: fixed;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
-            background: #000;
-            z-index: 3001;
-            transition: all 0.2s;
-        }
+    .loadMore {
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
 </style>
