@@ -39,10 +39,10 @@ const mutations = {
         state.shareInfoDesc = val
     },
     addUserMoney(state, val) {
-        state.mine.money += val
+        state.mine.master_coin += val
     },
     reduceUserMoney(state, val) {
-        state.mine.money -= val
+        state.mine.master_coin -= val
     }
 }
 

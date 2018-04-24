@@ -1,5 +1,5 @@
 <template>
-    <div id="userDetail">
+    <div id="userDetail" v-infinite-scroll="getMomentList_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <div class="userDetail-header">
             <div class="header-user">
                 <div class="user-avatar">
@@ -67,6 +67,10 @@ export default {
 </script>
 <style lang='stylus'>
 #userDetail {
+    height 100vh
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     .userDetail-header {
         display: flex;
         padding: toRem(20) toRem(18);

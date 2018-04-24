@@ -33,6 +33,7 @@ export default {
     position: fixed;
     left: 0;
     bottom: 0;
+    height: toRem(52);
     .nav {
         display: flex;
         align-items: center;

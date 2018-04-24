@@ -1,113 +1,49 @@
 <template>
-    <div class="moment-list">
-        <div class="page-loadmore-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
-            <mt-loadmore :bottom-method="loadBottom" @bottom-status-change="handleBottomChange" :bottom-all-loaded="allLoaded" ref="loadmore">
-                <ul class="page-loadmore-list">
-                    <template v-if="json">
-                        <li class="list-item" v-for="(item, index) in json" :key="index">
-                            <div class="item-user">
-                                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
-                                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
-                                <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
-                            </div>
-                            <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.id}})">{{item.title}}</div>
-                            <div class="item-content">
-                                <!-- 封面 -->
-                                <template v-if="item.image && item.image != null && item.image != 'null'">
-                                    <router-link class="content-cover"
-                                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
-                                     :class="`item-content-${item.image.length}`"
-                                      tag="div">
-                                         <img v-for="(imgItem, index) in imgItem.image"
-                                              :src="imgItem"
-                                              :key="index"
-                                              class="cover-img">
-                                     </router-link>
-                                </template>
-                                <!-- 需支付 -->
-                                <template v-if="item.is_pay === '1' && isMySelf !== true">
-                                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
-                                </template>
-                                <!-- 文本内容 -->
-                                <template v-else>
-                                    <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.id}})">{{item.content}}</div>
-                                </template>
-                                <!-- 概览 -->
-                                <template v-if="item.mode === 'overview'">
-                                    <router-link class="content-overview" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" tag="div">
-                                        <div class="overview-title">{{item.subTitle}}</div>
-                                        <div class="overview-adress">
-                                            <i class="my-icon-adress"></i>{{item.adress}}</div>
-                                        <div class="overview-label" v-if="item.subLabel">
-                                            <mt-button class="label" plain type="primary" v-for="(item, index) in item.subLabel" :key="index">{{item}}</mt-button>
-                                        </div>
-                                    </router-link>
-                                </template>
-                            </div>
-                            <div class="item-info">
-                                <i class="my-icon-zan" :class="{'active': item.is_like === '1'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
-                                <span class="info-time">{{item.pub_time}}</span>
-                            </div>
-                        </li>
-                    </template>
-                    <template v-else>
-                        <li v-for="(item, index) in momentList" :key="index" class="list-item page-loadmore-listitem">
-                            <div class="item-user">
-                                <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
-                                <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
-                                <mt-button class="label" plain type="primary" v-if="item.level">{{item.level.level_name}}</mt-button>
-                            </div>
-                            <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.title}}</div>
-                            <div class="item-content">
-                                <!-- 封面 -->
-                                <template v-if="item.image && item.image != null && item.image != 'null'">
-                                    <router-link class="content-cover"
-                                     :to="{path: '/momentDetail', query: { 'cid': item.cid}}"
-                                     :class="`item-content-${item.image.length}`"
-                                      tag="div">
-                                         <img v-for="(item, index) in item.image"
-                                              :src="item"
-                                              :key="index"
-                                              class="cover-img">
-                                     </router-link>
-                                </template>
-                                <!-- 需支付 -->
-                                <template v-if="item.is_pay === '1'">
-                                    <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
-                                </template>
-                                <!-- 文本内容 -->
-                                <template v-else>
-                                    <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
-                                </template>
-                                <!-- 地块 这里只有动态页才会有 但是 动态返回的页面里面返回product是object, 里面有purpose landDetail 里面也有 但是 是 string 此时 再用到router-link 就会报错 !!!这里需要后台支持 改一下动态页这个返回的字段 0421 -->
-                                <template v-if="item.product_moment && item.product_moment !== 'null'" >
-                                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose}}" tag="div">
-                                        <div class="overview-title">{{item.product_moment.name}}</div>
-                                        <div class="overview-adress">
-                                            <i class="my-icon-adress"></i>{{item.product_moment.province}}
-                                        </div>
-                                        <mt-button class="overview-type" plain type="primary">{{item.product_moment.sold_type}}</mt-button>
-                                    </router-link>
-                                </template>
-                            </div>
-                            <div class="item-info">
-                                <i class="my-icon-zan" :class="{'active': item.is_like === '1'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
-                                <span class="info-time">{{item.pub_time}}</span>
-                            </div>
-                        </li>
-                    </template>
-                </ul>
-                <div v-show="allLoaded" class="mint-nomore">没有更多了...</div>
-                <div slot="bottom" class="mint-loadmore-bottom">
-                    <span v-show="bottomStatus !== 'loading'" :class="{ 'is-rotate': bottomStatus === 'drop' }">↑</span>
-                    <span v-show="bottomStatus === 'loading'">
-                        <mt-spinner type="snake"></mt-spinner>
-                    </span>
+    <div>
+        <ul class="moment-list" v-if="json">
+            <li class="list-item" v-for="(item, index) in json" :key="index">
+                <div class="item-user">
+                    <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
+                    <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
+                    <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
                 </div>
-            </mt-loadmore>
-        </div>
+                <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.title}}</div>
+                <div class="item-content">
+                    <!-- 封面 -->
+                    <template v-if="item.image && item.image != null && item.image != 'null'">
+                        <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" :class="`item-content-${item.image.length}`" tag="div">
+                            <img v-for="(imgItem, index) in item.image" :src="imgItem" :key="index" class="cover-img">
+                        </router-link>
+                    </template>
+                    <!-- 需支付 -->
+                    <template v-if="item.is_pay === '1' && !isMySelf">
+                        <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
+                    </template>
+                    <!-- 文本内容 -->
+                    <template v-else>
+                        <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
+                    </template>
+                    <!-- 概览 -->
+                    <template v-if="item.product_moment && item.product_moment !== 'null'">
+                        <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose}}" tag="div">
+                            <div class="overview-title">{{item.product_moment.name}}</div>
+                            <div class="overview-adress">
+                                <i class="my-icon-adress"></i>{{item.product_moment.province}}
+                            </div>
+                            <mt-button class="overview-type" plain type="primary">{{item.product_moment.sold_type}}</mt-button>
+                        </router-link>
+                    </template>
+                </div>
+                <div class="item-info">
+                    <i class="my-icon-zan" :class="{'active': item.is_like && item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                    <span class="info-time">{{item.pub_time}}</span>
+                </div>
+            </li>
+            <!-- 地块 这里只有动态页才会有 但是 动态返回的页面里面返回product是object, 里面有purpose landDetail 里面也有 但是 是 string 此时 再用到router-link 就会报错 !!!这里需要后台支持 改一下动态页这个返回的字段 0421 -->
+
+        </ul>
         <!-- 支付弹框 -->
-        <div class="pay-msgbox-wrapper">
+        <div class="pay-msgbox-wrapper" v-if="payMsgBox">
             <transition name="bounce">
                 <div class="pay-msgbox" v-if="payMsgBox">
                     <div class="pay-msgbox-header">确认支付</div>
@@ -116,7 +52,7 @@
                         <div class="content-money">
                             剩余：
                             <i class="my-icon-tongqian"></i>
-                            <span class="text">{{$store.state.mine.money}}</span>
+                            <span class="text">{{$store.state.mine.master_coin}}</span>
                             <router-link :to="{name: 'recharge'}" class="my-icon-add"></router-link>
                         </div>
                     </div>
@@ -131,74 +67,23 @@
     </div>
 </template>
 <script>
-import { postZan, getMomentList } from '@/api/moment'
-import { getLandAbstract } from '@/api'
+import { postZan } from '@/api/moment'
 export default {
     name: 'momentList',
     props: {
         json: {
-            type: Array // json传时用json 不传是 用 本页的 momentList
+            type: Array
         },
-        page: {
-            type: String
-        },
-        isMySelf: {
-            type: Boolean, // 是否为用户自己的主页
-            default: false
-        }
-    },
-    computed: {
-
+        isMySelf: false
     },
     data() {
         return {
-            list: [],
-            momentList: [],
-            pageCount: 0,
-            allLoaded: false,
-            bottomStatus: '',
             wrapperHeight: 0,
             payMsgBox: false,
-            payToWatchItem: '',
-            p: 1
+            payToWatchItem: ''
         }
-    },
-    created() {
-        if (this.page === 'moment') {
-            // 动态页
-            this.getMomentList_data()
-        } else if (this.page === 'landDetail') {
-            // 评论
-            this.getLandAbstract_data()
-        }
-    },
-    mounted() {
-        this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top
     },
     methods: {
-        handleBottomChange(status) {
-            this.bottomStatus = status
-        },
-        loadBottom() {
-            setTimeout(() => {
-                if (this.page === 'moment') {
-                    // 动态页
-                    this.getMomentList_data()
-                    // this.allLoaded = true
-                    this.$refs.loadmore.onBottomLoaded()
-                } else if (this.page === 'landDetail') {
-                    // 评论
-                    // console.log('loadBottom', this.pageCount)
-                    if (this.pageCount === 0) {
-                        this.allLoaded = true
-                    } else {
-                        this.getLandAbstract_data()
-                    }
-                    // this.allLoaded = true
-                    this.$refs.loadmore.onBottomLoaded()
-                }
-            }, 1500)
-        },
         addZan(item) {
             if (item.is_like === '0') {
                 let params = {
@@ -223,51 +108,12 @@ export default {
         },
         // 支付查看内容
         confirmWatch() {
-            // if (this.$store.state.mine.money > this.payToWatchItem.price) {.
-            // this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.price)
-            // this.$toast(`-${this.payToWatchItem.price}大师币`)
-            this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
-            // }
+            if (this.$store.state.mine.master_coin > this.payToWatchItem.money) {
+                this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.money)
+                this.$toast(`-${this.payToWatchItem.money}大师币`)
+                this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
+            }
             this.payMsgBox = false
-        },
-        // 获取动态列表
-        getMomentList_data() {
-            let params = {
-                page: this.p,
-                uid: this.$store.state.mine.user_id
-            }
-            // console.log(params)
-            getMomentList(params).then(res => {
-                if (res && res.Data && res.Data !== 'null' && this.p > 0) {
-                    this.momentList.push.apply(this.momentList, res.Data)
-                    this.p++
-                } else {
-                    this.allLoaded = true
-                }
-            })
-        },
-        // 获取评论列表
-        getLandAbstract_data() {
-            let params = {
-                pid: this.$route.query.pid,
-                uid: this.$store.state.mine.user_id,
-                page: this.p
-            }
-            getLandAbstract(params).then(res => {
-                if (res && res.Data && res.Data !== 'null' && res.Data.comment !== null) {
-                    if (res.Data.comment.length > 0 && this.p > 0) {
-                        // console.log(res.Data.comment.length)
-                        if (res.Data.comment.length >= 10) {
-                            // 返回的评论数 为 后台页数每页评论数 视为还有下一页
-                            this.pageCount++
-                        }
-                        this.momentList.push.apply(this.momentList, res.Data.comment)
-                    } else {
-                        this.allLoaded = true
-                    }
-                    this.p++
-                }
-            })
         }
     }
 }
@@ -277,9 +123,6 @@ $mainText = #333;
 $subText = #666;
 .moment-list {
     margin: 0;
-    .page-loadmore-wrapper {
-        overflow-y: scroll;
-    }
     .list-item {
         padding: toRem(15) toRem(18) toRem(12);
         margin-bottom: toRem(10);
@@ -417,7 +260,7 @@ $subText = #666;
     .mint-loadmore-bottom {
         span {
             display: inline-block;
-            transition: .2s linear;
+            transition: 0.2s linear;
             vertical-align: middle;
             color: #999;
             font-size: toRem(14);
@@ -426,89 +269,93 @@ $subText = #666;
             }
         }
     }
-    .pay-msgbox-wrapper {
-        position: absolute;
-        z-index: 3000;
-        .pay-msgbox {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            background-color: #fff;
-            width: 80%;
-            border-radius: toRem(5);
-            font-size: toRem(15);
-            overflow: hidden;
-            backface-visibility: hidden;
-            padding: toRem(15) toRem(10);
-            z-index: 3002;
-            transform: translate3d(-50%, -50%, 0);
-            .pay-msgbox-header {
-                font-size: toRem(16);
-                font-weight: 700;
-                color: #666;
+}
+.pay-msgbox-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 3000;
+    .pay-msgbox {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        background-color: #fff;
+        width: 80%;
+        border-radius: toRem(5);
+        font-size: toRem(15);
+        overflow: hidden;
+        backface-visibility: hidden;
+        padding: toRem(15) toRem(10);
+        z-index: 3002;
+        transform: translate3d(-50%, -50%, 0);
+        .pay-msgbox-header {
+            font-size: toRem(16);
+            font-weight: 700;
+            color: #666;
+            text-align: center;
+            padding-bottom: toRem(15);
+            border-1px-bottom(#eee);
+        }
+        .pay-msgbox-content {
+            position: relative;
+            color: #000;
+            padding: toRem(25) toRem(10);
+            .content-message {
+                font-size: toRem(15);
+                margin-bottom: toRem(10);
+            }
+            .content-money {
+                .my-icon-tongqian {
+                    color: #f9c546;
+                }
+                .text {
+                    color: #666;
+                    margin: 0 toRem(10) 0 toRem(5);
+                }
+                .my-icon-add {
+                    color: $appColor;
+                }
+            }
+        }
+        .pay-msgbox-btns {
+            display: flex;
+            height: 40px;
+            line-height: 40px;
+            justify-content: space-around;
+            .pay-msgbox-btn {
+                display: block;
+                background-color: #fff;
+                flex: 1;
                 text-align: center;
-                padding-bottom: toRem(15);
-                border-1px-bottom(#eee);
+                color: #fff;
+                border-radius: toRem(5);
             }
-            .pay-msgbox-content {
-                position: relative;
-                color: #000;
-                padding: toRem(25) toRem(10);
-                .content-message {
-                    font-size: toRem(15);
-                    margin-bottom: toRem(10);
-                }
-                .content-money {
-                    .my-icon-tongqian {
-                        color: #f9c546;
-                    }
-                    .text {
-                        color: #666;
-                        margin: 0 toRem(10) 0 toRem(5);
-                    }
-                    .my-icon-add {
-                        color: $appColor;
-                    }
-                }
+            .cancle {
+                width: 50%;
+                background: #ccc;
+                margin-right: toRem(5);
             }
-            .pay-msgbox-btns {
-                display: flex;
-                height: 40px;
-                line-height: 40px;
-                justify-content: space-around;
-                .pay-msgbox-btn {
-                    display: block;
-                    background-color: #fff;
-                    flex: 1;
-                    text-align: center;
-                    color: #fff;
-                    border-radius: toRem(5);
-                }
-                .cancle {
-                    width: 50%;
-                    background: #ccc;
-                    margin-right: toRem(5);
-                }
-                .confirm {
-                    width: 50%;
-                    background: $appColor;
-                    margin-left: toRem(5);
-                }
+            .confirm {
+                width: 50%;
+                background: $appColor;
+                margin-left: toRem(5);
             }
         }
-        .pay-msgbox-modal {
-            position: fixed;
-            left: 0;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.5;
-            background: #000;
-            z-index: 3001;
-            transition: all 0.2s;
-        }
+    }
+    .pay-msgbox-modal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.5;
+        background: #000;
+        z-index: 3001;
+        transition: all 0.2s;
     }
 }
 </style>
