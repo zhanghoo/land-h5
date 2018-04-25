@@ -181,7 +181,7 @@ export default {
         onWxMenuShare() {
             // 配置微信分享按钮
             let _shareInfo = this.shareInfo
-            // console.log(_shareInfo)
+            console.log(_shareInfo)
             if (this.isWeiXin) {
                 // alert('点击了分享, 开始config')
                 wx.config({

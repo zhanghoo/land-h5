@@ -7,8 +7,8 @@ export function getMineInfo(user_id) {
 }
 
 // 获取用户主页（他人）
-export function getUserDetail(userid) {
-    let res = request('/home/system/userHomePage', 'POST', { 'user_id': userid })
+export function getUserDetail({ userid, page }) {
+    let res = request('/home/system/userHomePage', 'POST', { 'user_id': userid, 'p': page })
     return res
 }
 
