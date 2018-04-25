@@ -12,7 +12,9 @@ const mineGold = () => import('@/page/index/mine/children/mineGold')
 const mineScore = () => import('@/page/index/mine/children/mineScore')
 const partInRecord = () => import('@/page/index/mine/children/partInRecord')
 const recharge = () => import('@/page/index/mine/children/recharge')
+const mineRecharge = () => import('@/page/index/mine/children/recharge')
 const withdrawCash = () => import('@/page/index/mine/children/withdrawCash')
+const mineWithdrawCash = () => import('@/page/index/mine/children/withdrawCash/next')
 const withdrawCashNext = () => import('@/page/index/mine/children/withdrawCash/next')
 const withdrawCashAdd = () => import('@/page/index/mine/children/withdrawCash/add')
 const feedback = () => import('@/page/index/mine/children/feedback')
@@ -92,6 +94,11 @@ export default new Router({
                             component: recharge
                         },
                         {
+                            name: 'mineWithdrawCash',
+                            path: 'mineWithdrawCash',
+                            component: mineWithdrawCash
+                        },
+                        {
                             name: 'withdrawCash',
                             path: 'withdrawCash',
                             component: withdrawCash,
@@ -126,6 +133,11 @@ export default new Router({
                     ]
                 }
             ]
+        },
+        {
+            name: 'mineRecharge',
+            path: '/mineRecharge',
+            component: mineRecharge
         },
         {
             name: 'transactionDetail',

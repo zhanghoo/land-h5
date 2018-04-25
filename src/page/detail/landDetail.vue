@@ -461,7 +461,7 @@ export default {
         .block-slot {
             &.land-detail-comments {
                 .land-detail-publish {
-                    font-size: toRem(12);
+                    font-size: toRem(14);
                     color: $appColor;
                 }
                 .block-slot-body {

@@ -76,6 +76,12 @@ export function postRecharge(money) {
     return res
 }
 
+// 提现
+export function getMoney(money) {
+    let res = request('/home/User/getMoney', 'POST', { 'money': money })
+    return res
+}
+
 // 身份验证
 export async function postAuthValidate({ company, file }) {
     let params = {

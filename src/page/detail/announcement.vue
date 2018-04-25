@@ -76,12 +76,14 @@ export default {
                     font-size: toRem(14);
                     font-weight: 700;
                     color: #333;
+                    vertical-align: middle;
                 }
                 .apu-tag {
                     padding: toRem(3.5) toRem(5.5);
                     height: auto;
                     font-size: toRem(9);
                     line-height: 1;
+                    vertical-align: middle;
                 }
             }
             .announce-panel-win {
@@ -90,7 +92,7 @@ export default {
         }
         .announce-panel-landinfo {
             padding: toRem(14) 0;
-            font-size: toRem(13);
+            font-size: toRem(15);
             line-height: 1;
             .apl-address {
                 line-height: toRem(18);
@@ -103,7 +105,7 @@ export default {
                 align-items center
                 margin-right: toRem(4.5);
                 .apl-prices-tags {
-                    font-size toRem(13)
+                    font-size toRem(14)
                     .apl-tag {
                         padding: toRem(5) toRem(8);
                         height: auto;

@@ -1,28 +1,45 @@
 <template>
     <div id="withdrawCashNext">
-        <mt-field placeholder="请输入提现金额" type="number" class="w-n-input"></mt-field>
+        <mt-field placeholder="请输入提现金额" type="number" class="w-n-input" v-model="money"></mt-field>
         <div class="w-n-tip">
-            可提现金额：<span>100.00</span><br>
+            可提现金额：<span>{{mine.master_coin}}</span><br>
             提示：提现会扣除一定积分
         </div>
         <p class="w-n-btn-next">
-            <mt-button class="wnbn-btn" type="primary">提现</mt-button>
+            <mt-button class="wnbn-btn" type="primary" @click="get_money">提现</mt-button>
         </p>
     </div>
 </template>
 <script>
+import { getMoney } from '@/api/mine'
+import { mapState } from 'vuex'
 export default {
     name: 'withdrawCashNext',
     data() {
         return {
-
+            money: ''
         }
     },
     computed: {
-
+        ...mapState([
+            'mine'
+        ])
     },
     methods: {
-
+        get_money() {
+            if (!this.money) {
+                this.$toast('请填写要提现的金额')
+            } else {
+                getMoney(this.money).then(res => {
+                    if (res) {
+                        this.$toast(res.Msg)
+                        setTimeout(function() {
+                            location.reload()
+                        }, 1500)
+                    }
+                })
+            }
+        }
     },
     mounted() {
 
