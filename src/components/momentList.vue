@@ -40,7 +40,6 @@
                 </div>
             </li>
             <!-- 地块 这里只有动态页才会有 但是 动态返回的页面里面返回product是object, 里面有purpose landDetail 里面也有 但是 是 string 此时 再用到router-link 就会报错 !!!这里需要后台支持 改一下动态页这个返回的字段 0421 -->
-
         </ul>
         <!-- 支付弹框 -->
         <div class="pay-msgbox-wrapper" v-if="payMsgBox">
@@ -218,13 +217,14 @@ $subText = #666;
                     align-items: center;
                     color: $subText;
                     font-size: toRem(13);
+                    margin-bottom: toRem(10);
                     i {
                         color: $appColor;
                         margin-right: toRem(5);
                     }
                 }
                 .overview-type {
-                    margin: 0 toRem(5) toRem(4) 0;
+                    margin: 0 toRem(5) 0 0;
                     height: toRem(18);
                     border-radius: toRem(2);
                     font-size: toRem(12);

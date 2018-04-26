@@ -216,7 +216,7 @@ export default {
         getRankList_data() {
             getRankList().then(res => {
                 if (res && res.Data) {
-                    this.rankList = res.Data
+                    this.rankList = res.Data.all
                 }
             })
         },

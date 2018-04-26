@@ -7,8 +7,8 @@ export function getSystemNews() {
 }
 
 // 排行榜
-export function getRankList() {
-    let res = request('/home/system/rankList', 'POST')
+export function getRankList(page) {
+    let res = request('/home/system/rankList', 'POST', { 'p': page })
     return res
 }
 

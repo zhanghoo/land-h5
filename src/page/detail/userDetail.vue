@@ -40,7 +40,7 @@ export default {
     data() {
         return {
             json: [],
-            userinfo: [],
+            userinfo: {},
             mySelf: false,
             page: 1,
             bottomLock: false,
@@ -65,7 +65,10 @@ export default {
                 // console.log(res)
                 if (res && res.Data && res.Data.userstate) {
                     this.json.push(...res.Data.userstate)
-                    this.userinfo = res.Data.userinfo
+                    if (!this.userinfo.nick_name) {
+                        // 只需要赋值一次
+                        this.userinfo = res.Data.userinfo
+                    }
                     if (this.userinfo.user_id === this.mine.user_id) {
                         // 用户查看自己的主页
                         this.mySelf = true
