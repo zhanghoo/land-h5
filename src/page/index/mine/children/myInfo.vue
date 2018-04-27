@@ -71,6 +71,9 @@ export default {
                 postUserInfo(params).then(res => {
                     if (res && (res.Code === 0 || res.data.Code === 0)) {
                         this.$toast('修改成功')
+                        setTimeout(function() {
+                            location.reload()
+                        }, 1000)
                     }
                 })
             }

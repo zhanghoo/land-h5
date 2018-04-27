@@ -150,7 +150,6 @@ export default {
                 .item-name {
                     display: flex;
                     align-items: center;
-                    justify-content center;
                     .name-avatar {
                         flex-shrink: 0;
                         width: toRem(25);
@@ -216,7 +215,6 @@ export default {
             .item-name {
                 display: flex;
                 align-items: center;
-                justify-content center;
                 .name-avatar {
                     flex-shrink: 0;
                     width: toRem(25);

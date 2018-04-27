@@ -13,7 +13,7 @@
                         <span v-if="mine.is_charge === '1'" class="is-charge my-icon-huizhanghuiyuan"></span>
                         <span v-else class="isnt-charge">（首次充值即可成为会员）</span>
                     </div>
-                    <mt-button class="info-label" plain type="primary">{{mine.level}}</mt-button>
+                    <mt-button class="info-label" plain type="primary">{{mine.is_charge === '1' ? mine.level : '地产小狗'}}</mt-button>
                 </div>
             </div>
             <span class="my-icon-more"></span>
