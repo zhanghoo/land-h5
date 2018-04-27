@@ -164,7 +164,7 @@ export default {
                     if (!this.$route.query.pid) {
                         // 操作为发布动态时, 成功 3s 跳转到回动态页面
                         setTimeout(function() {
-                            _self.$router.push({ name: 'moment' })
+                            _self.$router.go(-1)
                         }, 2000)
                     } else {
                         _self.$router.go(-1)

@@ -67,7 +67,7 @@
                 </li>
                 <!-- 0420反馈添加: 增加用户动态和排行的跳转链接 -->
                 <li class="sets-item">
-                    <router-link class="sets-item-a" :to="{name: 'userDetail', params: { userId: mine.user_id}}">
+                    <router-link class="sets-item-a" :to="{path: '/userDetail', query: { userId: mine.user_id}}">
                         <div class="sets-item-icon my-icon-i18n"></div>
                         <span class="sets-item-text">用户动态</span>
                         <div class="my-icon-more"></div>
@@ -108,15 +108,20 @@
         </mt-popup>
         <mt-popup v-model="popupVisible2" position="center">
             <div class="mine-invitation2">
-                <div class="mi2-header">邀请好友<span class="mi2-close my-icon-close" @click="clickInvitation2"></span></div>
+                <div class="mi2-header">邀请好友
+                    <span class="mi2-close my-icon-close" @click="clickInvitation2"></span>
+                </div>
                 <div class="mi2-content">
                     <div class="mi2-line">
                         <span class="mi2-title">第一步</span>点击右上角的
-                        <span class="mi2-menu"><i class="mi2-menu-icon my-icon-gengduo"></i></span>微信功能
+                        <span class="mi2-menu">
+                            <i class="mi2-menu-icon my-icon-gengduo"></i>
+                        </span>微信功能
                     </div>
                     <div class="mi2-line">
                         <span class="mi2-title">第二步</span>选择
-                        <span class="mi2-share"><i class="mi2-share-icon my-icon-fenxiang1"></i>发送给好友</span>分享游戏到微信好友
+                        <span class="mi2-share">
+                            <i class="mi2-share-icon my-icon-fenxiang1"></i>发送给好友</span>分享游戏到微信好友
                     </div>
                 </div>
                 <div class="mi2-btns">
@@ -195,7 +200,7 @@ export default {
                         'chooseWXPay'
                     ]
                 })
-                wx.ready(function() {
+                wx.ready(function () {
                     wx.onMenuShareTimeline({
                         'title': '分享到朋友圈',
                         'imgUrl': '',
@@ -217,6 +222,8 @@ export default {
 </script>
 <style lang='stylus'>
 #mine {
+    min-height: 100%;
+    padding-bottom: toRem(56);
     .mine-info {
         display: flex;
         padding: toRem(20) toRem(18);
@@ -241,7 +248,7 @@ export default {
                 flex: 1;
                 padding-left: toRem(18.5);
                 .name {
-                    margin: toRem(8.5) 0 toRem(12);
+                    margin: toRem(8.5) 0 toRem(10);
                     font-size: toRem(18);
                     line-height: 1;
                     .is-charge {
@@ -266,9 +273,9 @@ export default {
             font-size: toRem(14);
             font-weight: bold;
             color: #999;
-            margin-left auto;
-            padding toRem(20)
-            padding-right 0
+            margin-left: auto;
+            padding: toRem(20);
+            padding-right: 0;
         }
     }
     .mine-count {

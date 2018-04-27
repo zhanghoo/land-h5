@@ -43,6 +43,7 @@
                 </template>
                 <div class="item-info">
                     <i class="my-icon-zan" :class="{'active': item.is_like && item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
+                    <i class="my-icon-delete" v-if="isMySelf" @click="deleteMoment(item, index)">删除</i>
                     <span class="info-time">{{item.pub_time}}</span>
                 </div>
             </li>
@@ -130,6 +131,16 @@ export default {
                 this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
             }
             this.payMsgBox = false
+        },
+        // 删除用户评论
+        deleteMoment(item, index) {
+            this.$msgBox.confirm('确定执行此操作?').then(action => {
+                console.log(action)
+                if (action === 'confirm') {
+                    this.json.splice(index, 1)
+                }
+                // 发送请求
+            })
         }
     }
 }
@@ -251,7 +262,7 @@ $subText = #666;
         }
         .item-info {
             display: flex;
-            justify-content: space-between;
+            align-items: center;
             padding-top: toRem(12);
             border-1px-top(#eee);
             .my-icon-zan {
@@ -262,10 +273,17 @@ $subText = #666;
                     color: $appColor;
                 }
             }
+            .my-icon-delete {
+                color: #ccc;
+                font-size: toRem(12);
+                transform: scale(0.9);
+                margin-left: toRem(10);
+            }
             .info-time {
                 color: #ccc;
                 font-size: toRem(12);
                 transform: scale(0.9);
+                margin-left: auto;
             }
         }
     }
