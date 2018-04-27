@@ -22,7 +22,6 @@ const idAuth = () => import('@/page/index/mine/children/idAuth')
 const vipVerify = () => import('@/page/index/mine/children/vipVerify')
 const landDetail = () => import('@/page/detail/landDetail')
 const transactionDetail = () => import('@/page/detail/transactionDetail')
-const dealInformation = () => import('@/page/detail/transaction/dealInformation')
 const dealInfo = () => import('@/page/detail/transaction/dealInformation')
 const momentDetail = () => import('@/page/detail/momentDetail')
 const rankList = () => import('@/page/detail/rankList')
@@ -142,18 +141,11 @@ export default new Router({
         {
             name: 'transactionDetail',
             path: '/transactionDetail',
-            component: transactionDetail,
-            children: [
-                {
-                    name: 'dealInformation',
-                    path: 'dealInformation/:bid',
-                    component: dealInformation
-                }
-            ]
+            component: transactionDetail
         },
         {
             name: 'dealInfo',
-            path: '/dealInfo/:bid',
+            path: '/dealInfo',
             component: dealInfo
         },
         {
@@ -203,7 +195,7 @@ export default new Router({
         },
         {
             name: 'userDetail',
-            path: '/userDetail/:userId',
+            path: '/userDetail',
             component: userDetail
         }
     ]

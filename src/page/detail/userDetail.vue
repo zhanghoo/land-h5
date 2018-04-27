@@ -58,7 +58,7 @@ export default {
             this.loading = true
             this.bottomLock = true
             let params = {
-                user_id: this.$route.params.userId,
+                user_id: this.$route.query.userId,
                 page: this.page
             }
             getUserDetail(params).then(res => {

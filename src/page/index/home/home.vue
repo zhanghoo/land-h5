@@ -11,25 +11,25 @@
             </div>
             <div class="home-rank">
                 <div class="home-rank-item" v-if="rankList[1]" @click.self="$router.push({name: 'rankList'})">
-                    <div @click="$router.push({name: 'userDetail', params: { userId: rankList[1].user_id }})">
+                    <div @click="$router.push({path: '/userDetail', query: { userId: rankList[1].user_id }})">
                         <rank-top :color="'#C6C6C6'" :avatar="rankList[1].avatar" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name"></rank-top>
                     </div>
                     <span class="home-rank-name">{{rankList[1].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({name: 'userDetail', params: { userId: rankList[1].user_id }})">{{rankList[1].master_score}}</span>
+                    <span class="home-rank-num" @click="$router.push({path: '/userDetail', query: { userId: rankList[1].user_id }})">{{rankList[1].master_score}}</span>
                 </div>
                 <div class="home-rank-item" v-if="rankList[0]" @click.self="$router.push({name: 'rankList'})">
-                    <div @click="$router.push({name: 'userDetail', params: { userId: rankList[0].user_id }})">
+                    <div @click="$router.push({path: '/userDetail', query: { userId: rankList[0].user_id }})">
                         <rank-top :color="'#FCD107'" :avatar="rankList[0].avatar" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
                     </div>
                     <span class="home-rank-name">{{rankList[0].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({name: 'userDetail', params: { userId: rankList[0].user_id }})">{{rankList[0].master_score}}</span>
+                    <span class="home-rank-num" @click="$router.push({path: '/userDetail', query: { userId: rankList[0].user_id }})">{{rankList[0].master_score}}</span>
                 </div>
                 <div class="home-rank-item" v-if="rankList[2]" @click.self="$router.push({name: 'rankList'})">
-                    <div @click="$router.push({name: 'userDetail', params: { userId: rankList[2].user_id }})">
+                    <div @click="$router.push({path: '/userDetail', query: { userId: rankList[2].user_id }})">
                         <rank-top :color="'#804621'" :avatar="rankList[2].avatar" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
                     </div>
                     <span class="home-rank-name">{{rankList[2].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({name: 'userDetail', params: { userId: rankList[2].user_id }})">{{rankList[2].master_score}}</span>
+                    <span class="home-rank-num" @click="$router.push({path: '/userDetail', query: { userId: rankList[2].user_id }})">{{rankList[2].master_score}}</span>
                 </div>
             </div>
             <div class="home-msg">
@@ -65,9 +65,7 @@
             </span>
             <div slot="conent">
                 <template v-for="(item, index) in newestList">
-                    <div class="block-slot-item"
-                         @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})"
-                         :key="index">
+                    <div class="block-slot-item" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})" :key="index">
                         {{item.name}}
                     </div>
                 </template>
@@ -80,7 +78,7 @@
             </span>
             <div slot="conent">
                 <div v-for="(item, index) in announceList" :key="index" class="block-slot-item">
-                    <div class="bsi-panel" @click="$router.push({name: 'transactionDetail', query: { id: item.id}})">
+                    <div class="bsi-panel" @click="$router.push({path: '/transactionDetail', query: { id: item.id}})">
                         <div class="bsi-panel-l">
                             <p class="bsi-title">{{item.name}}</p>
                             <p class="bsi-type">{{item.purpose | purposeToString}}</p>
@@ -109,10 +107,7 @@
         <!-- is_sign 0 当天首次未签， 1 当天首次已签
              init popupVisible = ture，默认显示-->
         <template v-if="!mine.is_sign">
-            <mt-popup v-model="popupVisible"
-                      popup-transition="popup-fade"
-                      class="h-popup"
-                      :closeOnClickModal="false">
+            <mt-popup v-model="popupVisible" popup-transition="popup-fade" class="h-popup" :closeOnClickModal="false">
                 <!-- <div v-if="!scoreBtnClicked" class="home-get-score">
                     <div class="home-get-score-title">每日签到
                         <span class="hg-icon my-icon-baocuo" @click="clickInvitation"></span>
@@ -206,7 +201,7 @@ export default {
             // 滚动出一个li的高度
             $ulList.stop().animate({
                 marginTop: -scrollH
-            }, 600, function() {
+            }, 600, function () {
                 // 动画结束后, 将当前ul marginTop置为初始值
                 $ulList.css({
                     marginTop: 0
@@ -296,6 +291,8 @@ export default {
 </script>
 <style lang='stylus'>
 #home {
+    min-height: 100%;
+    padding-bottom: toRem(56);
     .home-top {
         margin-bottom: toRem(10);
         background: $panelBg;
@@ -401,7 +398,7 @@ export default {
             }
         }
     }
-    .publish-newest-list .block-slot-item{
+    .publish-newest-list .block-slot-item {
         font-size: toRem(14);
     }
     .winner-newest-list {
@@ -564,8 +561,7 @@ export default {
                     .home-box-close-img {
                         visibility: hidden;
                     }
-                    .home-box-open-score,
-                    .home-box-open-img {
+                    .home-box-open-score, .home-box-open-img {
                         visibility: visible;
                     }
                 }
