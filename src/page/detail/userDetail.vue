@@ -1,5 +1,5 @@
 <template>
-    <div id="userDetail" v-infinite-scroll="getMomentList_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+    <div id="userDetail" v-infinite-scroll="getUserMoment_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <div class="userDetail-header">
             <div class="header-user">
                 <div class="user-avatar">
@@ -19,6 +19,11 @@
                 <span slot="title">发布的动态</span>
                 <div slot="conent">
                     <momentList :json="json" :isMySelf="mySelf"></momentList>
+                    <!-- 底部提示 -->
+                    <div class="bottomLoad" v-if="json.length > 0">
+                        <div class="loading" v-show="loading === true">加载中...</div>
+                        <div class="noData" v-if="loading === 'nothing'">没有更多的内容了</div>
+                    </div>
                 </div>
             </block-slot>
         </div>
@@ -35,8 +40,11 @@ export default {
     data() {
         return {
             json: [],
-            userinfo: [],
-            mySelf: false
+            userinfo: {},
+            mySelf: false,
+            page: 1,
+            bottomLock: false,
+            loading: false
         }
     },
     computed: {
@@ -47,16 +55,33 @@ export default {
     methods: {
         getUserMoment_data() {
             // console.log(this.$route.params.userId)
-            getUserDetail(this.$route.params.userId).then(res => {
+            this.loading = true
+            this.bottomLock = true
+            let params = {
+                user_id: this.$route.params.userId,
+                page: this.page
+            }
+            getUserDetail(params).then(res => {
                 // console.log(res)
-                if (res && res.Data) {
-                    this.json = res.Data.userstate
-                    this.userinfo = res.Data.userinfo
+                if (res && res.Data && res.Data.userstate) {
+                    this.json.push(...res.Data.userstate)
+                    if (!this.userinfo.nick_name) {
+                        // 只需要赋值一次
+                        this.userinfo = res.Data.userinfo
+                    }
                     if (this.userinfo.user_id === this.mine.user_id) {
                         // 用户查看自己的主页
                         this.mySelf = true
                     }
+                    this.page++
+                    this.loading = false
+                    this.bottomLock = false
+                } else {
+                    this.loading = 'nothing'
                 }
+            }).catch(err => {
+                console.log(err)
+                this.loading = false
             })
         }
     },

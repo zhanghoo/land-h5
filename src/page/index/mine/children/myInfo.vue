@@ -52,14 +52,15 @@ export default {
             }
         },
         changeUserInfo() {
-            if (!this.avatar) {
-                this.$toast('请上传头像')
-            } else if (!this.username) {
+            // 0425反馈修改 头像、昵称、手机号可以分开修改
+            if (!this.username) {
                 this.$toast('昵称不能为空')
             } else if (!this.phone) {
                 this.$toast('手机号码不能为空')
             } else if (this.phone.length !== 11 || !(/^(1[3,4,5,6,7,8,9])\d{9}$/.test(this.phone))) {
                 this.$toast('请填写正确的手机号码！')
+            } else if (!this.avatar && this.username === this.mine.nick_name && this.phone === this.mine.phone) {
+                this.$toast('请至少修改一项后再提交')
             } else {
                 let params = {
                     userid: this.mine.user_id,
@@ -67,7 +68,6 @@ export default {
                     phone: this.phone,
                     avatar: this.avatar
                 }
-                console.log(params)
                 postUserInfo(params).then(res => {
                     if (res && (res.Code === 0 || res.data.Code === 0)) {
                         this.$toast('修改成功')

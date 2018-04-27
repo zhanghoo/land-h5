@@ -12,7 +12,9 @@ const mineGold = () => import('@/page/index/mine/children/mineGold')
 const mineScore = () => import('@/page/index/mine/children/mineScore')
 const partInRecord = () => import('@/page/index/mine/children/partInRecord')
 const recharge = () => import('@/page/index/mine/children/recharge')
+const mineRecharge = () => import('@/page/index/mine/children/recharge')
 const withdrawCash = () => import('@/page/index/mine/children/withdrawCash')
+const mineWithdrawCash = () => import('@/page/index/mine/children/withdrawCash/next')
 const withdrawCashNext = () => import('@/page/index/mine/children/withdrawCash/next')
 const withdrawCashAdd = () => import('@/page/index/mine/children/withdrawCash/add')
 const feedback = () => import('@/page/index/mine/children/feedback')
@@ -21,7 +23,7 @@ const vipVerify = () => import('@/page/index/mine/children/vipVerify')
 const landDetail = () => import('@/page/detail/landDetail')
 const transactionDetail = () => import('@/page/detail/transactionDetail')
 const dealInformation = () => import('@/page/detail/transaction/dealInformation')
-const homeDealInformation = () => import('@/page/detail/transaction/dealInformation')
+const dealInfo = () => import('@/page/detail/transaction/dealInformation')
 const momentDetail = () => import('@/page/detail/momentDetail')
 const rankList = () => import('@/page/detail/rankList')
 const landEevaluate = () => import('@/page/detail/landEevaluate')
@@ -92,6 +94,11 @@ export default new Router({
                             component: recharge
                         },
                         {
+                            name: 'mineWithdrawCash',
+                            path: 'mineWithdrawCash',
+                            component: mineWithdrawCash
+                        },
+                        {
                             name: 'withdrawCash',
                             path: 'withdrawCash',
                             component: withdrawCash,
@@ -128,21 +135,26 @@ export default new Router({
             ]
         },
         {
+            name: 'mineRecharge',
+            path: '/mineRecharge',
+            component: mineRecharge
+        },
+        {
             name: 'transactionDetail',
             path: '/transactionDetail',
             component: transactionDetail,
             children: [
                 {
                     name: 'dealInformation',
-                    path: 'dealInformation',
+                    path: 'dealInformation/:bid',
                     component: dealInformation
                 }
             ]
         },
         {
-            name: 'homeDealInformation',
-            path: '/homeDealInformation',
-            component: homeDealInformation
+            name: 'dealInfo',
+            path: '/dealInfo/:bid',
+            component: dealInfo
         },
         {
             name: 'landDetail',

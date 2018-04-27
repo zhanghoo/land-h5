@@ -55,7 +55,7 @@ export default {
     },
     methods: {
         getLandBusinessTransaction_data() {
-            // console.log(this.$route)
+            alert(this.$route.params.bid)
             getLandBusinessTransaction(this.$route.params.bid).then(res => {
                 // console.log(res)
                 if (res && res.Data) {

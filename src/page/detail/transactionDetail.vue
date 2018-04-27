@@ -32,10 +32,10 @@
         </p>
         <template v-if="json.estatus == 1 || json.estatus == 2">
             <!-- 估价成功或失败 -->
-            <router-link class="rans-detail-price" tag="div" :to="{ name: 'dealInformation', params: {'bid': json.bid} }">
+            <router-link class="rans-detail-price" tag="div" :to="{ name: 'dealInfo', params: {'bid': json.bid} }">
                 <div>
                     成交楼面价
-                    <span class="rdp-num">{{json.sold_area}}</span>
+                    <span class="rdp-num">{{json.closing_cost}}</span>
                     元/m²
                 </div>
                 <span class="my-icon-more"></span>
@@ -181,7 +181,7 @@ export default {
         onWxMenuShare() {
             // 配置微信分享按钮
             let _shareInfo = this.shareInfo
-            // console.log(_shareInfo)
+            console.log(_shareInfo)
             if (this.isWeiXin) {
                 // alert('点击了分享, 开始config')
                 wx.config({
@@ -230,6 +230,7 @@ export default {
 </script>
 <style lang='stylus'>
 #transactionDetail {
+    overflow: auto;
     .trans-detail-top {
         padding: toRem(18) 0;
         flex-vertical-center();

@@ -43,24 +43,13 @@
         <div class="mine-cash">
             <ul class="cash-list">
                 <li class="cash-item">
-                    <!-- 如果是会员则直接跳到提交信息充值页面 -->
-                    <template v-if="mine.is_charge === '0'">
-                        <!-- 非会员 -->
-                        <router-link class="cash-item-a" :to="{name: 'vipVerify'}">
-                            <div class="cash-item-icon my-icon-recharge"></div>
-                            <span class="cash-item-text">我的会员</span>
-                        </router-link>
-                    </template>
-                    <template v-else>
-                        <!-- 是会员 -->
-                        <router-link class="cash-item-a" :to="{name: 'recharge'}">
-                            <div class="cash-item-icon my-icon-recharge"></div>
-                            <span class="cash-item-text">我的会员</span>
-                        </router-link>
-                    </template>
+                    <router-link class="cash-item-a" :to="{name: 'mineRecharge'}">
+                        <div class="cash-item-icon my-icon-recharge"></div>
+                        <span class="cash-item-text">充值</span>
+                    </router-link>
                 </li>
                 <li class="cash-item">
-                    <router-link class="cash-item-a" :to="{name: 'withdrawCash'}">
+                    <router-link class="cash-item-a" :to="{name: 'mineWithdrawCash'}">
                         <div class="cash-item-icon my-icon-enchashment"></div>
                         <span class="cash-item-text">提现</span>
                     </router-link>
@@ -355,15 +344,15 @@ export default {
                 height: toRem(48);
                 align-items: center;
                 justify-content: center;
-                font-size: toRem(14);
+                font-size: toRem(15);
             }
             & + .sets-item {
                 border-1px-top(#e6e6e6);
             }
             .sets-item-icon {
                 width: toRem(15);
-                height: toRem(14);
-                font-size: toRem(15);
+                height: toRem(17);
+                font-size: toRem(17);
             }
             .sets-item-text {
                 flex: 1;

@@ -70,7 +70,7 @@ $headerHeight = 42;
         left: 0;
         right: 0;
         height: toRem($headerHeight);
-        font-size: toRem(12);
+        font-size: toRem(14);
         color: $appColor;
         display: flex;
         align-items: center;

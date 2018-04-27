@@ -114,7 +114,7 @@ export default {
             }
         }
         .rule {
-            font-size: toRem(12);
+            font-size: toRem(14);
         }
     }
     .m-score-list {
@@ -169,8 +169,8 @@ export default {
                 }
                 .sd-desc {
                     padding: toRem(13) 0;
-                    font-size: toRem(13);
-                    line-height: toRem(18);
+                    font-size: toRem(15);
+                    line-height: toRem(20);
                     color: #666;
                 }
                 .sd-title-level {

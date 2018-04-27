@@ -15,7 +15,7 @@
                 <div class="header-item">等级名称</div>
                 <div class="header-item">大师积分</div>
             </div>
-            <div class="content-body">
+            <div class="content-body" v-infinite-scroll="getRankList_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
                 <div class="body-item" v-for="(item, index) in rankList" :key="index">
                     <div class="item item-index">
                         <i :class="{'my-icon-huangguan': index < 3}">
@@ -29,6 +29,26 @@
                     <div class="item item-level">{{item.level_name}}</div>
                     <div class="item item-score">{{item.master_score}}</div>
                 </div>
+                <!-- 底部提示 -->
+                <div class="bottomLoad" v-if="rankList.length > 0">
+                    <div class="loading" v-show="loading === true">加载中...</div>
+                    <div class="noData" v-if="loading === 'nothing'">排名目前只显示前100名</div>
+                </div>
+            </div>
+        </div>
+        <div class="mine-rank-wrap">
+            <div class="mine-rank">
+                <div class="item item-index" :class="`item-index-${mineRank.rank > 3 ? 4 : mineRank.rank}`">
+                    <i :class="{'my-icon-huangguan': mineRank.rank < 3}">
+                        <span :style="{'absolute': mineRank.rank < 3}">{{mineRank.rank}}</span>
+                    </i>
+                </div>
+                <div class="item item-name">
+                    <img class="name-avatar" v-if="mineRank.avatar" :src="mineRank.avatar">
+                    <span class="name-text">{{mineRank.nick_name}}</span>
+                </div>
+                <div class="item item-level">{{mineRank.level_name}}</div>
+                <div class="item item-score">{{mineRank.master_score}}</div>
             </div>
         </div>
     </div>
@@ -40,15 +60,34 @@ export default {
     name: 'rankList',
     data() {
         return {
-            rankList: ''
+            rankList: [],
+            mineRank: {},
+            page: 1,
+            bottomLock: false,
+            loading: false
         }
     },
     methods: {
         getRankList_data() {
-            getRankList().then(res => {
+            this.loading = true
+            this.bottomLock = true
+            getRankList(this.page).then(res => {
                 if (res && res.Data) {
-                    this.rankList = res.Data
+                    if (!this.mineRank.nick_name) {
+                        // 只赋值一次
+                        this.mineRank = res.Data.self
+                    }
+                    this.rankList.push(...res.Data.all)
+                    this.page++
+                    this.loading = false
+                    this.bottomLock = false
+                } else {
+                    this.loading = 'nothing'
                 }
+            })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
             })
         }
     },
@@ -97,6 +136,7 @@ export default {
         .content-body {
             color: #666;
             font-size: toRem(12);
+            padding-bottom: toRem(60);
             .body-item {
                 display: flex;
                 align-items: center;
@@ -149,6 +189,71 @@ export default {
                     color: #D09168;
                 }
                 &:nth-child(n+4) .item-index span {
+                    position: static;
+                    font-weight: normal;
+                }
+            }
+        }
+    }
+    .mine-rank-wrap {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: #fff;
+        color: #666;
+        font-size: toRem(12);
+        .mine-rank {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: toRem(18) 0;
+            border-1px-top(#e6e6e6);
+            .item {
+                width: 25%;
+                text-align: center;
+            }
+            .item-name {
+                display: flex;
+                align-items: center;
+                justify-content center;
+                .name-avatar {
+                    flex-shrink: 0;
+                    width: toRem(25);
+                    height: toRem(25);
+                    border-radius: 100%;
+                    overflow: hidden;
+                    margin-right: toRem(5);
+                }
+                .name-text {
+                    text-ellipsis();
+                }
+            }
+            .item-index {
+                font-style: normal;
+                i {
+                    position: relative;
+                    font-size: toRem(22);
+                }
+                span {
+                    position: absolute;
+                    left: 50%;
+                    top: 58%;
+                    color: #333;
+                    font-size: toRem(12);
+                    font-weight: bold;
+                    transform: translate3d(-50%, -50%, 0) scale(0.84);
+                }
+                &.item-index-1 i {
+                    color: #FCD107;
+                }
+                &.item-index-2 i {
+                    color: #BDAFAE;
+                }
+                &.item-index-3 i {
+                    color: #D09168;
+                }
+                &.item-index-4 span{
                     position: static;
                     font-weight: normal;
                 }

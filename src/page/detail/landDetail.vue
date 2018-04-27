@@ -103,7 +103,8 @@
                             <div slot="conent">
                                 <div class="block-slot-item" v-for="(item,index) in landDetailJson.user" :key="index">
                                     <div class="bs-col">{{item.evaluate_num}}元/m²</div>
-                                    <div class="bs-col">100
+                                    <div class="bs-col">
+                                        <span>100</span>
                                         <span class="icon my-icon-zuanshi"></span>
                                     </div>
                                     <div class="bs-col">{{item.evaluate_time}}</div>
@@ -311,9 +312,10 @@ export default {
                             // 初次估价 播放金币动画 这里还没播放
                             _self.goldDrop = true
                             // !!!PS播放完毕 跳到 成交详情页面 动画播放时间为 9s
+                            // 0425 反馈修改 时长缩短一半 4.5s
                             setTimeout(() => {
                                 _self.$router.push({ path: 'transactionDetail', query: { id: res.Data } })
-                            }, 9000)
+                            }, 4500)
                         }
                     } else {
                         _self.$toast(res.Msg)
@@ -461,7 +463,7 @@ export default {
         .block-slot {
             &.land-detail-comments {
                 .land-detail-publish {
-                    font-size: toRem(12);
+                    font-size: toRem(14);
                     color: $appColor;
                 }
                 .block-slot-body {

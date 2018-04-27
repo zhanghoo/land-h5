@@ -33,7 +33,7 @@
             充值比例1:1，充值后还可获得相应积分。大师币可提现。
         </div>
         <p class="r-btn-do">
-            <mt-button class="rbd-btn" type="primary" @click="post_Recharge">立即充值</mt-button>
+            <mt-button class="rbd-btn" type="primary" @click="callpay">立即充值</mt-button>
         </p>
     </div>
 </template>
@@ -70,8 +70,8 @@ export default {
                     postRecharge(_self.selectMoney).then(res => {
                         if (res && res.Data) {
                             let wxPayConfig = res.Data
+                            alert(wxPayConfig.package)
                             wx.chooseWXPay({
-                                appId: wxPayConfig.appId,
                                 timestamp: wxPayConfig.timeStamp,
                                 nonceStr: wxPayConfig.nonceStr,
                                 package: wxPayConfig.package,
@@ -91,6 +91,71 @@ export default {
             } else {
                 _self.$toast('请选择充值金额')
             }
+        },
+        onBridgeReady: function () {
+            let _self = this
+            if (_self.selectMoney > 0) {
+                postRecharge(_self.selectMoney).then(res => {
+                    if (res && res.Data) {
+                        let wxPayConfig = res.Data
+                        console.log(wxPayConfig)
+                        if (typeof WeixinJSBridge !== 'undefined') {
+                            WeixinJSBridge.invoke(
+                                'getBrandWCPayRequest', {
+                                    'appId': wxPayConfig.appId,
+                                    'timeStamp': wxPayConfig.timeStamp,
+                                    'nonceStr': wxPayConfig.nonceStr,
+                                    'package': wxPayConfig.package,
+                                    'signType': wxPayConfig.signType,
+                                    'paySign': wxPayConfig.paySign
+                                },
+                                function (res) {
+                                    // alert(res.err_msg)
+                                    if (res.err_msg === 'get_brand_wcpay_request:ok') {
+                                        _self.$toast('微信支付成功')
+                                        setTiemout(() => {
+                                          _self.$router.go(-1)
+                                        }, 1500)
+                                    } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+                                        _self.$toast('用户取消支付')
+                                        // window.location.href = 'gift_failview.do?out_trade_no=' + this.orderId
+                                    } else if (res.err_msg === 'get_brand_wcpay_request:fail') {
+                                        _self.$toast('网络异常，请重试')
+                                    }
+                                }
+                            )
+                        } else {
+                             _self.$toast('请在微信客户端打开链接')
+                        }
+                    } else {
+                        _self.$toast(res.Msg)
+                    }
+                })
+            } else {
+                _self.$toast('请选择充值金额')
+            }
+        },
+        callpay() {
+            // 引用微信内置浏览器的支付方法 WeixinJSBridge.invoke 不需要引入 js
+            if (typeof WeixinJSBridge === 'undefined') {
+                if (document.addEventListener) {
+                    document.addEventListener('WeixinJSBridgeReady', this.onBridgeReady(), false)
+                } else if (document.attachEvent) {
+                    document.attachEvent('WeixinJSBridgeReady', this.onBridgeReady())
+                    document.attachEvent('onWeixinJSBridgeReady', this.onBridgeReady())
+                }
+            } else {
+                this.onBridgeReady()
+            }
+        }
+    },
+    created() {
+        // 在当前支付页面的#号前边加上? 微信目录验证会忽略掉? 号后的参数
+        // 为了取消多级别的目录, 直接定位到根目录, 注意路由器规则添加位置
+        let config = {}
+        config.url = window.location.href
+        if (!config.url.match(/\?/)) {
+            location.replace(window.location.href.split('#')[0] + '?' + window.location.hash)
         }
     },
     mounted() {

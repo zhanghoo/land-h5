@@ -314,7 +314,7 @@ export default {
         .publish-content {
             padding: toRem(15) 0;
             .mint-cell-wrapper {
-                font-size: toRem(13);
+                font-size: toRem(15);
                 textarea::placeholder {
                     color: #ccc;
                 }
@@ -384,7 +384,7 @@ export default {
             display: flex;
             align-items: center;
             color: #333;
-            font-size: toRem(13);
+            font-size: toRem(15);
             padding: toRem(15) 0;
             border-1px-top(#e6e6e6);
             i {

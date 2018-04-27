@@ -216,7 +216,7 @@ export default {
         getRankList_data() {
             getRankList().then(res => {
                 if (res && res.Data) {
-                    this.rankList = res.Data
+                    this.rankList = res.Data.all
                 }
             })
         },
@@ -347,7 +347,7 @@ export default {
         }
         .home-msg {
             padding: toRem(6) toRem(18);
-            font-size: toRem(10);
+            font-size: toRem(12);
             line-height: 1;
             color: #333;
             text-ellipsis();

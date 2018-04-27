@@ -7,8 +7,8 @@ export function getMineInfo(user_id) {
 }
 
 // 获取用户主页（他人）
-export function getUserDetail(userid) {
-    let res = request('/home/system/userHomePage', 'POST', { 'user_id': userid })
+export function getUserDetail({ user_id, page }) {
+    let res = request('/home/system/userHomePage', 'POST', { 'user_id': user_id, 'p': page })
     return res
 }
 
@@ -73,6 +73,12 @@ export function getAccount() {
 // 立即充值
 export function postRecharge(money) {
     let res = request('/home/Pay/charge', 'POST', { 'goods_id': money })
+    return res
+}
+
+// 提现
+export function getMoney(money) {
+    let res = request('/home/User/getMoney', 'POST', { 'money': money })
     return res
 }
 
