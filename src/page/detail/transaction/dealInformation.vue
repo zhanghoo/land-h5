@@ -53,8 +53,12 @@ export default {
             json: ''
         }
     },
+    computed: {
+
+    },
     methods: {
         getLandBusinessTransaction_data() {
+            console.log(this.$route.query.bid)
             getLandBusinessTransaction(this.$route.query.bid).then(res => {
                 // console.log(res)
                 if (res && res.Data) {

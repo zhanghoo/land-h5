@@ -8,7 +8,7 @@ Vue.use(Vuex)
 
 const state = {
     mine: '',
-    isWeiXin: '',
+    isWeiXin: null,
     license: false,
     wxConfig: '', // 使用JSSDK, config接口注入权限验证配置时用到的配置
     shareLink: '', // 分享的链接

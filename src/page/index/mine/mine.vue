@@ -67,7 +67,7 @@
                 </li>
                 <!-- 0420反馈添加: 增加用户动态和排行的跳转链接 -->
                 <li class="sets-item">
-                    <router-link class="sets-item-a" :to="{path: '/userDetail', query: { userId: mine.user_id}}">
+                    <router-link class="sets-item-a" :to="{path: '/homePage', query: { userId: mine.user_id}}">
                         <div class="sets-item-icon my-icon-i18n"></div>
                         <span class="sets-item-text">用户动态</span>
                         <div class="my-icon-more"></div>

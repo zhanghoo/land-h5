@@ -401,6 +401,9 @@ export default {
     .publish-newest-list .block-slot-item {
         font-size: toRem(14);
     }
+    .block-slot .block-slot-head .block-slot-more {
+        font-size: toRem(14);
+    }
     .winner-newest-list {
         font-size: toRem(14);
         .bsi-panel {

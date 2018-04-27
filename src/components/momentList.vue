@@ -81,6 +81,7 @@
 </template>
 <script>
 import { postZan } from '@/api/moment'
+import { delComment } from '@/api/home'
 export default {
     name: 'momentList',
     props: {
@@ -134,13 +135,19 @@ export default {
         },
         // 删除用户评论
         deleteMoment(item, index) {
-            this.$msgBox.confirm('确定执行此操作?').then(action => {
-                console.log(action)
-                if (action === 'confirm') {
-                    this.json.splice(index, 1)
-                }
-                // 发送请求
-            })
+            if (item && item.cid) {
+                this.$msgBox.confirm('确定执行此操作?').then(action => {
+                    if (action === 'confirm') {
+                        // 发送请求
+                        delComment(item.cid).then(res => {
+                            if (res) {
+                                this.$toast(res.Msg)
+                                this.json.splice(index, 1)
+                            }
+                        })
+                    }
+                })
+            }
         }
     }
 }
@@ -173,7 +180,7 @@ $subText = #666;
         }
         .item-title {
             color: $mainText;
-            font-size: toRem(16);
+            font-size: toRem(18);
             margin-bottom: toRem(10);
         }
         .item-content {
@@ -238,7 +245,7 @@ $subText = #666;
             background: #f5f5f5;
             .overview-title {
                 color: $mainText;
-                font-size: toRem(13);
+                font-size: toRem(15);
                 text-align: justify;
                 margin-bottom: toRem(10);
             }
@@ -246,7 +253,7 @@ $subText = #666;
                 display: flex;
                 align-items: center;
                 color: $subText;
-                font-size: toRem(13);
+                font-size: toRem(15);
                 margin-bottom: toRem(10);
                 i {
                     color: $appColor;
@@ -255,9 +262,13 @@ $subText = #666;
             }
             .overview-type {
                 margin: 0 toRem(5) 0 0;
-                height: toRem(18);
+                height: toRem(20);
+                line-height: toRem(20);
                 border-radius: toRem(2);
-                font-size: toRem(12);
+                font-size: toRem(14);
+                .mint-button-text {
+                    line-height: toRem(20);
+                }
             }
         }
         .item-info {
