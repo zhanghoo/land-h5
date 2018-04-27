@@ -13,7 +13,8 @@ router.beforeEach((to, from, next) => {
         store.dispatch('get_mineInfo', user_id).then(res => {
             // next()
             let userId = store.state.mine.user_id
-            let shareURL = userId ? `${window.location.href}&userid=${userId}` : window.location.href
+            let href = window.location.href.split('#')[0] // => http://localhost:8040/
+            let shareURL = userId ? `${href}#/index/home?userid=${userId}` : href
             // 获取微信配置
             store.dispatch('get_WxConfig', shareURL).then(res => {
                 if (store.state.isWeiXin && store.state.wxConfig) {
@@ -60,7 +61,8 @@ router.beforeEach((to, from, next) => {
             store.dispatch('get_mineInfo', user_id).then(res => {
                 // next()
                 let userId = store.state.mine.user_id
-                let shareURL = userId ? `${window.location.href}&userid=${userId}` : window.location.href
+                let href = window.location.href.split('#')[0] // => http://localhost:8040/
+                let shareURL = userId ? `${href}#/index/home?userid=${userId}` : href
                 // 获取微信配置
                 store.dispatch('get_WxConfig', shareURL).then(res => {
                     if (store.state.isWeiXin && store.state.wxConfig) {
