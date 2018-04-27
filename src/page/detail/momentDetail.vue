@@ -173,13 +173,13 @@ export default {
         padding: 0 toRem(18);
         .content-title {
             color: #333;
-            font-size: toRem(14);
+            font-size: toRem(18);
             margin-bottom: toRem(10);
         }
         .content-text {
             margin-bottom: toRem(15);
             color: #666;
-            font-size: toRem(14);
+            font-size: toRem(16);
             text-align: justify;
         }
     }

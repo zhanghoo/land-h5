@@ -107,7 +107,7 @@ export default {
     background: $appBg;
     .desc {
         padding: toRem(15) toRem(30);
-        font-size: toRem(12);
+        font-size: toRem(14);
         line-height: 1;
         color: #666;
         .icon {
@@ -136,7 +136,7 @@ export default {
             padding: toRem(15) 0;
             .upload-title {
                 color: #333;
-                font-size: toRem(12);
+                font-size: toRem(14);
                 margin-bottom toRem(15)
                 span {
                     color: #ccc;

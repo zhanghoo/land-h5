@@ -29,3 +29,9 @@ export function getHotCity() {
     let res = request('/home/Index/getHotCity', 'POST')
     return res
 }
+
+// 删除动态
+export function delComment(id) {
+    let res = request('/home/System/delComment', 'POST', {'id': id})
+    return res
+}

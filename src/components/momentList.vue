@@ -7,33 +7,40 @@
                     <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
                     <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
                 </div>
-                <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.title}}</div>
                 <div class="item-content">
-                    <!-- 封面 -->
-                    <template v-if="item.image && item.image != null && item.image != 'null'">
-                        <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" :class="`item-content-${item.image.length}`" tag="div">
-                            <img v-for="(imgItem, index) in item.image" :src="imgItem" :key="index" class="cover-img">
-                        </router-link>
-                    </template>
                     <!-- 需支付 -->
                     <template v-if="item.is_pay === '1' && !isMySelf">
+                        <!-- 标题 -->
+                        <div class="item-title" @click="openPayMsgBox(item)">{{item.title}}</div>
+                        <!-- 需支付提示 -->
                         <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
                     </template>
-                    <!-- 文本内容 -->
+                    <!-- 无需支付 -->
                     <template v-else>
-                        <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
-                    </template>
-                    <!-- 概览 -->
-                    <template v-if="item.product_moment && item.product_moment !== 'null'">
-                        <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose}}" tag="div">
-                            <div class="overview-title">{{item.product_moment.name}}</div>
-                            <div class="overview-adress">
-                                <i class="my-icon-adress"></i>{{item.product_moment.province}}
-                            </div>
-                            <mt-button class="overview-type" plain type="primary">{{item.product_moment.sold_type}}</mt-button>
-                        </router-link>
+                        <!-- 标题 -->
+                        <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.title}}</div>
+                        <!-- 封面 -->
+                        <template v-if="item.image && item.image != null && item.image != 'null'">
+                            <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" :class="`item-content-${item.image.length}`" tag="div">
+                                <img v-for="(imgItem, index) in item.image" :src="imgItem" :key="index" class="cover-img">
+                            </router-link>
+                        </template>
+                        <!-- 文本内容 -->
+                        <template v-else>
+                            <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
+                        </template>
                     </template>
                 </div>
+                <!-- 概览 -->
+                <template v-if="item.product_moment && item.product_moment !== 'null'">
+                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose}}" tag="div">
+                        <div class="overview-title">{{item.product_moment.name}}</div>
+                        <div class="overview-adress">
+                            <i class="my-icon-adress"></i>{{item.product_moment.province}}
+                        </div>
+                        <mt-button class="overview-type" plain type="primary">{{item.product_moment.sold_type}}</mt-button>
+                    </router-link>
+                </template>
                 <div class="item-info">
                     <i class="my-icon-zan" :class="{'active': item.is_like && item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
                     <i class="my-icon-delete" v-if="isMySelf" @click="deleteMoment(item, index)">删除</i>
@@ -58,7 +65,13 @@
                     </div>
                     <div class="pay-msgbox-btns">
                         <div class="pay-msgbox-btn cancle" @click="payMsgBox = false">不看了</div>
-                        <div class="pay-msgbox-btn confirm" @click="confirmWatch">确认查看</div>
+                        <!-- 判断余额是否能查看 -->
+                        <template v-if="$store.state.mine.master_coin >= payToWatchItem.money">
+                            <div class="pay-msgbox-btn confirm" @click="confirmWatch">确认查看</div>
+                        </template>
+                        <template v-else>
+                            <div class="pay-msgbox-btn cancle" @click="watchNoMoney">确认查看</div>
+                        </template>
                     </div>
                 </div>
             </transition>
@@ -68,6 +81,7 @@
 </template>
 <script>
 import { postZan } from '@/api/moment'
+import { delComment } from '@/api/home'
 export default {
     name: 'momentList',
     props: {
@@ -101,6 +115,10 @@ export default {
                 })
             }
         },
+        // 确认查看余额不足
+        watchNoMoney() {
+            this.$toast('大师币不足')
+        },
         // 打开支付msgBox
         openPayMsgBox(item) {
             this.payMsgBox = true
@@ -117,13 +135,19 @@ export default {
         },
         // 删除用户评论
         deleteMoment(item, index) {
-            this.$msgBox.confirm('确定执行此操作?').then(action => {
-                console.log(action)
-                if (action === 'confirm') {
-                    this.json.splice(index, 1)
-                }
-                // 发送请求
-            })
+            if (item && item.cid) {
+                this.$msgBox.confirm('确定执行此操作?').then(action => {
+                    if (action === 'confirm') {
+                        // 发送请求
+                        delComment(item.cid).then(res => {
+                            if (res) {
+                                this.$toast(res.Msg)
+                                this.json.splice(index, 1)
+                            }
+                        })
+                    }
+                })
+            }
         }
     }
 }
@@ -156,11 +180,12 @@ $subText = #666;
         }
         .item-title {
             color: $mainText;
-            font-size: toRem(14);
+            font-size: toRem(18);
             margin-bottom: toRem(10);
         }
         .item-content {
             margin-bottom: toRem(12);
+            font-size: toRem(16);
             .content-cover {
                 display: flex;
                 align-items: center;
@@ -205,40 +230,44 @@ $subText = #666;
             }
             .content-pay {
                 color: $subText;
-                font-size: toRem(12);
+                font-size: toRem(16);
                 margin-bottom: toRem(10);
             }
             .content-text {
                 margin-top: toRem(10);
                 color: $subText;
-                font-size: toRem(14);
+                font-size: toRem(16);
             }
-            .content-overview {
-                padding: toRem(14) toRem(12);
-                margin-top: toRem(10);
-                background: #f5f5f5;
-                .overview-title {
-                    color: $mainText;
-                    font-size: toRem(13);
-                    text-align: justify;
-                    margin-bottom: toRem(10);
+        }
+        .content-overview {
+            padding: toRem(14) toRem(12);
+            margin-top: toRem(10);
+            background: #f5f5f5;
+            .overview-title {
+                color: $mainText;
+                font-size: toRem(15);
+                text-align: justify;
+                margin-bottom: toRem(10);
+            }
+            .overview-adress {
+                display: flex;
+                align-items: center;
+                color: $subText;
+                font-size: toRem(15);
+                margin-bottom: toRem(10);
+                i {
+                    color: $appColor;
+                    margin-right: toRem(5);
                 }
-                .overview-adress {
-                    display: flex;
-                    align-items: center;
-                    color: $subText;
-                    font-size: toRem(13);
-                    margin-bottom: toRem(10);
-                    i {
-                        color: $appColor;
-                        margin-right: toRem(5);
-                    }
-                }
-                .overview-type {
-                    margin: 0 toRem(5) 0 0;
-                    height: toRem(18);
-                    border-radius: toRem(2);
-                    font-size: toRem(12);
+            }
+            .overview-type {
+                margin: 0 toRem(5) 0 0;
+                height: toRem(20);
+                line-height: toRem(20);
+                border-radius: toRem(2);
+                font-size: toRem(14);
+                .mint-button-text {
+                    line-height: toRem(20);
                 }
             }
         }
