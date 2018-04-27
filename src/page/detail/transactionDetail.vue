@@ -32,7 +32,7 @@
         </p>
         <template v-if="json.estatus == 1 || json.estatus == 2">
             <!-- 估价成功或失败 -->
-            <router-link class="rans-detail-price" tag="div" :to="{ name: 'dealInfo', params: {'bid': json.bid} }">
+            <router-link class="rans-detail-price" tag="div" :to="{ path: '/dealInfo', query: {'bid': json.bid} }">
                 <div>
                     成交楼面价
                     <span class="rdp-num">{{json.closing_cost}}</span>

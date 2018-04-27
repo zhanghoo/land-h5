@@ -1,7 +1,7 @@
 <template>
     <div id="index">
         <!-- 内容视口 -->
-        <keep-alive include="moment,home">
+        <keep-alive include="home">
             <router-view></router-view>
         </keep-alive>
         <!-- 底部导航条 -->

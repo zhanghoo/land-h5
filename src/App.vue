@@ -1,9 +1,7 @@
 <template>
     <div id="app" v-if="$store.state.mine">
         <!-- 内容视口 -->
-        <keep-alive include="index">
-            <router-view></router-view>
-        </keep-alive>
+        <router-view></router-view>
         <!-- 页面加载进度条 -->
         <vue-progress-bar></vue-progress-bar>
     </div>

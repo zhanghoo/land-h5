@@ -231,37 +231,39 @@ export default {
             this.popupVisible = !this.popupVisible
         },
         getLandAbstract_data() {
-            this.loading = true
-            this.bottomLock = true
-            let params = {
-                pid: this.$route.query.pid,
-                uid: this.$store.state.mine.user_id,
-                page: this.page
-            }
-            getLandAbstract(params).then(res => {
-                if (res && res.Data) {
-                    // console.log('landDetail')
-                    this.landAbstractJson = res.Data
-                    let lng = Number(res.Data.longitude)
-                    let lat = Number(res.Data.latitude)
-                    if (lng && lat) {
-                        this.center = [lng, lat]
-                        this.markers[0].position = [lng, lat]
-                    }
-                    if (res.Data.comment && res.Data.comment.length > 0) {
-                        this.comment.push(...res.Data.comment)
-                        this.page++
-                        this.bottomLock = false
-                        this.loading = false
-                    } else {
-                        this.loading = 'nothing'
-                    }
+            if (this.selected === 'summarize') {
+                this.loading = true
+                this.bottomLock = true
+                let params = {
+                    pid: this.$route.query.pid,
+                    uid: this.$store.state.mine.user_id,
+                    page: this.page
                 }
-            })
-            .catch(err => {
-                console.log(err)
-                this.loading = false
-            })
+                getLandAbstract(params).then(res => {
+                    if (res && res.Data) {
+                        // console.log('landDetail')
+                        this.landAbstractJson = res.Data
+                        let lng = Number(res.Data.longitude)
+                        let lat = Number(res.Data.latitude)
+                        if (lng && lat) {
+                            this.center = [lng, lat]
+                            this.markers[0].position = [lng, lat]
+                        }
+                        if (res.Data.comment && res.Data.comment.length > 0) {
+                            this.comment.push(...res.Data.comment)
+                            this.page++
+                            this.bottomLock = false
+                            this.loading = false
+                        } else {
+                            this.loading = 'nothing'
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.log(err)
+                    this.loading = false
+                })
+            }
         },
         getLandDetail_data() {
             let params = {
