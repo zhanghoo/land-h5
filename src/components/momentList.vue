@@ -5,29 +5,37 @@
                 <div class="item-user">
                     <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
                     <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
-                    <mt-button class="label" plain type="primary" v-if="item.label">{{item.label}}</mt-button>
+                    <mt-button class="label" plain type="primary" v-if="item.level">{{item.level.level_name}}</mt-button>
                 </div>
                 <div class="item-content">
                     <!-- 需支付 -->
                     <template v-if="item.is_pay === '1' && !isMySelf">
-                        <!-- 标题 -->
-                        <div class="item-title" @click="openPayMsgBox(item)">{{item.title}}</div>
-                        <!-- 需支付提示 -->
-                        <div class="content-pay" @click="openPayMsgBox(item)">查看需支付{{item.money}}大师币</div>
+                        <div @click="openPayMsgBox(item)">
+                            <!-- 标题 -->
+                            <div class="item-title">{{item.title}}</div>
+                            <!-- 需支付提示 -->
+                            <div class="content-pay">查看需支付{{item.money}}大师币</div>
+                        </div>
                     </template>
                     <!-- 无需支付 -->
                     <template v-else>
-                        <!-- 标题 -->
-                        <div class="item-title" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.title}}</div>
+                        <div @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">
+                            <!-- 标题 -->
+                            <div class="item-title">{{item.title}}</div>
+                            <!-- 文本内容 -->
+                            <template>
+                                <div class="content-text">{{item.content}}</div>
+                            </template>
+                        </div>
+                        <!-- 音频内容 -->
+                        <div v-if="item.voice_url !== '' && item.voice_url !== undefined" class="content-audio">
+                            <audioPlayer :audioSrc="item.voice_url"></audioPlayer>
+                        </div>
                         <!-- 封面 -->
                         <template v-if="item.image && item.image != null && item.image != 'null'">
                             <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" :class="`item-content-${item.image.length}`" tag="div">
                                 <img v-for="(imgItem, index) in item.image" :src="imgItem" :key="index" class="cover-img">
                             </router-link>
-                        </template>
-                        <!-- 文本内容 -->
-                        <template v-else>
-                            <div class="content-text" @click="$router.push({path: '/momentDetail', query: { 'cid': item.cid}})">{{item.content}}</div>
                         </template>
                     </template>
                 </div>
@@ -80,10 +88,12 @@
     </div>
 </template>
 <script>
+import audioPlayer from '@/components/audioPlayer'
 import { postZan } from '@/api/moment'
 import { delComment } from '@/api/home'
 export default {
     name: 'momentList',
+    components: { audioPlayer },
     props: {
         json: {
             type: Array
@@ -180,12 +190,12 @@ $subText = #666;
         }
         .item-title {
             color: $mainText;
-            font-size: toRem(18);
+            font-size: toRem(16);
             margin-bottom: toRem(10);
         }
         .item-content {
             margin-bottom: toRem(12);
-            font-size: toRem(16);
+            font-size: toRem(14);
             .content-cover {
                 display: flex;
                 align-items: center;
@@ -200,7 +210,9 @@ $subText = #666;
                     border-color: transparent;
                 }
                 &.item-content-1 {
-                    border: none;
+                    .cover-img {
+                        border: none;
+                    }
                 }
                 &.item-content-2 {
                     .cover-img {
@@ -230,13 +242,16 @@ $subText = #666;
             }
             .content-pay {
                 color: $subText;
-                font-size: toRem(16);
+                font-size: toRem(14);
                 margin-bottom: toRem(10);
             }
             .content-text {
-                margin-top: toRem(10);
+                margin-bottom: toRem(10);
                 color: $subText;
-                font-size: toRem(16);
+                font-size: toRem(14);
+            }
+            .content-audio {
+                margin-bottom: toRem(10);
             }
         }
         .content-overview {
@@ -253,7 +268,7 @@ $subText = #666;
                 display: flex;
                 align-items: center;
                 color: $subText;
-                font-size: toRem(15);
+                font-size: toRem(14);
                 margin-bottom: toRem(10);
                 i {
                     color: $appColor;
@@ -265,7 +280,7 @@ $subText = #666;
                 height: toRem(20);
                 line-height: toRem(20);
                 border-radius: toRem(2);
-                font-size: toRem(14);
+                font-size: toRem(12);
                 .mint-button-text {
                     line-height: toRem(20);
                 }
@@ -278,7 +293,7 @@ $subText = #666;
             border-1px-top(#eee);
             .my-icon-zan {
                 color: #ccc;
-                font-size: toRem(12);
+                font-size: toRem(14);
                 transform: scale(0.9);
                 &.active {
                     color: $appColor;
@@ -286,13 +301,13 @@ $subText = #666;
             }
             .my-icon-delete {
                 color: #ccc;
-                font-size: toRem(12);
+                font-size: toRem(14);
                 transform: scale(0.9);
                 margin-left: toRem(10);
             }
             .info-time {
                 color: #ccc;
-                font-size: toRem(12);
+                font-size: toRem(14);
                 transform: scale(0.9);
                 margin-left: auto;
             }

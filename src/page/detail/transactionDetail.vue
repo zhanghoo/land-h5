@@ -163,7 +163,8 @@ export default {
             // transactionDetail页面 和 mine页面 分享需要重新设置 加上userid, 这里分享的是当前详情页面
             // 其余页面分享的都是, empty入口界面
             // 遗留分享问题, 在其他页面的分享应该是默认的全局默认的shareInfo 在 main.js 里面 每个router里面拼接一下链接, 在state 里面保存其他的微信参数
-            let url = `${window.location.href}&userid=${this.mine.user_id}`
+            let url = `${window.location.href.split('#')[0]}#/transactionDetail?action=transactionDetail&userid=${this.mine.user_id}`
+            // console.log(url)
             wxShare(url).then(res => {
                 if (res && res.Data) {
                     this.shareInfo = res.Data
@@ -251,7 +252,7 @@ export default {
         padding: toRem(14.5) toRem(18);
         margin-bottom: toRem(10);
         background: $panelBg;
-        font-size: toRem(13);
+        font-size: toRem(15);
         color: #333;
         line-height: 1;
         .tdl-title {
@@ -276,7 +277,7 @@ export default {
         padding: toRem(14.5) toRem(18);
         margin-bottom: toRem(10);
         background: $panelBg;
-        font-size: toRem(13);
+        font-size: toRem(15);
         color: #333;
         line-height: 1;
         .tdd-line {

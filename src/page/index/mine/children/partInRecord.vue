@@ -30,7 +30,7 @@
                             <span class="rh-status" v-else-if="item.estatus === '3'">已关闭</span>
                         </div>
                         <div class="record-content">
-                            <p>预估大师积分：200</p>
+                            <p>预估大师积分：100</p>
                             <p>预估成交楼面价: {{item.evaluate_num}}/m²</p>
                             <p>估计时间：{{item.evaluate_time}}</p>
                         </div>
@@ -103,6 +103,7 @@ export default {
             font-size: toRem(14);
             color: #333;
             .mint-tab-item-label {
+                font-size: toRem(14);
                 height: toRem(30);
                 line-height: toRem(30);
             }
@@ -131,7 +132,7 @@ export default {
                     display: flex;
                     padding: toRem(15) 0;
                     justify-content: space-between;
-                    font-size: toRem(14);
+                    font-size: toRem(16);
                     line-height: toRem(22);
                     border-1px-bottom($borderColor);
                     color: #333;
@@ -148,7 +149,7 @@ export default {
                 .record-content {
                     padding: toRem(8) 0;
                     line-height: toRem(28);
-                    font-size: toRem(13);
+                    font-size: toRem(15);
                     color: #666;
                 }
             }

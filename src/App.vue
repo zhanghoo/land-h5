@@ -1,7 +1,7 @@
 <template>
     <div id="app" v-if="$store.state.mine">
         <!-- 内容视口 -->
-        <router-view></router-view>
+        <router-view v-wechat-title="$route.meta.title"></router-view>
         <!-- 页面加载进度条 -->
         <vue-progress-bar></vue-progress-bar>
     </div>
@@ -69,7 +69,7 @@ export default {
         border-radius: 3px;
         .mint-button-text {
             display: inline-block;
-            font-size: toRem(12);
+            font-size: toRem(14);
             transform: scale(0.75);
         }
     }

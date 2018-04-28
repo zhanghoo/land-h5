@@ -389,7 +389,7 @@ export default {
                     font-size: toRem(15);
                 }
                 .hml-b {
-                    font-size: toRem(11);
+                    font-size: toRem(13);
                     color: $appColor;
                 }
             }

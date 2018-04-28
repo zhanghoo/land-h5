@@ -101,13 +101,13 @@
                             <span slot="title">我的估价</span>
                             <span slot="more"></span>
                             <div slot="conent">
-                                <div class="block-slot-item" v-for="(item,index) in landDetailJson.user" :key="index">
-                                    <div class="bs-col">{{item.evaluate_num}}元/m²</div>
+                                <div class="block-slot-item">
+                                    <div class="bs-col">{{mineEvaluateNum}}元/m²</div>
                                     <div class="bs-col">
                                         <span>100</span>
                                         <span class="icon my-icon-zuanshi"></span>
                                     </div>
-                                    <div class="bs-col">{{item.evaluate_time}}</div>
+                                    <div class="bs-col">{{mineEvaluateTime}}</div>
                                 </div>
                             </div>
                         </block-slot>
@@ -172,6 +172,7 @@ import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
 import { getLandAbstract, getLandDetail, postLandEvaluation } from '@/api'
 import { mapState } from 'vuex'
+import { formatDate } from '@/utils/utils'
 export default {
     name: 'landDetail',
     components: { blockSlot, momentList },
@@ -204,6 +205,15 @@ export default {
         ...mapState([
             'mine'
         ]),
+        mineEvaluateNum() {
+            let t = this.landDetailJson && this.landDetailJson.user ? this.landDetailJson.user[0].evaluate_num : 0
+            return t
+        },
+        mineEvaluateTime() {
+            let date = new Date()
+            let t = this.landDetailJson && this.landDetailJson.user ? this.landDetailJson.user[0].evaluate_time : formatDate(date, 'yyyy-MM-dd hh:mm:ss')
+            return t
+        },
         // deadlineYN() {
         //     var t = Date.parse(new Date()) > this.deadline ? 'Y' : 'N'
         //     return t
@@ -308,6 +318,7 @@ export default {
                             _self.clickInvitation()
                             // 重新修改估计触发
                             _self.$toast('已重新修改估价')
+                            _self.getLandDetail_data()
                         } else if (_self.operation === 0) {
                             // 估价成功 关闭 覆盖层 !!!要在这里关闭 因为不传 operation 为undefined
                             _self.clickInvitation()
@@ -355,7 +366,7 @@ export default {
                 line-height: toRem(30);
                 .land-tab-btn {
                     padding: toRem(10) toRem(20);
-                    font-size: toRem(14);
+                    font-size: toRem(16);
                 }
                 &.is-selected {
                     position: relative;

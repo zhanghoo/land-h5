@@ -15,8 +15,10 @@
                 <!-- <label class="upload-btn my-icon-add1" for="upload"></label> -->
             </div>
             <div class="publish-voice">
-                <i @click="record" class="icon-voice my-icon-maikefengxianxing"></i>
-                <i>{{voiceTip}}</i>
+                <span class="publish-voice-btn" @click="record">
+                    <i class="icon-voice my-icon-maikefengxianxing"></i>
+                    <i>{{voiceTip}}</i>
+                </span>
             </div>
         </div>
         <!-- 排名前18%的用户发布动态可设置收费查看。
@@ -127,8 +129,8 @@ export default {
                     wx.uploadVoice({
                         localId: _self.localId,
                         success: function (res) {
-                            // alert('上传语音成功，serverId 为' + res.serverId)
                             _self.serverId = res.serverId
+                            // alert('上传语音成功，serverId 为' + _self.serverId)
                             // 获得serverId
                             _self._postPublish()
                         }
@@ -154,8 +156,9 @@ export default {
                 is_pay: _self.chargeVisible ? 1 : 0,
                 money: _self.chargeVisible ? _self.moneyActive : 0,
                 images: _self.pictureFile,
-                voice_id: _self.serverId ? _self.serverId : 0
+                voice_id: _self.serverId
             }
+            // alert('发布动态传params的voice_id = ' + params.voice_id + ' 本地获得的serverId = ' + _self.serverId)
             // console.log(params)
             postPublish(params).then(res => {
                 // console.log(typeof (res.Code)) -> string
@@ -379,19 +382,21 @@ export default {
             }
         }
         .publish-voice {
-            display: flex;
-            align-items: center;
-            color: #333;
-            font-size: toRem(15);
             border-1px-top(#e6e6e6);
-            i {
-                color: #666;
-                font-style: normal;
-            }
-            .icon-voice {
-                display: inline-block;
-                padding: toRem(15) toRem(5) toRem(15) 0;
-                font-size: toRem(18);
+            .publish-voice-btn {
+                display: flex;
+                align-items: center;
+                color: #333;
+                font-size: toRem(15);
+                i {
+                    color: #666;
+                    font-style: normal;
+                }
+                .icon-voice {
+                    display: inline-block;
+                    padding: toRem(15) toRem(5) toRem(15) 0;
+                    font-size: toRem(18);
+                }
             }
         }
     }

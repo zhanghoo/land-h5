@@ -14,6 +14,10 @@
                 <div class="content-title">{{json.title}}</div>
                 <div class="content-text">{{json.content}}</div>
             </div>
+            <!-- 音频内容 -->
+            <div v-if="json.voice_url !== '' && json.voice_url !== undefined" class="content-audio">
+                <audioPlayer :audioSrc="json.voice_url"></audioPlayer>
+            </div>
             <template v-if="json.image && json.image != null && json.image != 'null'">
                 <div class="content-preview"
                      :class="`content-preview-${json.image.length}`">
@@ -34,10 +38,12 @@
     </div>
 </template>
 <script>
+import audioPlayer from '@/components/audioPlayer'
 import { getMomentDetail, postZan } from '@/api/moment'
 import $ from 'jquery'
 export default {
     name: 'momentDetail',
+    components: { audioPlayer },
     data() {
         return {
             json: '',
@@ -89,6 +95,7 @@ export default {
                 'cid': this.$route.query.cid,
                 'uid': this.$store.state.mine.user_id
             }
+            // console.log(params)
             getMomentDetail(params).then(res => {
                 if (res && res.Data) {
                     this.json = res.Data
@@ -128,7 +135,7 @@ export default {
     top: 0;
     left: 0;
     z-index: 300;
-    background: $appBg;
+    background: $panelBg;
     .momentDetail-info {
         display: flex;
         align-items: center;
@@ -149,7 +156,7 @@ export default {
         }
         .info-time {
             color: #ccc;
-            font-size: toRem(12);
+            font-size: toRem(14);
             margin-left: auto;
             transform: scale(0.9);
         }
@@ -162,7 +169,7 @@ export default {
         margin-bottom: toRem(14);
         .my-icon-zan {
             color: #ccc;
-            font-size: toRem(12);
+            font-size: toRem(14);
             transform: scale(0.9);
             &.active {
                 color: $appColor;
@@ -173,15 +180,19 @@ export default {
         padding: 0 toRem(18);
         .content-title {
             color: #333;
-            font-size: toRem(18);
+            font-size: toRem(16);
             margin-bottom: toRem(10);
         }
         .content-text {
             margin-bottom: toRem(15);
             color: #666;
-            font-size: toRem(16);
+            font-size: toRem(14);
             text-align: justify;
         }
+    }
+    .content-audio {
+        padding: 0 toRem(18);
+        margin-bottom: toRem(15);
     }
     .content-preview {
         display: flex;

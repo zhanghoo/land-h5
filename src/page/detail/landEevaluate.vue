@@ -266,14 +266,16 @@ export default {
             border-1px-bottom(#e6e6e6);
         }
         .list-item {
-            font-size: toRem(13);
+            font-size: toRem(15);
             padding: toRem(15) toRem(18);
             border-1px-bottom(#e6e6e6);
             .item-title {
+                font-size: toRem(15);
                 line-height: 1.5;
             }
             .item-adress {
                 margin: toRem(10) 0;
+                font-size: toRem(14);
                 i {
                     color: $appColor;
                     margin-right: toRem(5);
