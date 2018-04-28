@@ -266,7 +266,7 @@ export default {
             border-1px-bottom(#e6e6e6);
         }
         .list-item {
-            font-size: toRem(13);
+            font-size: toRem(15);
             padding: toRem(15) toRem(18);
             border-1px-bottom(#e6e6e6);
             .item-title {

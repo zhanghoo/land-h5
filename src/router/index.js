@@ -52,51 +52,81 @@ export default new Router({
             path: '/index',
             redirect: '/index/home',
             component: index,
+            meta: {
+                title: '地产大师'
+            },
             children: [
                 {
                     name: 'moment',
                     path: 'moment',
-                    component: moment
+                    component: moment,
+                    meta: {
+                        title: '动态'
+                    }
                 },
                 {
                     name: 'home',
                     path: 'home',
-                    component: home
+                    component: home,
+                    meta: {
+                        title: '地产大师'
+                    }
                 },
                 {
                     name: 'mine',
                     path: 'mine',
                     component: mine,
+                    meta: {
+                        title: '我的'
+                    },
                     children: [
                         {
                             name: 'myInfo',
                             path: 'myInfo',
-                            component: myInfo
+                            component: myInfo,
+                            meta: {
+                                title: '地产大师'
+                            }
                         },
                         {
                             name: 'mineGold',
                             path: 'mineGold',
-                            component: mineGold
+                            component: mineGold,
+                            meta: {
+                                title: '大师币'
+                            }
                         },
                         {
                             name: 'mineScore',
                             path: 'mineScore',
-                            component: mineScore
+                            component: mineScore,
+                            meta: {
+                                title: '大师积分'
+                            }
                         },
                         {
                             name: 'partInRecord',
                             path: 'partInRecord',
-                            component: partInRecord
+                            component: partInRecord,
+                            meta: {
+                                title: '参与记录'
+                            }
                         },
                         {
                             name: 'recharge',
                             path: 'recharge',
-                            component: recharge
+                            component: recharge,
+                            meta: {
+                                title: '充值'
+                            }
                         },
                         {
                             name: 'mineWithdrawCash',
                             path: 'mineWithdrawCash',
-                            component: mineWithdrawCash
+                            component: mineWithdrawCash,
+                            meta: {
+                                title: '提现'
+                            }
                         },
                         {
                             name: 'withdrawCash',
@@ -118,12 +148,18 @@ export default new Router({
                         {
                             name: 'feedback',
                             path: 'feedback',
-                            component: feedback
+                            component: feedback,
+                            meta: {
+                                title: '反馈'
+                            }
                         },
                         {
                             name: 'idAuth',
                             path: 'idAuth',
-                            component: idAuth
+                            component: idAuth,
+                            meta: {
+                                title: '地产大师'
+                            }
                         },
                         {
                             name: 'vipVerify',
@@ -137,72 +173,114 @@ export default new Router({
         {
             name: 'mineRecharge',
             path: '/mineRecharge',
-            component: mineRecharge
+            component: mineRecharge,
+            meta: {
+                title: '充值'
+            }
         },
         {
             name: 'transactionDetail',
             path: '/transactionDetail',
-            component: transactionDetail
+            component: transactionDetail,
+            meta: {
+                title: '成交详情'
+            }
         },
         {
             name: 'dealInfo',
             path: '/dealInfo',
-            component: dealInfo
+            component: dealInfo,
+            meta: {
+                title: '交易信息'
+            }
         },
         {
             name: 'landDetail',
             path: '/landDetail',
-            component: landDetail
+            component: landDetail,
+            meta: {
+                title: '地块详情'
+            }
         },
         {
             name: 'momentDetail',
             path: '/momentDetail',
-            component: momentDetail
+            component: momentDetail,
+            meta: {
+                title: '动态'
+            }
         },
         {
             name: 'rankList',
             path: '/rankList',
-            component: rankList
+            component: rankList,
+            meta: {
+                title: '排行榜'
+            }
         },
         {
             name: 'landEevaluate',
             path: '/landEevaluate',
-            component: landEevaluate
+            component: landEevaluate,
+            meta: {
+                title: '地产估价'
+            }
         },
         {
             name: 'announcement',
             path: '/announcement',
-            component: announcement
+            component: announcement,
+            meta: {
+                title: '成交公告'
+            }
         },
         {
             name: 'releaseList',
             path: '/releaseList',
-            component: releaseList
+            component: releaseList,
+            meta: {
+                title: '地产大师'
+            }
         },
         {
             name: 'winnerList',
             path: '/winnerList',
-            component: winnerList
+            component: winnerList,
+            meta: {
+                title: '地产大师'
+            }
         },
         {
             name: 'publish',
             path: '/publish',
-            component: publish
+            component: publish,
+            meta: {
+                title: '发布'
+            }
         },
         {
             name: 'systemNews',
             path: '/systemNews',
-            component: systemNews
+            component: systemNews,
+            meta: {
+                title: '系统消息'
+            }
         },
         {
             name: 'userDetail',
             path: '/userDetail',
-            component: userDetail
+            component: userDetail,
+            meta: {
+                title: '用户动态'
+            }
         },
         {
             name: 'homePage',
             path: '/homePage',
-            component: homePage
+            component: homePage,
+            meta: {
+                title: '用户动态'
+            }
         }
     ]
 })

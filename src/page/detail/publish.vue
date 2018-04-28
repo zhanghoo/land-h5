@@ -15,8 +15,10 @@
                 <!-- <label class="upload-btn my-icon-add1" for="upload"></label> -->
             </div>
             <div class="publish-voice">
-                <i @click="record" class="icon-voice my-icon-maikefengxianxing"></i>
-                <i @click="record">{{voiceTip}}</i>
+                <span class="publish-voice-btn" @click="record">
+                    <i class="icon-voice my-icon-maikefengxianxing"></i>
+                    <i>{{voiceTip}}</i>
+                </span>
             </div>
         </div>
         <!-- 排名前18%的用户发布动态可设置收费查看。
@@ -380,19 +382,21 @@ export default {
             }
         }
         .publish-voice {
-            display: flex;
-            align-items: center;
-            color: #333;
-            font-size: toRem(15);
             border-1px-top(#e6e6e6);
-            i {
-                color: #666;
-                font-style: normal;
-            }
-            .icon-voice {
-                display: inline-block;
-                padding: toRem(15) toRem(5) toRem(15) 0;
-                font-size: toRem(18);
+            .publish-voice-btn {
+                display: flex;
+                align-items: center;
+                color: #333;
+                font-size: toRem(15);
+                i {
+                    color: #666;
+                    font-style: normal;
+                }
+                .icon-voice {
+                    display: inline-block;
+                    padding: toRem(15) toRem(5) toRem(15) 0;
+                    font-size: toRem(18);
+                }
             }
         }
     }

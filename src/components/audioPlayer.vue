@@ -1,14 +1,12 @@
 <template>
-    <div @click="clickAudio" class="audio-palyer" :style="{'width': audioWidth}">
+    <div @click="clickAudio" class="audio-palyer">
         <span class="audio-caret-box">
             <i class="audio-caret-b"></i>
             <i class="audio-caret-t"></i>
         </span>
         <span class="audio-icon my-icon-31shengbo"></span>
-        <span class="audio-duration">{{showTime}}''</span>
-        <audio ref="audioCtrl" class="audio-ctrl" preload>
-            <source :src="`http://${audioSrc}`" type="audio/mpeg">
-        </audio>
+        <span class="audio-duration">{{showTip}}</span>
+        <audio ref="audioCtrl" class="audio-ctrl" :src="`http://${audioSrc}`" preload></audio>
     </div>
 </template>
 <script>
@@ -42,15 +40,33 @@ export default {
             // 如果 this.audio 存在
             // 暂停状态 且 剩余时间 为0 即播放完毕显示总时长, 否则 如果 总时长 = 当前播放时间, 即播放完毕显示总时长, 否则显示当前播放的而时间
             // audio 不存在 直接显示 0
+            // 安卓 和 pc 都 OK ios 初始无法得到 duration
             let t = this.audio ? this.audio.paused && this.leftTime === 0 ? this.duration : this.duration === this.currentTime ? this.duration : this.leftTime
             : 0
             return t
+        },
+        showTip() {
+            let tip = '点击播放'
+            if (this.audio) {
+                if (this.duration !== this.currentTime) {
+                    if (!this.audio.paused) {
+                        tip = this.leftTime
+                    } else {
+                        tip = '点击播放'
+                    }
+                } else {
+                    tip = '点击播放'
+                }
+            } else {
+                tip = '点击播放'
+            }
+            tip = tip === '点击播放' ? tip : `${tip}''`
+            return tip
         }
     },
     methods: {
         clickAudio() {
             const self = this
-            console.log(self.audio.paused)
             self.audio.paused ? self.audio.play() : self.audio.pause()
         },
         addEventListeners() {
@@ -73,8 +89,9 @@ export default {
         }
     },
     mounted() {
-        this.audio = this.$refs.audioCtrl
-        this.addEventListeners()
+        let self = this
+        self.audio = self.$refs.audioCtrl
+        self.addEventListeners()
     },
     beforeDestroyed() {
         this.removeEventListeners()
@@ -88,7 +105,7 @@ export default {
     top: 0;
     left: toRem(4);
     padding: 0 toRem(10);
-    min-width: 20%;
+    width: 35%;
     height: toRem(28);
     line-height: toRem(28);
     background: $appBg;

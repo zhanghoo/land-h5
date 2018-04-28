@@ -32,7 +32,7 @@
                 <!-- 底部提示 -->
                 <div class="bottomLoad" v-if="rankList.length > 0">
                     <div class="loading" v-show="loading === true">加载中...</div>
-                    <div class="noData" v-if="loading === 'nothing'">排名目前只显示前100名</div>
+                    <div class="noData" v-if="loading === 'nothing'">没有更多的内容了</div>
                 </div>
             </div>
         </div>
