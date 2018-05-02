@@ -10,11 +10,16 @@
     </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
     name: 'audioPalyer',
     props: {
         audioSrc: {
             type: String
+        },
+        audioCId: {
+            type: Number,
+            default: 0
         }
     },
     data() {
@@ -25,6 +30,9 @@ export default {
         }
     },
     computed: {
+        ...mapState([
+            'playingAudioCId'
+        ]),
         audioWidth() {
             // 默认最小宽度20 微信语音最长时长为 60s
             let t = `${20 + this.duration}%`
@@ -64,10 +72,27 @@ export default {
             return tip
         }
     },
+    watch: {
+        playingAudioCId() {
+            const self = this
+            if (self.audio) {
+                if (self.playingAudioCId === self.audioCId) {
+                    self.audio.play()
+                } else {
+                    self.audio.pause()
+                }
+            }
+        }
+    },
     methods: {
         clickAudio() {
             const self = this
-            self.audio.paused ? self.audio.play() : self.audio.pause()
+            if (self.audio.paused) {
+                self.audio.play()
+                this.$store.commit('setPlayingAudioCId', self.audioCId)
+            } else {
+                self.audio.pause()
+            }
         },
         addEventListeners() {
             const self = this
@@ -92,6 +117,7 @@ export default {
         let self = this
         self.audio = self.$refs.audioCtrl
         self.addEventListeners()
+        console.log(self.audioCId)
     },
     beforeDestroyed() {
         this.removeEventListeners()

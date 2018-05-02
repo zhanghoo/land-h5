@@ -90,7 +90,7 @@
                             </p>
                         </div>
                         <div class="bsi-panel-c">
-                            <div class="bsi-user-avatar" @click.stop="$router.push({name: 'userDetail', params: { userId: item.user_id }})">
+                            <div class="bsi-user-avatar" @click.stop="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
                                 <div class="bsi-avatar"><img v-if="item.avatar" :src="item.avatar"></div>
                                 <img class="bsi-win" src="~@/assets/img/win@2x.png">
                             </div>
@@ -334,6 +334,7 @@ export default {
                     margin: toRem(12) 0 toRem(6);
                     color: #333;
                     font-weight: 700;
+                    font-size: toRem(14);
                 }
                 .home-rank-num {
                     color: #333;
@@ -399,7 +400,7 @@ export default {
         }
     }
     .publish-newest-list .block-slot-item {
-        font-size: toRem(14);
+        font-size: toRem(17);
     }
     .block-slot .block-slot-head .block-slot-more {
         font-size: toRem(14);
@@ -414,16 +415,16 @@ export default {
                 max-width: 50%;
                 line-height: toRem(26);
                 .bsi-title {
-                    font-size: toRem(14);
+                    font-size: toRem(17);
                     width: 100%;
                     text-ellipsis();
                 }
                 .bsi-type {
-                    font-size: toRem(14);
+                    font-size: toRem(17);
                     color: $appColor;
                 }
                 .bsi-price {
-                    font-size: toRem(14);
+                    font-size: toRem(17);
                 }
                 .bsi-price-num {
                     padding: toRem(3.5) toRem(6);

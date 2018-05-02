@@ -2,7 +2,7 @@
     <div id="withdrawCashNext">
         <mt-field placeholder="请输入提现金额" type="number" class="w-n-input" v-model="money"></mt-field>
         <div class="w-n-tip">
-            可提现金额：<span>{{mine.master_coin}}</span><br>
+            可提现到微信零钱：<span>{{mine.master_coin}}</span><br>
             提示：提现会扣除一定积分
         </div>
         <p class="w-n-btn-next">

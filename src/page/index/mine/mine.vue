@@ -13,6 +13,7 @@
                         <span v-if="mine.is_charge === '1'" class="is-charge my-icon-huizhanghuiyuan"></span>
                         <span v-else class="isnt-charge">（首次充值即可成为会员）</span>
                     </div>
+                    <p class="mine-id">{{mine.user_id}}</p>
                     <mt-button class="info-label" plain type="primary">{{mine.is_charge === '1' ? mine.level : '地产小狗'}}</mt-button>
                 </div>
             </div>
@@ -187,7 +188,7 @@ export default {
                 flex: 1;
                 padding-left: toRem(18.5);
                 .name {
-                    margin: toRem(8.5) 0 toRem(10);
+                    margin: toRem(8.5) 0 toRem(5);
                     font-size: toRem(18);
                     line-height: 1;
                     .is-charge {
@@ -198,6 +199,10 @@ export default {
                         font-size: toRem(12);
                         color: $appColor;
                     }
+                }
+                .mine-id {
+                    font-size: toRem(14);
+                    color: #666;
                 }
                 .info-label {
                     position: relative;

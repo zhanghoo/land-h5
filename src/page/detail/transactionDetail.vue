@@ -51,7 +51,7 @@
             <div class="rank-list-wrapper" v-if="json.rank_list && json.rank_list != 'null'">
                 <block-slot class="rank-list first">
                     <!-- <span slot="title">前三名玩家可获得大师币及大师积分奖励</span> -->
-                    <span slot="title">此次估价排名前10%玩家可获得大师积分奖励</span>
+                    <span slot="title">估价成功的玩家可获得大师积分奖励</span>
                     <span slot="more"></span>
                     <div slot="conent">
                         <div class="block-slot-item first-item">
@@ -163,8 +163,8 @@ export default {
             // transactionDetail页面 和 mine页面 分享需要重新设置 加上userid, 这里分享的是当前详情页面
             // 其余页面分享的都是, empty入口界面
             // 遗留分享问题, 在其他页面的分享应该是默认的全局默认的shareInfo 在 main.js 里面 每个router里面拼接一下链接, 在state 里面保存其他的微信参数
-            let url = `${window.location.href.split('#')[0]}#/transactionDetail?action=transactionDetail&userid=${this.mine.user_id}`
-            // console.log(url)
+            let url = `${window.location.href.split('#')[0]}#/transactionDetail?id=${this.$route.query.id}&action=transactionDetail&userid=${this.mine.user_id}`
+            console.log(url)
             wxShare(url).then(res => {
                 if (res && res.Data) {
                     this.shareInfo = res.Data
@@ -177,10 +177,11 @@ export default {
             this.popupVisible2 = !this.popupVisible2
         },
         onWxMenuShare() {
+            let self = this
             // 配置微信分享按钮
-            let _shareInfo = this.shareInfo
-            console.log(_shareInfo)
-            if (this.isWeiXin) {
+            let _shareInfo = self.shareInfo
+            console.log(_shareInfo, self.shareInfoDesc)
+            if (self.isWeiXin) {
                 // alert('点击了分享, 开始config')
                 wx.config({
                     debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -205,14 +206,14 @@ export default {
                 })
                 wx.ready(function () {
                     wx.onMenuShareTimeline({
-                        'title': `transitionDetail-${shareInfoDesc.timeline_title}`,
-                        'imgUrl': shareInfoDesc.timeline_imgUrl,
+                        'title': self.shareInfoDesc.timeline_title,
+                        'imgUrl': self.shareInfoDesc.timeline_imgUrl,
                         'link': _shareInfo.url
                     })
                     wx.onMenuShareAppMessage({
-                        'title': `transitionDetail-${shareInfoDesc.appmessage_title}`,
-                        'desc': shareInfoDesc.appmessage_desc,
-                        'imgUrl': shareInfoDesc.appmessage_imgUrl,
+                        'title': self.shareInfoDesc.appmessage_title,
+                        'desc': self.shareInfoDesc.appmessage_desc,
+                        'imgUrl': self.shareInfoDesc.appmessage_imgUrl,
                         'link': _shareInfo.url
                     })
                 })

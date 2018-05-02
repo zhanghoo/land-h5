@@ -65,12 +65,60 @@ export default {
     .label {
         font-size: inherit;
         height: inherit;
-        padding: toRem(1) toRem(2);
+        padding: 0 toRem(3);
         border-radius: 3px;
         .mint-button-text {
             display: inline-block;
             font-size: toRem(14);
             transform: scale(0.75);
+        }
+    }
+}
+.mint-msgbox {
+    width: 80%;
+    border-radius: toRem(5);
+    .mint-msgbox-header {
+        padding: toRem(15) 0;
+        border-1px-bottom(#eee);
+        .mint-msgbox-title {
+            font-size: toRem(16);
+            color: #999;
+        }
+    }
+    .mint-msgbox-content {
+        padding: toRem(36);
+        border-bottom: none;
+        .mint-msgbox-message {
+            color: #333;
+        }
+    }
+    .mint-msgbox-btns {
+        display: block;
+        padding: 0 toRem(10) toRem(15) toRem(10);
+        height: auto;
+        .mint-msgbox-btn {
+            width: 48%;
+            height: toRem(40);
+            line-height: toRem(40);
+            color: #fff;
+            border-radius: toRem(5);
+            &.mint-msgbox-cancel {
+                float: right;
+                background: $appColor;
+                border-right: none;
+            }
+            &.mint-msgbox-confirm {
+                float: left;
+                background: #ccc;
+            }
+        }
+        &:after {
+            content: '.';
+            display: block;
+            height: 0;
+            line-height: 0;
+            clear: both;
+            visibility: hidden;
         }
     }
 }

@@ -3,9 +3,9 @@
         <ul class="moment-list" v-if="json">
             <li class="list-item" v-for="(item, index) in json" :key="index">
                 <div class="item-user">
-                    <img class="user-avatar" v-if="item.avatar" :src="item.avatar">
+                    <img class="user-avatar" v-if="item.avatar" :src="item.avatar" @click="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
                     <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
-                    <mt-button class="label" plain type="primary" v-if="item.level">{{item.level.level_name}}</mt-button>
+                    <span class="user-label" v-if="item.level">{{item.level.level_name}}</span>
                 </div>
                 <div class="item-content">
                     <!-- 需支付 -->
@@ -29,7 +29,7 @@
                         </div>
                         <!-- 音频内容 -->
                         <div v-if="item.voice_url !== '' && item.voice_url !== undefined" class="content-audio">
-                            <audioPlayer :audioSrc="item.voice_url"></audioPlayer>
+                            <audioPlayer :audioSrc="item.voice_url" :audioCId="item.cid"></audioPlayer>
                         </div>
                         <!-- 封面 -->
                         <template v-if="item.image && item.image != null && item.image != 'null'">
@@ -146,7 +146,12 @@ export default {
         // 删除用户评论
         deleteMoment(item, index) {
             if (item && item.cid) {
-                this.$msgBox.confirm('确定执行此操作?').then(action => {
+                this.$msgBox({
+                    message: '确定删除吗？',
+                    showCancelButton: true,
+                    confirmButtonText: '删除',
+                    cancelButtonText: '取消'
+                }).then(action => {
                     if (action === 'confirm') {
                         // 发送请求
                         delComment(item.cid).then(res => {
@@ -186,6 +191,16 @@ $subText = #666;
                 color: $mainText;
                 font-size: toRem(14);
                 margin: 0 toRem(8);
+            }
+            .user-label {
+                padding: toRem(3.5) toRem(6.5);
+                margin-left: toRem(4.5);
+                font-size: toRem(10);
+                height: inherit;
+                color: $appColor;
+                border: 1px solid $appColor;
+                border-radius: toRem(3);
+                vertical-align: middle;
             }
         }
         .item-title {
@@ -248,7 +263,7 @@ $subText = #666;
             .content-text {
                 margin-bottom: toRem(10);
                 color: $subText;
-                font-size: toRem(14);
+                font-size: toRem(16);
             }
             .content-audio {
                 margin-bottom: toRem(10);
