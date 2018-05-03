@@ -20,11 +20,11 @@
         <mt-popup v-model="popupVisible" class="mp-popup">
             <div class="mine-present">
                 <div class="mine-present-title">转增他人
-                    <span class="mp-icon my-icon-baocuo" @click="popupVisible = !popupVisible"></span>
+                    <span class="mp-icon my-icon-baocuo" @click="popupVisible = false"></span>
                 </div>
                 <div class="mine-present-content">
                     <p class="mpc-input">
-                        <mt-field label="对方账户" v-model="presentUserid"></mt-field>
+                        <mt-field label="对方ID" v-model="presentUserid"></mt-field>
                     </p>
                     <p class="mpc-input">
                         <mt-field label="转增大师币" v-model="presentNumber" type="number"></mt-field>

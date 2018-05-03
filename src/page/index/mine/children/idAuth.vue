@@ -106,7 +106,7 @@ export default {
     z-index: 200;
     background: $appBg;
     .desc {
-        padding: toRem(15) toRem(30);
+        padding: toRem(15) toRem(18);
         font-size: toRem(14);
         line-height: 1;
         color: #666;

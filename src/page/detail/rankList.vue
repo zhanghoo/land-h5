@@ -23,7 +23,7 @@
                         </i>
                     </div>
                     <div class="item item-name">
-                        <img class="name-avatar" v-if="item.avatar" :src="item.avatar">
+                        <img class="name-avatar" v-if="item.avatar" :src="item.avatar" @click="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
                         <span class="name-text">{{item.nick_name}}</span>
                     </div>
                     <div class="item item-level">{{item.level_name}}</div>
@@ -32,7 +32,7 @@
                 <!-- 底部提示 -->
                 <div class="bottomLoad" v-if="rankList.length > 0">
                     <div class="loading" v-show="loading === true">加载中...</div>
-                    <div class="noData" v-if="loading === 'nothing'">没有更多的内容了</div>
+                    <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
                 </div>
             </div>
         </div>
@@ -77,10 +77,14 @@ export default {
                         // 只赋值一次
                         this.mineRank = res.Data.self
                     }
-                    this.rankList.push(...res.Data.all)
-                    this.page++
-                    this.loading = false
-                    this.bottomLock = false
+                    if (res.Data.all.length > 0) {
+                        this.rankList.push(...res.Data.all)
+                        this.page++
+                        this.loading = false
+                        this.bottomLock = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
                 } else {
                     this.loading = 'nothing'
                 }
@@ -125,7 +129,7 @@ export default {
             align-items: center;
             justify-content: space-between;
             color: #333;
-            font-size: toRem(14);
+            font-size: toRem(16);
             padding: toRem(15) 0;
             border-1px-bottom(#e6e6e6);
             .header-item {
@@ -135,7 +139,7 @@ export default {
         }
         .content-body {
             color: #666;
-            font-size: toRem(12);
+            font-size: toRem(14);
             padding-bottom: toRem(60);
             .body-item {
                 display: flex;
@@ -173,7 +177,7 @@ export default {
                         left: 50%;
                         top: 58%;
                         color: #333;
-                        font-size: toRem(12);
+                        font-size: toRem(14);
                         font-weight: bold;
                         transform: translate3d(-50%, -50%, 0) scale(0.84);
                     }
@@ -201,7 +205,7 @@ export default {
         width: 100%;
         background: #fff;
         color: #666;
-        font-size: toRem(12);
+        font-size: toRem(14);
         .mine-rank {
             display: flex;
             align-items: center;
@@ -239,7 +243,7 @@ export default {
                     left: 50%;
                     top: 58%;
                     color: #333;
-                    font-size: toRem(12);
+                    font-size: toRem(14);
                     font-weight: bold;
                     transform: translate3d(-50%, -50%, 0) scale(0.84);
                 }

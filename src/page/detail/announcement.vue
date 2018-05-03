@@ -3,7 +3,7 @@
         <div class="announce-panel" v-for="(item, index) in json" :key="index">
             <div class="announce-panel-user">
                 <div class="announce-panel-userinfo">
-                    <div class="apu-avatar" @click.stop="$router.push({name: 'userDetail', params: { userId: item.user_id }})">
+                    <div class="apu-avatar" @click.stop="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
                         <img class="apu-avatar-img" :src="item.avatar">
                     </div>
                     <span class="apu-name">{{item.nick_name}}</span>

@@ -8,8 +8,9 @@
                 <div class="user-base">
                     <div class="base-wrapper">
                         <p class="user-name">{{userinfo.nick_name}}</p>
-                        <mt-button class="label user-label" plain type="primary">{{userinfo.level}}</mt-button>
+                        <span class="user-label">{{userinfo.level}}</span>
                     </div>
+                    <p class="user-id">{{userinfo.user_id}}</p>
                     <div class="user-score">积分：{{userinfo.master_score}}</div>
                 </div>
             </div>
@@ -22,7 +23,7 @@
                     <!-- 底部提示 -->
                     <div class="bottomLoad" v-if="json.length > 0">
                         <div class="loading" v-show="loading === true">加载中...</div>
-                        <div class="noData" v-if="loading === 'nothing'">没有更多的内容了</div>
+                        <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
                     </div>
                 </div>
             </block-slot>
@@ -122,15 +123,27 @@ export default {
                 .base-wrapper {
                     display: flex;
                     align-items: center;
-                    margin-bottom: toRem(15);
+                    margin-bottom: toRem(8.5);
                     .user-name {
                         color: #333;
                         margin-right: toRem(12);
                         font-size: toRem(18);
                     }
                     .user-label {
-                        font-size: toRem(9);
+                        padding: toRem(3.5) toRem(6.5);
+                        margin-left: toRem(4.5);
+                        font-size: toRem(10);
+                        height: inherit;
+                        color: $appColor;
+                        border: 1px solid $appColor;
+                        border-radius: toRem(3);
+                        vertical-align: middle;
                     }
+                }
+                .user-id {
+                    margin-bottom: toRem(8.5);
+                    font-size: toRem(14);
+                    color: #666;
                 }
                 .user-score {
                     color: #666;

@@ -12,7 +12,8 @@ const state = {
     license: false,
     wxConfig: '', // 使用JSSDK, config接口注入权限验证配置时用到的配置
     shareLink: '', // 分享的链接
-    shareInfoDesc: '' // 分享的描述
+    shareInfoDesc: '', // 分享的描述
+    playingAudioCId: 0 // 正在播放的音频cid
 }
 
 const getters = {
@@ -43,6 +44,9 @@ const mutations = {
     },
     reduceUserMoney(state, val) {
         state.mine.master_coin -= val
+    },
+    setPlayingAudioCId(state, val) {
+        state.playingAudioCId = val
     }
 }
 

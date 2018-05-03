@@ -30,7 +30,7 @@
         </div>
         <div class="land-detail-tip land-detail-border">
             <span class="ldt-icon my-icon-guanyuwomen"></span>
-            充值比例1:1，充值后还可获得相应积分。大师币可提现。
+            充值比例1:1，充值后可获得相应金额的积分。大师币可提现。
         </div>
         <p class="r-btn-do">
             <mt-button class="rbd-btn" type="primary" @click="callpay">立即充值</mt-button>
