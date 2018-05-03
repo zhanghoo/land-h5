@@ -152,7 +152,7 @@ export default {
                 pid: _self.$route.query.pid || 0,
                 uid: _self.$store.state.mine.user_id,
                 title: _self.title,
-                text: _self.content,
+                text: this.httpFilter(_self.content),
                 is_pay: _self.chargeVisible ? 1 : 0,
                 money: _self.chargeVisible ? _self.moneyActive : 0,
                 images: _self.pictureFile,
@@ -281,6 +281,10 @@ export default {
                     }
                 }
             })
+        },
+        httpFilter(val) {
+            var reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g
+            return val.replace(reg, '<a href="$1$2">$1$2</a>')
         }
     },
     mounted() {

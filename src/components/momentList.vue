@@ -24,7 +24,7 @@
                             <div class="item-title">{{item.title}}</div>
                             <!-- 文本内容 -->
                             <template>
-                                <div class="content-text">{{item.content}}</div>
+                                <div class="content-text" v-html="item.content"></div>
                             </template>
                         </div>
                         <!-- 音频内容 -->
@@ -34,7 +34,9 @@
                         <!-- 封面 -->
                         <template v-if="item.image && item.image != null && item.image != 'null'">
                             <router-link class="content-cover" :to="{path: '/momentDetail', query: { 'cid': item.cid}}" :class="`item-content-${item.image.length}`" tag="div">
-                                <img v-for="(imgItem, index) in item.image" :src="imgItem" :key="index" class="cover-img">
+                                <div class="cover-item" v-for="(imgItem, index) in item.image" :key="index">
+                                    <img class="cover-img" :src="imgItem">
+                                </div>
                             </router-link>
                         </template>
                     </template>
@@ -213,44 +215,39 @@ $subText = #666;
             font-size: toRem(14);
             .content-cover {
                 display: flex;
-                align-items: center;
-                justify-content: space-around;
+                align-items: flex-start;
                 max-height: toRem(180);
                 overflow: hidden;
-                .cover-img {
-                    display: inline-block;
-                    width: 100%;
-                    border-width: 0 toRem(5);
-                    border-style: solid;
-                    border-color: transparent;
+                .cover-item {
+                    height 100%
+                    .cover-img {
+                        display: block;
+                        width: 100%;
+                    }
                 }
                 &.item-content-1 {
-                    .cover-img {
-                        border: none;
+                    .cover-item {
+                        max-width: 100%;
+                        max-height: 100%;
+                        margin: auto 0;
                     }
                 }
                 &.item-content-2 {
-                    .cover-img {
+                    .cover-item {
                         width: 50%;
-                        &:nth-child(1) {
-                            border-width: 0 toRem(5) 0 0;
+                        &:nth-child(1){
+                            padding-right 0.5%
                         }
-                        &:nth-child(2) {
-                            border-width: 0 0 0 toRem(5);
+                        &:nth-child(2){
+                            padding-left 0.5%
                         }
                     }
                 }
                 &.item-content-3 {
-                    .cover-img {
-                        width: 33.33%;
-                        &:nth-child(1) {
-                            border-width: 0 toRem(6.6) 0 0;
-                        }
-                        &:nth-child(2) {
-                            border-width: 0 toRem(3.3);
-                        }
-                        &:nth-child(3) {
-                            border-width: 0 0 0 toRem(6.6);
+                    .cover-item {
+                        width: 33%;
+                        &:nth-child(2){
+                            margin 0 0.5%
                         }
                     }
                 }
@@ -264,6 +261,9 @@ $subText = #666;
                 margin-bottom: toRem(10);
                 color: $subText;
                 font-size: toRem(16);
+                a{
+                    color $appColor
+                }
             }
             .content-audio {
                 margin-bottom: toRem(10);

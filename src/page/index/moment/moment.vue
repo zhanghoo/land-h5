@@ -29,11 +29,6 @@ export default {
             loading: false
         }
     },
-    watch: {
-        $route(to, from) {
-            this.getMomentList_data()
-        }
-    },
     methods: {
         // 获取动态列表
         getMomentList_data() {
@@ -59,7 +54,7 @@ export default {
             })
         }
     },
-    mounted() {
+    activated() {
         this.getMomentList_data()
     }
 }

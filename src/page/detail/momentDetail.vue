@@ -12,24 +12,19 @@
             </div>
             <div class="momentDetail-content">
                 <div class="content-title">{{json.title}}</div>
-                <div class="content-text">{{json.content}}</div>
+                <div class="content-text" v-html="json.content"></div>
             </div>
             <!-- 音频内容 -->
             <div v-if="json.voice_url !== '' && json.voice_url !== undefined" class="content-audio">
                 <audioPlayer :audioSrc="json.voice_url"></audioPlayer>
             </div>
             <template v-if="json.image && json.image != null && json.image != 'null'">
-                <div class="content-preview"
-                     :class="`content-preview-${json.image.length}`">
-                     <img v-for="(item, index) in json.image"
-                          :src="item.s_img"
-                          :key="index"
-                          @click="clickPopupvisible(item.b_img)"
-                          class="preview-img">
+                <div class="content-preview" :class="`content-preview-${json.image.length}`">
+                    <div class="preview-item" v-for="(item, index) in json.image" :key="index">
+                        <img class="preview-img" :src="item.s_img" @click="clickPopupvisible(item.b_img)">
+                    </div>
                 </div>
-                <mt-popup
-                    v-model="popupVisible"
-                    popup-transition="popup-fade">
+                <mt-popup v-model="popupVisible" popup-transition="popup-fade">
                     <img :src="showImg" class="momentDetail-img" @click="popupVisible = false" id="bigImg">
                     <mt-spinner v-show="showLoading" type="fading-circle" color="#99999"></mt-spinner>
                 </mt-popup>
@@ -64,12 +59,12 @@ export default {
             } else {
                 let _img = $('#bigImg')
                 // 未加载
-                _img.off('load').on('load', function() {
+                _img.off('load').on('load', function () {
                     let imgW = _img[0].naturalWidth
                     let imgH = _img[0].naturalHeight
                     if (imgW >= imgH) {
                         // 横图
-                        _img.css({'width': '100vw', 'height': 'auto'})
+                        _img.css({ 'width': '100vw', 'height': 'auto' })
                     } else {
                         // 竖图
                         let _clientW = $(window).width()
@@ -78,12 +73,12 @@ export default {
                         let imgWH = imgW / imgH
                         if (_clientWH > imgWH) {
                             // 视宽高比 大于 图片宽高比  设置图片高
-                            _img.css({'width': 'unset', 'height': '100vh'})
+                            _img.css({ 'width': 'unset', 'height': '100vh' })
                         } else if (_clientWH < imgWH) {
                             // 视宽高比 大于 图片宽高比  设置图片宽
-                            _img.css({'width': '100vw', 'height': 'unset'})
+                            _img.css({ 'width': '100vw', 'height': 'unset' })
                         } else {
-                            _img.css({'width': '100vw', 'height': '100vh'})
+                            _img.css({ 'width': '100vw', 'height': '100vh' })
                         }
                     }
                     _self.popupVisible = true
@@ -131,7 +126,7 @@ export default {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     top: 0;
     left: 0;
     z-index: 300;
@@ -188,6 +183,12 @@ export default {
             color: #666;
             font-size: toRem(14);
             text-align: justify;
+            word-break: break-all;
+            word-wrap: break-word;
+            line-height: 2em;
+            a {
+                color: $appColor;
+            }
         }
     }
     .content-audio {
@@ -197,44 +198,36 @@ export default {
     .content-preview {
         display: flex;
         padding: 0 toRem(18);
-        align-items: center;
-        justify-content: space-around;
+        align-items: flex-start;
         max-height: toRem(180);
         overflow: hidden;
-        .preview-img {
-            display: inline-block;
-            width: 100%;
-            border-width: 0 toRem(5);
-            border-style: solid;
-            border-color: transparent;
+        .preview-item {
+            .preview-img {
+                display: block;
+                width: 100%;
+            }
         }
         &.content-preview-1 {
-            .preview-img {
-                border: none;
+            .preview-item {
+                max-width: 100%;
+                max-height: 100%;
+                margin: auto 0;
             }
         }
         &.content-preview-2 {
-            .preview-img {
-                width: 50%;
-                &:nth-child(1) {
-                    border-width: 0 toRem(5) 0 0;
-                }
-                &:nth-child(2) {
-                    border-width: 0 0 0 toRem(5);
-                }
+            width: 50%;
+            &:nth-child(1) {
+                padding-right: 0.5%;
+            }
+            &:nth-child(2) {
+                padding-left: 0.5%;
             }
         }
         &.content-preview-3 {
-            .preview-img {
-                width: 33.33%;
-                &:nth-child(1) {
-                    border-width: 0 toRem(6.6) 0 0;
-                }
+            .preview-item {
+                width: 33%;
                 &:nth-child(2) {
-                    border-width: 0 toRem(3.3);
-                }
-                &:nth-child(3) {
-                    border-width: 0 0 0 toRem(6.6);
+                    margin: 0 0.5%;
                 }
             }
         }

@@ -1,7 +1,8 @@
 <template>
     <div id="app" v-if="$store.state.mine">
         <!-- 内容视口 -->
-        <router-view v-wechat-title="$route.meta.title"></router-view>
+        <!-- <router-view v-wechat-title="$route.meta.title"></router-view> -->
+        <router-view></router-view>
         <!-- 页面加载进度条 -->
         <vue-progress-bar></vue-progress-bar>
     </div>
@@ -20,27 +21,6 @@ export default {
                 ? ua.match(/MicroMessenger/i)[0] === 'micromessenger' ? 1 : 0
                 : 0
             this.$store.commit('set_isWeiXin', isWeiXin)
-        },
-        getUserInfo() {
-            function getQueryString(name) {
-                var reg = new RegExp('(^|&amp;)' + name + '=([^&amp;]*)(&amp;|$)', 'i')
-                var r = window.location.hash.split('?')
-                if (r[1]) {
-                    let result = r[1].match(reg)
-                    if (result != null) {
-                        return unescape(result[2])
-                    } else {
-                        return null
-                    }
-                } else {
-                    return null
-                }
-            }
-            let user_id = getQueryString('user_id')
-            console.log('user_id', user_id)
-            if (user_id) {
-                this.get_mineInfo(user_id)
-            }
         }
     },
     created() {
@@ -55,7 +35,6 @@ export default {
     },
     mounted() {
         this.browserCheck()
-        // this.getUserInfo()
         this.$Progress.finish()
     }
 }

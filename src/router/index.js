@@ -4,15 +4,17 @@ import Router from 'vue-router'
 Vue.use(Router)
 
 const index = () => import('@/page/index/index')
+// moment
 const moment = () => import('@/page/index/moment/moment')
+// home
 const home = () => import('@/page/index/home/home')
+// mine
 const mine = () => import('@/page/index/mine/mine')
 const myInfo = () => import('@/page/index/mine/children/myInfo')
 const mineGold = () => import('@/page/index/mine/children/mineGold')
 const mineScore = () => import('@/page/index/mine/children/mineScore')
 const partInRecord = () => import('@/page/index/mine/children/partInRecord')
 const recharge = () => import('@/page/index/mine/children/recharge')
-const mineRecharge = () => import('@/page/index/mine/children/recharge')
 const withdrawCash = () => import('@/page/index/mine/children/withdrawCash')
 const mineWithdrawCash = () => import('@/page/index/mine/children/withdrawCash/next')
 const withdrawCashNext = () => import('@/page/index/mine/children/withdrawCash/next')
@@ -113,14 +115,6 @@ export default new Router({
                             }
                         },
                         {
-                            name: 'recharge',
-                            path: 'recharge',
-                            component: recharge,
-                            meta: {
-                                title: '充值'
-                            }
-                        },
-                        {
                             name: 'mineWithdrawCash',
                             path: 'mineWithdrawCash',
                             component: mineWithdrawCash,
@@ -171,9 +165,9 @@ export default new Router({
             ]
         },
         {
-            name: 'mineRecharge',
-            path: '/mineRecharge',
-            component: mineRecharge,
+            name: 'recharge',
+            path: '/recharge',
+            component: recharge,
             meta: {
                 title: '充值'
             }

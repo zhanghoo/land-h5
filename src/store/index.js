@@ -9,7 +9,6 @@ Vue.use(Vuex)
 const state = {
     mine: '',
     isWeiXin: null,
-    license: false,
     wxConfig: '', // 使用JSSDK, config接口注入权限验证配置时用到的配置
     shareLink: '', // 分享的链接
     shareInfoDesc: '', // 分享的描述
@@ -26,9 +25,6 @@ const mutations = {
     },
     set_isWeiXin(state, val) {
         state.isWeiXin = val
-    },
-    setLicense(state, val) {
-        state.license = val
     },
     setWxConfig(state, val) {
         state.wxConfig = val
@@ -90,9 +86,6 @@ const actions = {
          await getShareInfoDesc().then(res => {
             commit('setShareInfoDesc', res.Data)
         })
-    },
-    set_License({ commit }, val) {
-        commit('setLicense', val)
     },
     post_addUserMoney({ commit }, val) {
         // 发送请求

@@ -44,7 +44,7 @@
         <div class="mine-cash">
             <ul class="cash-list">
                 <li class="cash-item">
-                    <router-link class="cash-item-a" :to="{name: 'mineRecharge'}">
+                    <router-link class="cash-item-a" :to="{name: 'recharge'}">
                         <div class="cash-item-icon my-icon-recharge"></div>
                         <span class="cash-item-text">充值</span>
                     </router-link>
@@ -157,6 +157,9 @@ export default {
         clickInvitation2() {
             this.popupVisible2 = !this.popupVisible2
         }
+    },
+    activated() {
+        this.$store.dispatch('get_mineInfo', this.$store.state.mine.user_id)
     }
 }
 </script>

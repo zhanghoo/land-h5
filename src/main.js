@@ -14,11 +14,11 @@ import MintUI, { MessageBox, Toast, Indicator } from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import VueProgressBar from 'vue-progressbar'
 import VueAMap from 'vue-amap'
-import VueWechatTitle from 'vue-wechat-title'
+// import VueWechatTitle from 'vue-wechat-title'
 
 import '@/utils/permission'
 
-Vue.use(VueWechatTitle)
+// Vue.use(VueWechatTitle)
 
 Vue.config.productionTip = false
 
