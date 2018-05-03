@@ -35,6 +35,7 @@ export default {
     bottom: 0;
     height: toRem(52);
     background-color: $panelBg;
+    z-index: 999;
     .nav {
         display: flex;
         align-items: center;

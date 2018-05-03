@@ -71,8 +71,8 @@ export function getAccount() {
 }
 
 // 立即充值
-export function postRecharge(money) {
-    let res = request('/home/Pay/charge', 'POST', { 'goods_id': money })
+export function postRecharge(money, user_id) {
+    let res = request('/home/Pay/charge', 'POST', { 'goods_id': money, 'user_id': user_id })
     return res
 }
 

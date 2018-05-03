@@ -55,6 +55,10 @@ export default {
             // 0425反馈修改 头像、昵称、手机号可以分开修改
             if (!this.username) {
                 this.$toast('昵称不能为空')
+            } else if (this.username.length < 2) {
+                this.$toast('昵称长度不能少于2个字符')
+            } else if (this.username.length > 20) {
+                this.$toast('昵称长度不能大于20个字符')
             } else if (!this.phone) {
                 this.$toast('手机号码不能为空')
             } else if (this.phone.length !== 11 || !(/^(1[3,4,5,6,7,8,9])\d{9}$/.test(this.phone))) {
