@@ -19,6 +19,6 @@ export default {
 #index {
     position: relative;
     height: 100vh;
-    padding-bottom: toRem(56);
+    padding-bottom: toRem(52);
 }
 </style>

@@ -283,8 +283,8 @@ export default {
             })
         },
         httpFilter(val) {
-            var reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g
-            return val.replace(reg, '<a href="$1$2">$1$2</a>')
+            let reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g
+            return val.replace(reg, '<a href="$&">$&</a>')
         }
     },
     mounted() {

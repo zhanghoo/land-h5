@@ -19,7 +19,7 @@
         </ul>
         <mt-popup v-model="popupVisible" class="mp-popup">
             <div class="mine-present">
-                <div class="mine-present-title">转增他人
+                <div class="mine-present-title">转赠他人
                     <span class="mp-icon my-icon-baocuo" @click="popupVisible = false"></span>
                 </div>
                 <div class="mine-present-content">
@@ -27,7 +27,7 @@
                         <mt-field label="对方ID" v-model="presentUserid"></mt-field>
                     </p>
                     <p class="mpc-input">
-                        <mt-field label="转增大师币" v-model="presentNumber" type="number"></mt-field>
+                        <mt-field label="转赠大师币" v-model="presentNumber" type="number"></mt-field>
                     </p>
                     <p class="mpc-btn">
                         <mt-button type="primary" @click="confirmPresent">确认转赠</mt-button>
@@ -89,7 +89,8 @@ export default {
                     this.tipVisible = !this.tipVisible
                     _self.sendCoinReturnMsg = res.Msg
                     _self.sendCoinReturnCode = res.Code
-                    if (res.Code) {
+                    if (res.Code === 0 || res.Code === '0') {
+                        this.getCoinRecord_data()
                     }
                 })
             }

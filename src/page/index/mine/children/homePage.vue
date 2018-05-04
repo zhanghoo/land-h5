@@ -123,7 +123,7 @@ export default {
                 .base-wrapper {
                     display: flex;
                     align-items: center;
-                    margin-bottom: toRem(8.5);
+                    margin-bottom: toRem(4);
                     .user-name {
                         color: #333;
                         margin-right: toRem(12);
@@ -141,7 +141,7 @@ export default {
                     }
                 }
                 .user-id {
-                    margin-bottom: toRem(8.5);
+                    margin-bottom: toRem(4);
                     font-size: toRem(14);
                     color: #666;
                 }
