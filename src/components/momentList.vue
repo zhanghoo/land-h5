@@ -212,14 +212,14 @@ $subText = #666;
         }
         .item-content {
             margin-bottom: toRem(12);
-            font-size: toRem(14);
+            font-size: toRem(12);
             .content-cover {
                 display: flex;
                 align-items: flex-start;
                 max-height: toRem(180);
                 overflow: hidden;
                 .cover-item {
-                    height 100%
+                    height: 100%;
                     .cover-img {
                         display: block;
                         width: 100%;
@@ -235,19 +235,19 @@ $subText = #666;
                 &.item-content-2 {
                     .cover-item {
                         width: 50%;
-                        &:nth-child(1){
-                            padding-right 0.5%
+                        &:nth-child(1) {
+                            padding-right: 0.5%;
                         }
-                        &:nth-child(2){
-                            padding-left 0.5%
+                        &:nth-child(2) {
+                            padding-left: 0.5%;
                         }
                     }
                 }
                 &.item-content-3 {
                     .cover-item {
                         width: 33%;
-                        &:nth-child(2){
-                            margin 0 0.5%
+                        &:nth-child(2) {
+                            margin: 0 0.5%;
                         }
                     }
                 }
@@ -260,9 +260,9 @@ $subText = #666;
             .content-text {
                 margin-bottom: toRem(10);
                 color: $subText;
-                font-size: toRem(16);
-                a{
-                    color $appColor
+                font-size: toRem(14);
+                a {
+                    color: $appColor;
                 }
             }
             .content-audio {

@@ -15,12 +15,11 @@
                 <mt-tab-container-item id="summarize">
                     <div class="land-detail-summarize">
                         <div class="lds-shows">
-                            <div class="lds-shows-map" v-if="type === 0" :key="0">
+                            <div class="lds-shows-map" :key="0">
                                 <el-amap vid="amap-vue" :center="center">
                                     <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position"></el-amap-marker>
                                 </el-amap>
                             </div>
-                            <div class="lds-shows-img" v-else :key="1"></div>
                         </div>
                         <div class="lds-desc">
                             <div class="lds-desc-title">{{landText}}概况</div>
@@ -179,7 +178,7 @@ export default {
     data() {
         return {
             selected: 'summarize', // 当前显示的标题,summarize=概况,details=详情
-            type: 0, // 0地块1房产
+            type: 0, // 0房产1地块
             partIn: true, // 是否参与true->参与false->未参与 !!!合接口后弃用
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮 !!!合接口后弃用
             popupVisible: false,
@@ -219,7 +218,7 @@ export default {
         //     return t
         // },
         landText() {
-            var t = this.type === 0 ? '地块' : '房产'
+            var t = this.type === '0' ? '房产' : '地块'
             return t
         }
     },
@@ -283,6 +282,7 @@ export default {
             getLandDetail(params).then(res => {
                 if (res && res.Data) {
                     this.landDetailJson = res.Data
+                    this.type = res.Data.tstatus
                     if (this.landDetailJson.user === '') {
                         // 如果 user 为 '' 即未参与 则 我的估价 和 他人估价不显示
                         this.partIn = false
