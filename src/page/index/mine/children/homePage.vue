@@ -65,7 +65,6 @@ export default {
             getUserDetail(params).then(res => {
                 // console.log(res)
                 if (res && res.Data && res.Data.userstate) {
-                    this.json.push(...res.Data.userstate)
                     if (!this.userinfo.nick_name) {
                         // 只需要赋值一次
                         this.userinfo = res.Data.userinfo
@@ -74,9 +73,14 @@ export default {
                         // 用户查看自己的主页
                         this.mySelf = true
                     }
-                    this.page++
-                    this.loading = false
-                    this.bottomLock = false
+                    if (res.Data.userstate.length > 0) {
+                        this.json.push(...res.Data.userstate)
+                        this.page++
+                        this.loading = false
+                        this.bottomLock = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
                 } else {
                     this.loading = 'nothing'
                 }

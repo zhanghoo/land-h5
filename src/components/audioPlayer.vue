@@ -79,7 +79,8 @@ export default {
                 if (self.playingAudioCId === self.audioCId) {
                     self.audio.play()
                 } else {
-                    self.audio.pause()
+                    // 重新加载
+                    self.audio.load()
                 }
             }
         }
@@ -117,7 +118,7 @@ export default {
         let self = this
         self.audio = self.$refs.audioCtrl
         self.addEventListeners()
-        console.log(self.audioCId)
+        // console.log(self.audioCId)
     },
     beforeDestroyed() {
         this.removeEventListeners()

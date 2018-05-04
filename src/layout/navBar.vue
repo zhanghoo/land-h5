@@ -56,7 +56,7 @@ export default {
                     margin: 0 auto toRem(2);
                 }
                 .nav-item-label {
-                    font-size: toRem(10);
+                    font-size: toRem(12);
                     color: inherit;
                     line-height: 1;
                 }

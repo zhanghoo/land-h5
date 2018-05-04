@@ -7,15 +7,22 @@
             <p class="rule" @click="openScoreRule">
                 <span class="icon my-icon-tishi"></span>&nbsp;规则</p>
         </div>
-        <ul class="m-score-list">
-            <li class="m-score-item" v-for="(item, index) in scoreRecord" :key="index">
-                <div class="m-score-item-record">
-                    <div class="sir-desc">{{item.action}}</div>
-                    <div class="sir-date">{{item.act_time}}</div>
-                </div>
-                <div class="m-score-item-num">{{item.type === '1'? '+' : '-'}}{{item.score_num}}</div>
-            </li>
-        </ul>
+        <div class="loadMore" v-infinite-scroll="getScoreRecord_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+            <ul class="m-score-list">
+                <li class="m-score-item" v-for="(item, index) in scoreRecord" :key="index">
+                    <div class="m-score-item-record">
+                        <div class="sir-desc">{{item.action}}</div>
+                        <div class="sir-date">{{item.act_time}}</div>
+                    </div>
+                    <div class="m-score-item-num">{{item.type === '1'? '+' : '-'}}{{item.score_num}}</div>
+                </li>
+            </ul>
+            <!-- 底部提示 -->
+            <div class="bottomLoad" v-if="scoreRecord.length > 0">
+                <div class="loading" v-show="loading === true">加载中...</div>
+                <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
+            </div>
+        </div>
         <mt-popup v-model="popupVisible" position="right" :modal="false">
             <div class="m-score-rule" @click="popupVisible = false">
                 <div class="m-score-count">
@@ -57,8 +64,11 @@ export default {
     data() {
         return {
             popupVisible: false,
-            scoreRecord: '',
-            scoreRule: ''
+            scoreRecord: [],
+            scoreRule: '',
+            page: 1,
+            bottomLock: false,
+            loading: false
         }
     },
     computed: {
@@ -79,10 +89,29 @@ export default {
         },
         // 获取记录
         getScoreRecord_data() {
-            getScoreRecord(this.$store.state.mine.user_id).then(res => {
+            this.loading = true
+            this.bottomLock = true
+            let params = {
+                userid: this.$store.state.mine.user_id,
+                page: this.page
+            }
+            getScoreRecord(params).then(res => {
                 if (res && res.Data && res.Data.record) {
-                    this.scoreRecord = res.Data.record
+                    if (res.Data.record.length > 0) {
+                        this.scoreRecord.push(...res.Data.record)
+                        this.page++
+                        this.loading = false
+                        this.bottomLock = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
+                } else {
+                    this.loading = 'nothing'
                 }
+            })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
             })
         }
     },
@@ -116,6 +145,13 @@ export default {
         .rule {
             font-size: toRem(14);
         }
+    }
+    .loadMore {
+        padding-bottom: toRem(52);
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
     .m-score-list {
         padding: 0 toRem(18);

@@ -40,8 +40,8 @@ export function getEvaluateDetail(record_id) {
 }
 
 // 大师币操作记录
-export function getCoinRecord(userid) {
-    let res = request('/home/user/coinRecord', 'POST', { 'user_id': userid })
+export function getCoinRecord({userid, page}) {
+    let res = request('/home/user/coinRecord', 'POST', { 'user_id': userid, 'p': page })
     return res
 }
 
@@ -53,8 +53,8 @@ export function postSendCoin({ presentUserid, presentNumber }) {
 }
 
 // 大师积分操作记录
-export function getScoreRecord(userid) {
-    let res = request('/home/user/scoreRecord', 'POST', { 'user_id': userid })
+export function getScoreRecord({userid, page}) {
+    let res = request('/home/user/scoreRecord', 'POST', { 'user_id': userid, 'p': page })
     return res
 }
 

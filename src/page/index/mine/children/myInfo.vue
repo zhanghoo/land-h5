@@ -17,7 +17,7 @@
         <div class="phone">
             <div class="icon my-icon-phone"></div>
             <span class="text">手机号码</span>
-            <input class="input" type="text" v-model="phone">
+            <input class="input" type="tel" maxlength="11" v-model="phone">
         </div>
         <div class="button">
             <mt-button @click="changeUserInfo">确认修改</mt-button>
