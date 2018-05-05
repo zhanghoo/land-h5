@@ -8,15 +8,22 @@
                 <mt-button type="primary" @click="popupVisible = !popupVisible">转赠</mt-button>
             </p>
         </div>
-        <ul class="m-gold-list">
-            <li class="m-gold-item" v-for="(item, index) in coinRecord" :key="index">
-                <div class="m-gold-item-record">
-                    <div class="sir-desc">{{item.action}}</div>
-                    <div class="sir-date">{{item.act_time}}</div>
-                </div>
-                <div class="m-gold-item-num">{{item.type === '1'? '+' : '-'}}{{item.coin_num}}</div>
-            </li>
-        </ul>
+        <div class="loadMore" v-infinite-scroll="getCoinRecord_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+            <ul class="m-gold-list">
+                <li class="m-gold-item" v-for="(item, index) in coinRecord" :key="index">
+                    <div class="m-gold-item-record">
+                        <div class="sir-desc">{{item.action}}</div>
+                        <div class="sir-date">{{item.act_time}}</div>
+                    </div>
+                    <div class="m-gold-item-num">{{item.type === '1'? '+' : '-'}}{{item.coin_num}}</div>
+                </li>
+            </ul>
+            <!-- 底部提示 -->
+            <div class="bottomLoad" v-if="coinRecord.length > 0">
+                <div class="loading" v-show="loading === true">加载中...</div>
+                <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
+            </div>
+        </div>
         <mt-popup v-model="popupVisible" class="mp-popup">
             <div class="mine-present">
                 <div class="mine-present-title">转赠他人
@@ -53,11 +60,14 @@ export default {
         return {
             popupVisible: false,
             tipVisible: false,
-            coinRecord: '',
+            coinRecord: [],
             presentUserid: '',
             presentNumber: '',
             sendCoinReturnCode: 1,
-            sendCoinReturnMsg: '请求失败'
+            sendCoinReturnMsg: '请求失败',
+            page: 1,
+            bottomLock: false,
+            loading: false
         }
     },
     computed: {
@@ -68,10 +78,31 @@ export default {
     methods: {
         // 获取记录
         getCoinRecord_data() {
-            getCoinRecord(this.$store.state.mine.user_id).then(res => {
+            this.loading = true
+            this.bottomLock = true
+            let params = {
+                userid: this.$store.state.mine.user_id,
+                page: this.page
+            }
+            console.log(params)
+            getCoinRecord(params).then(res => {
+                console.log(res.Data.record)
                 if (res && res.Data && res.Data.record) {
-                    this.coinRecord = res.Data.record
+                    if (res.Data.record.length > 0) {
+                        this.coinRecord.push(...res.Data.record)
+                        this.page++
+                        this.loading = false
+                        this.bottomLock = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
+                } else {
+                    this.loading = 'nothing'
                 }
+            })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
             })
         },
         // 确认转赠
@@ -136,6 +167,13 @@ export default {
                 background: $appColor;
             }
         }
+    }
+    .loadMore {
+        padding-bottom: toRem(52);
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
     .m-gold-list {
         padding: 0 toRem(18);

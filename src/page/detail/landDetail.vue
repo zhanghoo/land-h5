@@ -110,6 +110,18 @@
                                 </div>
                             </div>
                         </block-slot>
+                        <div v-if="deadlineYN == 'Y'" class="land-detail-btns">
+                            <template v-if="partIn">
+                                <div v-show="!popupVisible" class="btn-operat">
+                                    <!-- !!PS: 据0412需求修改, 再次估价去掉, 改为只能修改估价 -->
+                                    <!-- <mt-button @click="clickInvitation(1)" class="btn-again" type="default">再次估价</mt-button> -->
+                                    <mt-button class="btn-edit" @click="clickInvitation(2)" type="primary">修改估价</mt-button>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <mt-button v-show="!popupVisible" @click="clickInvitation(0)" class="btn-evaluate" type="primary">估价（100大师积分）</mt-button>
+                            </template>
+                        </div>
                         <block-slot class="land-detail-price land-detail-other-price">
                             <span slot="title">他人估价</span>
                             <span slot="more"></span>
@@ -125,18 +137,6 @@
                             </div>
                         </block-slot>
                     </template>
-                    <div v-if="deadlineYN == 'Y'" class="land-detail-btns">
-                        <template v-if="partIn">
-                            <div v-show="!popupVisible" class="btn-operat">
-                                <!-- !!PS: 据0412需求修改, 再次估价去掉, 改为只能修改估价 -->
-                                <!-- <mt-button @click="clickInvitation(1)" class="btn-again" type="default">再次估价</mt-button> -->
-                                <mt-button class="btn-edit" @click="clickInvitation(2)" type="primary">修改估价</mt-button>
-                            </div>
-                        </template>
-                        <template v-else>
-                            <mt-button v-show="!popupVisible" @click="clickInvitation(0)" class="btn-evaluate" type="primary">估价（100大师积分）</mt-button>
-                        </template>
-                    </div>
                     <mt-popup v-model="popupVisible" class="evaluate-wrap" position="bottom">
                         <div class="land-detail-evaluate">
                             <!-- !!PS: 据0412需求修改, 金币>=200限定去掉, 所以这里不显示了 -->
@@ -177,7 +177,7 @@ export default {
     components: { blockSlot, momentList },
     data() {
         return {
-            selected: 'summarize', // 当前显示的标题,summarize=概况,details=详情
+            selected: 'details', // 当前显示的标题,summarize=概况,details=详情
             type: 0, // 0房产1地块
             partIn: true, // 是否参与true->参与false->未参与 !!!合接口后弃用
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮 !!!合接口后弃用
@@ -240,7 +240,7 @@ export default {
             this.popupVisible = !this.popupVisible
         },
         getLandAbstract_data() {
-            if (this.selected === 'summarize') {
+            // if (this.selected === 'summarize') {
                 this.loading = true
                 this.bottomLock = true
                 let params = {
@@ -272,7 +272,7 @@ export default {
                     console.log(err)
                     this.loading = false
                 })
-            }
+            // }
         },
         getLandDetail_data() {
             let params = {
@@ -535,7 +535,7 @@ export default {
             .btn-operat {
                 display: flex;
                 justify-content: center;
-                padding: toRem(20) toRem(18);
+                padding: toRem(10) toRem(18) toRem(20) toRem(18);
                 .mint-button {
                     padding: toRem(17) toRem(49);
                     height: auto;
