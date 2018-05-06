@@ -260,7 +260,7 @@ $subText = #666;
             .content-text {
                 margin-bottom: toRem(10);
                 color: $subText;
-                font-size: toRem(14);
+                font-size: toRem(16);
                 a {
                     color: $appColor;
                 }

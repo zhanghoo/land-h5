@@ -2,7 +2,7 @@
     <div id="mineGold">
         <div class="m-gold-count">
             <p class="count">当前大师币：
-                <span class="num">{{mine.master_coin}}</span>
+                <span class="num">{{coin}}</span>
             </p>
             <p class="btn">
                 <mt-button type="primary" @click="popupVisible = !popupVisible">转赠</mt-button>
@@ -44,8 +44,7 @@
         </mt-popup>
         <mt-popup v-model="tipVisible" class="tip-popup">
             <div class="mine-present-tip">
-                <div class="mpt-icon"
-                     :class="sendCoinReturnCode === 0 ? 'my-icon-chenggong' : 'my-icon-shibai'"></div>
+                <div class="mpt-icon" :class="sendCoinReturnCode === 0 ? 'my-icon-chenggong' : 'my-icon-shibai'"></div>
                 <div class="mpt-text">{{sendCoinReturnMsg}}</div>
             </div>
         </mt-popup>
@@ -58,6 +57,7 @@ export default {
     name: 'mineGold',
     data() {
         return {
+            coin: 0,
             popupVisible: false,
             tipVisible: false,
             coinRecord: [],
@@ -90,6 +90,7 @@ export default {
                 if (res && res.Data && res.Data.record) {
                     if (res.Data.record.length > 0) {
                         this.coinRecord.push(...res.Data.record)
+                        this.coin = res.Data.count
                         this.page++
                         this.loading = false
                         this.bottomLock = false
@@ -100,10 +101,10 @@ export default {
                     this.loading = 'nothing'
                 }
             })
-            .catch(err => {
-                console.log(err)
-                this.loading = false
-            })
+                .catch(err => {
+                    console.log(err)
+                    this.loading = false
+                })
         },
         // 确认转赠
         confirmPresent() {
@@ -116,12 +117,38 @@ export default {
                     presentNumber: this.presentNumber
                 }
                 postSendCoin(params).then(res => {
-                    this.popupVisible = !this.popupVisible
-                    this.tipVisible = !this.tipVisible
+                    this.popupVisible = false
                     _self.sendCoinReturnMsg = res.Msg
                     _self.sendCoinReturnCode = res.Code
+                    this.tipVisible = true
+                    setTimeout(() => {
+                        this.tipVisible = false
+                    }, 3000)
                     if (res.Code === 0 || res.Code === '0') {
-                        this.getCoinRecord_data()
+                        this.page = 1
+                        let params = {
+                            userid: this.$store.state.mine.user_id,
+                            page: this.page
+                        }
+                        getCoinRecord(params).then(res => {
+                            if (res && res.Data && res.Data.record) {
+                                if (res.Data.record.length > 0) {
+                                    this.coinRecord = res.Data.record
+                                    this.coin = res.Data.count
+                                    this.page++
+                                    this.loading = false
+                                    this.bottomLock = false
+                                } else {
+                                    this.loading = 'nothing'
+                                }
+                            } else {
+                                this.loading = 'nothing'
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            this.loading = false
+                        })
                     }
                 })
             }

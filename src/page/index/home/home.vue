@@ -9,27 +9,27 @@
                 </p>
                 <p class="ht-line"></p>
             </div>
-            <div class="home-rank">
-                <div class="home-rank-item" v-if="rankList[1]" @click.self="$router.push({name: 'rankList'})">
-                    <div @click="$router.push({path: '/userDetail', query: { userId: rankList[1].user_id }})">
+            <div class="home-rank" @click="$router.push({name: 'rankList'})">
+                <div class="home-rank-item" v-if="rankList[1]">
+                    <div>
                         <rank-top :color="'#C6C6C6'" :avatar="rankList[1].avatar" :rank-no="2" :scale="0.95" :desc="rankList[1].level_name"></rank-top>
                     </div>
                     <span class="home-rank-name">{{rankList[1].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({path: '/userDetail', query: { userId: rankList[1].user_id }})">{{rankList[1].master_score}}</span>
+                    <span class="home-rank-num" >{{rankList[1].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[0]" @click.self="$router.push({name: 'rankList'})">
-                    <div @click="$router.push({path: '/userDetail', query: { userId: rankList[0].user_id }})">
+                <div class="home-rank-item" v-if="rankList[0]">
+                    <div>
                         <rank-top :color="'#FCD107'" :avatar="rankList[0].avatar" :rank-no="1" :scale="1.05" :desc="rankList[0].level_name"></rank-top>
                     </div>
                     <span class="home-rank-name">{{rankList[0].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({path: '/userDetail', query: { userId: rankList[0].user_id }})">{{rankList[0].master_score}}</span>
+                    <span class="home-rank-num" >{{rankList[0].master_score}}</span>
                 </div>
-                <div class="home-rank-item" v-if="rankList[2]" @click.self="$router.push({name: 'rankList'})">
-                    <div @click="$router.push({path: '/userDetail', query: { userId: rankList[2].user_id }})">
+                <div class="home-rank-item" v-if="rankList[2]">
+                    <div>
                         <rank-top :color="'#804621'" :avatar="rankList[2].avatar" :rank-no="3" :scale="0.95" :desc="rankList[2].level_name"></rank-top>
                     </div>
                     <span class="home-rank-name">{{rankList[2].nick_name}}</span>
-                    <span class="home-rank-num" @click="$router.push({path: '/userDetail', query: { userId: rankList[2].user_id }})">{{rankList[2].master_score}}</span>
+                    <span class="home-rank-num" >{{rankList[2].master_score}}</span>
                 </div>
             </div>
             <div class="home-msg">
@@ -400,13 +400,13 @@ export default {
         }
     }
     .publish-newest-list .block-slot-item {
-        font-size: toRem(13);
+        font-size: toRem(15);
     }
     .block-slot .block-slot-head .block-slot-more {
         font-size: toRem(13);
     }
     .winner-newest-list {
-        font-size: toRem(14);
+        font-size: toRem(15);
         .bsi-panel {
             display: flex;
             justify-content: space-between;
@@ -415,16 +415,16 @@ export default {
                 max-width: 70%;
                 line-height: toRem(26);
                 .bsi-title {
-                    font-size: toRem(13);
+                    font-size: toRem(15);
                     width: 100%;
                     text-ellipsis();
                 }
                 .bsi-type {
-                    font-size: toRem(13);
+                    font-size: toRem(15);
                     color: $appColor;
                 }
                 .bsi-price {
-                    font-size: toRem(13);
+                    font-size: toRem(15);
                 }
                 .bsi-price-num {
                     padding: toRem(3.5) toRem(6);

@@ -222,6 +222,13 @@ export default {
             return t
         }
     },
+    watch: {
+        $route(to, from) {
+            if (from.name === 'publish') {
+                this.selected = 'summarize'
+            }
+        }
+    },
     filters: {
         purposeToString(val) {
             switch (val) {
@@ -337,7 +344,7 @@ export default {
             }
         }
     },
-    mounted() {
+    activated() {
         this.getLandAbstract_data()
         this.getLandDetail_data()
     }

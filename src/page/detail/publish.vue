@@ -152,7 +152,7 @@ export default {
                 pid: _self.$route.query.pid || 0,
                 uid: _self.$store.state.mine.user_id,
                 title: _self.title,
-                text: this.httpFilter(_self.content),
+                text: this.contentFormatter(_self.content),
                 is_pay: _self.chargeVisible ? 1 : 0,
                 money: _self.chargeVisible ? _self.moneyActive : 0,
                 images: _self.pictureFile,
@@ -282,9 +282,11 @@ export default {
                 }
             })
         },
-        httpFilter(val) {
-            let reg = /(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g
-            return val.replace(reg, '<a href="$&">$&</a>')
+        contentFormatter(val) {
+            let result = val
+            result = result.replace(/(http:\/\/|https:\/\/)((\w|=|\?|\.|\/|&|-)+)/g, '<a href="$&">$&</a>') // 超链接
+            result = result.replace(/\r|\n/g, '<br/>') // 换行
+            return result
         }
     },
     mounted() {
