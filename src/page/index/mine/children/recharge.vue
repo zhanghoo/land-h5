@@ -115,6 +115,7 @@ export default {
                                         _self.$toast('微信支付成功')
                                         setTiemout(() => {
                                           _self.$router.go(-1)
+                                          _self.$store.dispatch('get_mineInfo', _self.$store.state.mine.user_id)
                                         }, 1500)
                                     } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
                                         _self.$toast('用户取消支付')

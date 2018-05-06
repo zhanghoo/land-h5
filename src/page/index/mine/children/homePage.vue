@@ -10,7 +10,7 @@
                         <p class="user-name">{{userinfo.nick_name}}</p>
                         <span class="user-label">{{userinfo.level}}</span>
                     </div>
-                    <p class="user-id">{{userinfo.user_id}}</p>
+                    <p class="user-id">ID：{{userinfo.user_id}}</p>
                     <div class="user-score">积分：{{userinfo.master_score}}</div>
                 </div>
             </div>
