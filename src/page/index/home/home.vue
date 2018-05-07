@@ -106,8 +106,8 @@
         </block-slot>
         <!-- is_sign 0 当天首次未签， 1 当天首次已签
              init popupVisible = ture，默认显示-->
-        <!-- <template v-if="!mine.is_sign"> -->
-            <!-- <mt-popup v-model="popupVisible" popup-transition="popup-fade" class="h-popup" :closeOnClickModal="false"> -->
+        <template v-if="!mine.is_sign">
+            <mt-popup v-model="popupVisible" popup-transition="popup-fade" class="h-popup" :closeOnClickModal="false">
                 <!-- <div v-if="!scoreBtnClicked" class="home-get-score">
                     <div class="home-get-score-title">每日签到
                         <span class="hg-icon my-icon-baocuo" @click="clickInvitation"></span>
@@ -128,16 +128,16 @@
                 </div>
                 <div v-show="scoreBtnClicked"
                      @click="clickInvitation" -->
-                <!-- <div class="home-box-open">
+                <div class="home-box-open">
                     <div class="home-box" :class="boxOpen ? 'open' : ''">
                         <img @click="getScore" class="home-box-close-img" src="~@/assets/img/box.png">
                         <img class="home-box-open-score" src="~@/assets/img/addscore.png">
                         <img class="home-box-open-img" src="~@/assets/img/boxopen.png">
                     </div>
                     <p class="home-box-open-tip">开启宝箱获得积分</p>
-                </div> -->
-            <!-- </mt-popup> -->
-        <!-- </template> -->
+                </div>
+            </mt-popup>
+        </template>
     </div>
 </template>
 <script>

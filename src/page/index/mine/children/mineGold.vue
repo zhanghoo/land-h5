@@ -84,9 +84,9 @@ export default {
                 userid: this.$store.state.mine.user_id,
                 page: this.page
             }
-            console.log(params)
+            // console.log(params)
             getCoinRecord(params).then(res => {
-                console.log(res.Data.record)
+                // console.log(res.Data.record)
                 if (res && res.Data && res.Data.record) {
                     if (res.Data.record.length > 0) {
                         this.coinRecord.push(...res.Data.record)
