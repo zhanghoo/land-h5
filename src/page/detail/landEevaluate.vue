@@ -164,7 +164,9 @@ export default {
             display: flex;
             align-items: center;
             width: 84%;
-            padding: toRem(10) toRem(12);
+            height: toRem(38);
+            line-height: toRem(38);
+            padding: 0 toRem(12);
             background: #f5f5f5;
             border-radius: toRem(5);
             i {
@@ -179,6 +181,11 @@ export default {
                 appearance: none;
                 border: 0;
                 background: transparent;
+                font-size: toRem(14);
+                height: toRem(38);
+                line-height: toRem(14);
+                padding: toRem(12) 0;
+                vertical-align: bottom;
                 &::placeholder {
                     color: #ccc;
                 }
@@ -188,7 +195,8 @@ export default {
             width: 16%;
             text-align: right;
             color: #333;
-            padding: toRem(10) 0;
+            padding: toRem(10) 0 toRem(10) toRem(10);
+            text-align: center;
         }
     }
     .select {
