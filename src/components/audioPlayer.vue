@@ -80,6 +80,8 @@ export default {
                     self.audio.play()
                 } else {
                     // 重新加载
+                    this.duration = 0
+                    this.currentTime = 0
                     self.audio.load()
                 }
             }
