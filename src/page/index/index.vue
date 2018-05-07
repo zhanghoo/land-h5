@@ -5,14 +5,19 @@
             <router-view></router-view>
         </keep-alive>
         <!-- 底部导航条 -->
-        <nav-bar></nav-bar>
+        <nav-bar v-if="this.$route.name === 'home' || this.$route.name === 'moment' || this.$route.name === 'mine'"></nav-bar>
     </div>
 </template>
 <script>
 import navBar from '@/layout/navBar'
 export default {
     name: 'index',
-    components: { navBar }
+    components: { navBar },
+    watch: {
+        $route(val) {
+            console.log(this.$route.name)
+        }
+    }
 }
 </script>
 <style lang='stylus'>

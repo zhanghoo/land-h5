@@ -1,5 +1,5 @@
 <template>
-    <div id="landDetail" v-infinite-scroll="getLandAbstract_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+    <div id="landDetail" v-infinite-scroll="getLandAbstract__more_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
         <div class="land-tab-nav">
             <mt-navbar class="page-land" v-model="selected">
                 <mt-tab-item id="summarize">
@@ -172,12 +172,13 @@ import momentList from '@/components/momentList'
 import { getLandAbstract, getLandDetail, postLandEvaluation } from '@/api'
 import { mapState } from 'vuex'
 import { formatDate } from '@/utils/utils'
+import cache from '@/utils/cache'
 export default {
     name: 'landDetail',
     components: { blockSlot, momentList },
     data() {
         return {
-            selected: 'details', // 当前显示的标题,summarize=概况,details=详情
+            selected: cache.getSession('landDetailSelected') || 'details', // 当前显示的标题,summarize=概况,details=详情
             type: 0, // 0房产1地块
             partIn: true, // 是否参与true->参与false->未参与 !!!合接口后弃用
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮 !!!合接口后弃用
@@ -247,40 +248,42 @@ export default {
             this.popupVisible = !this.popupVisible
         },
         getLandAbstract_data() {
-            // if (this.selected === 'summarize') {
-                this.loading = true
-                this.bottomLock = true
-                let params = {
-                    pid: this.$route.query.pid,
-                    uid: this.$store.state.mine.user_id,
-                    page: this.page
-                }
-                console.log(params)
-                getLandAbstract(params).then(res => {
-                    if (res && res.Data) {
-                        // console.log('landDetail')
-                        this.landAbstractJson = res.Data
-                        let lng = Number(res.Data.longitude)
-                        let lat = Number(res.Data.latitude)
-                        if (lng && lat) {
-                            this.center = [lng, lat]
-                            this.markers[0].position = [lng, lat]
-                        }
-                        if (res.Data.comment && res.Data.comment.length > 0) {
-                            this.comment.push(...res.Data.comment)
-                            this.page++
-                            this.bottomLock = false
-                            this.loading = false
-                        } else {
-                            this.loading = 'nothing'
-                        }
+            this.loading = true
+            this.bottomLock = true
+            let params = {
+                pid: this.$route.query.pid,
+                uid: this.$store.state.mine.user_id,
+                page: this.page
+            }
+            console.log(params)
+            getLandAbstract(params).then(res => {
+                if (res && res.Data) {
+                    this.landAbstractJson = res.Data
+                    let lng = Number(res.Data.longitude)
+                    let lat = Number(res.Data.latitude)
+                    if (lng && lat) {
+                        this.center = [lng, lat]
+                        this.markers[0].position = [lng, lat]
                     }
-                })
+                    if (res.Data.comment && res.Data.comment.length > 0) {
+                        this.comment.push(...res.Data.comment)
+                        this.page++
+                        this.bottomLock = false
+                        this.loading = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
+                }
+            })
                 .catch(err => {
                     console.log(err)
                     this.loading = false
                 })
-            // }
+        },
+        getLandAbstract__more_data() {
+            if (this.selected === 'summarize') {
+                this.getLandAbstract_data()
+            }
         },
         getLandDetail_data() {
             let params = {
@@ -345,9 +348,17 @@ export default {
             }
         }
     },
-    activated() {
+    mounted() {
         this.getLandAbstract_data()
         this.getLandDetail_data()
+    },
+    beforeRouteLeave (to, from, next) {
+        if (to.name === 'publish' && this.selected === 'summarize') {
+            cache.setSession('landDetailSelected', 'summarize')
+        } else {
+            cache.removeSession('landDetailSelected')
+        }
+        next()
     }
 }
 </script>
