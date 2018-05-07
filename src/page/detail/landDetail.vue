@@ -255,6 +255,7 @@ export default {
                     uid: this.$store.state.mine.user_id,
                     page: this.page
                 }
+                console.log(params)
                 getLandAbstract(params).then(res => {
                     if (res && res.Data) {
                         // console.log('landDetail')

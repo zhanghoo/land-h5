@@ -36,7 +36,7 @@
                 <!-- type -->
                 <template v-if="selectType === 'type'">
                     <div class="list-wrapper">
-                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 0 }" @click="selected(0, '全部', 0)">全部</div>
+                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 0 }" @click="selected(2, '全部', 0)">全部</div>
                         <div class="list-item" :class="{ 'on' : typeSelectedIndex === 1 }" @click="selected(1, '地块', 1)">地块</div>
                         <div class="list-item" :class="{ 'on' : typeSelectedIndex === 2 }" @click="selected(0, '房产', 2)">房产</div>
                     </div>
@@ -78,7 +78,7 @@ export default {
             citySelected: 0,
             citySelectedStr: '选择城市',
             citySelectedIndex: 0,
-            typeSelected: 0,
+            typeSelected: 2,
             typeSelectedStr: '选择类型',
             typeSelectedIndex: 0,
             landList: [],

@@ -227,7 +227,7 @@ export default {
             let params = {
                 keyWord: this.keyWord || 0,
                 cityID: this.citySelected || 0,
-                type: this.typeSelected || 0,
+                type: this.typeSelected || 2,
                 page: this.page
             }
             getSearchDetail(params).then(res => {
