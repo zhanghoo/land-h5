@@ -10,7 +10,7 @@
                         <p class="user-name">{{userinfo.nick_name}}</p>
                         <span class="user-label">{{userinfo.level}}</span>
                     </div>
-                    <p class="user-id">{{userinfo.user_id}}</p>
+                    <p class="user-id">ID：{{userinfo.user_id}}</p>
                     <div class="user-score">积分：{{userinfo.master_score}}</div>
                 </div>
             </div>
@@ -73,7 +73,7 @@ export default {
                         // 用户查看自己的主页
                         this.mySelf = true
                     }
-                    console.log(res.Data.userstate.length)
+                    // console.log(res.Data.userstate.length)
                     if (res.Data.userstate.length > 0) {
                         this.json.push(...res.Data.userstate)
                         this.page++
