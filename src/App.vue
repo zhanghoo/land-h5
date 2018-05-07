@@ -2,9 +2,7 @@
     <div id="app" v-if="$store.state.mine">
         <!-- 内容视口 -->
         <!-- <router-view v-wechat-title="$route.meta.title"></router-view> -->
-        <keep-alive include="landDetail">
-            <router-view></router-view>
-        </keep-alive>
+        <router-view></router-view>
         <!-- 页面加载进度条 -->
         <vue-progress-bar></vue-progress-bar>
     </div>
