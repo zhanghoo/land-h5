@@ -6,18 +6,26 @@
         </header>
         <!-- 列表 -->
         <div class="loadMore" v-infinite-scroll="getMomentList_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
-            <momentList :json="moments"></momentList>
-            <!-- 底部提示 -->
-            <div class="bottomLoad" v-if="moments.length > 0">
-                <div class="loading" v-show="loading === true">加载中...</div>
-                <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
-            </div>
+            <mt-loadmore :top-method="loadTopAjax" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false'>
+                <div slot="top" class="mint-loadmore-top">
+                    <span v-show="topStatus == 'pull'">下拉刷新↓</span>
+                    <span v-show="topStatus == 'drop'">释放更新↑</span>
+                    <span v-show="topStatus == 'loading'">加载中...</span>
+                </div>
+                <momentList :json="moments"></momentList>
+                <!-- 底部提示 -->
+                <div class="bottomLoad" v-if="moments.length > 0">
+                    <div class="loading" v-show="loading === true">加载中...</div>
+                    <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
+                </div>
+            </mt-loadmore>
         </div>
     </div>
 </template>
 <script>
 import momentList from '@/components/momentList'
 import { getMomentList } from '@/api/moment'
+import cache from '@/utils/cache'
 export default {
     name: 'moment',
     components: { momentList },
@@ -26,10 +34,29 @@ export default {
             moments: [],
             page: 1,
             bottomLock: false,
-            loading: false
+            loading: false,
+            topStatus: ''
         }
     },
     methods: {
+        loadTopAjax() {
+            this.page = 1
+            let params = {
+                page: this.page,
+                uid: this.$store.state.mine.user_id
+            }
+            getMomentList(params).then(res => {
+                if (res && res.Data) {
+                    this.moments = res.Data
+                }
+                this.$refs.loadmore.onTopLoaded()
+            })
+                .catch(err => {
+                    console.log(err)
+                    this.loading = false
+                    this.$refs.loadmore.onTopLoaded()
+                })
+        },
         // 获取动态列表
         getMomentList_data() {
             this.loading = true
@@ -48,14 +75,43 @@ export default {
                     this.loading = 'nothing'
                 }
             })
-            .catch(err => {
-                console.log(err)
-                this.loading = false
-            })
+                .catch(err => {
+                    console.log(err)
+                    this.loading = false
+                })
+        },
+        handleTopChange(status) {
+            this.topStatus = status
+        },
+        // 处理滚动条位置的方法
+        handleLocaltion(type) {
+            if (type === 'get') {
+                this.$nextTick(() => {
+                    let location = cache.getSession('momentLocation')
+                    $('.loadMore').scrollTop(location)
+                })
+            } else if (type === 'set') {
+                let scrollTop = $('.loadMore').scrollTop()
+                if (scrollTop >= 0) {
+                    cache.setSession('momentLocation', scrollTop)
+                }
+            }
         }
     },
-    activated() {
+    mounted() {
         this.getMomentList_data()
+    },
+    activated() {
+        if (this.$route.params.json) {
+            this.moments.unshift(this.$route.params.json)
+            this.$route.params.json = ''
+        } else {
+            this.handleLocaltion('get')
+        }
+    },
+    beforeRouteLeave(to, from, next) {
+        this.handleLocaltion('set')
+        next()
     }
 }
 </script>
@@ -82,6 +138,10 @@ $headerHeight = 42;
         i {
             margin-right: toRem(4);
         }
+    }
+    .mint-loadmore-top {
+        font-size: toRem(14);
+        color: #999;
     }
     .loadMore {
         height: 100%;

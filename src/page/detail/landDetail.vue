@@ -270,6 +270,7 @@ export default {
                         this.page++
                         this.bottomLock = false
                         this.loading = false
+                        this.handleLocaltion('get')
                     } else {
                         this.loading = 'nothing'
                     }
@@ -346,13 +347,29 @@ export default {
                     }
                 })
             }
+        },
+        // 处理滚动条位置的方法
+        handleLocaltion(type) {
+            if (type === 'get') {
+                this.$nextTick(() => {
+                    let location = cache.getSession('landDetailLocation')
+                    $('#landDetail').scrollTop(location)
+                })
+            } else if (type === 'set') {
+                let scrollTop = $('#landDetail').scrollTop()
+                console.log(scrollTop)
+                if (scrollTop >= 0) {
+                    cache.setSession('landDetailLocation', scrollTop)
+                }
+            }
         }
     },
     mounted() {
         this.getLandAbstract_data()
         this.getLandDetail_data()
     },
-    beforeRouteLeave (to, from, next) {
+    beforeRouteLeave(to, from, next) {
+        this.handleLocaltion('set')
         if ((to.name === 'publish' && this.selected === 'summarize') || (to.name === 'momentDetail' && this.selected === 'summarize')) {
             cache.setSession('landDetailSelected', 'summarize')
         } else {
