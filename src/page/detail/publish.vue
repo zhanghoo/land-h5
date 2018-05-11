@@ -63,7 +63,8 @@ export default {
             localId: '',
             serverId: '',
             recordStep: 0, // 录音操作 0 开始录音 1 结束录音
-            showRecharge: false
+            showRecharge: false,
+            type: ''
         }
     },
     computed: {
@@ -167,10 +168,10 @@ export default {
                     if (!this.$route.query.pid) {
                         // 操作为发布动态时, 成功 3s 跳转到回动态页面
                         setTimeout(function() {
-                            _self.$router.go(-1)
+                            _self.$router.push({name: 'moment', params: {'json': res.Data}})
                         }, 2000)
                     } else {
-                        _self.$router.go(-1)
+                        _self.go(-1)
                     }
                 } else {
                     this.$toast(res.Msg)
@@ -291,6 +292,7 @@ export default {
     },
     mounted() {
         this.get_CommentLevel()
+        this.type = this.$route.query.type
     }
 }
 </script>
