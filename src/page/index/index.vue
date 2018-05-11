@@ -15,7 +15,7 @@ export default {
     components: { navBar },
     watch: {
         $route(val) {
-            console.log(this.$route.name)
+            // console.log(this.$route.name)
         }
     }
 }

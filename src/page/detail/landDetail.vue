@@ -92,7 +92,7 @@
                         <div class="land-price-count land-detail-border">已估价{{landDetailJson.enum}}次，估价后可查看他人估价</div>
                         <div class="land-detail-tip land-detail-border">
                             <span class="ldt-icon my-icon-guanyuwomen"></span>
-                            截止时间前可修改估价；若地块流拍，以所有参与玩家的加权平均数作为结果公布
+                            截止时间前可修改估价；若地产流拍，以所有参与玩家的加权平均数作为结果公布
                         </div>
                     </div>
                     <template v-if="partIn">
@@ -118,9 +118,6 @@
                                     <mt-button class="btn-edit" @click="clickInvitation(2)" type="primary">修改估价</mt-button>
                                 </div>
                             </template>
-                            <template v-else>
-                                <mt-button v-show="!popupVisible" @click="clickInvitation(0)" class="btn-evaluate" type="primary">估价（100大师积分）</mt-button>
-                            </template>
                         </div>
                         <block-slot class="land-detail-price land-detail-other-price">
                             <span slot="title">他人估价</span>
@@ -137,6 +134,9 @@
                             </div>
                         </block-slot>
                     </template>
+                    <div v-if="deadlineYN == 'Y' && !partIn" class="land-detail-btns">
+                        <mt-button v-show="!popupVisible" @click="clickInvitation(0)" class="btn-evaluate" type="primary">估价（100大师积分）</mt-button>
+                    </div>
                     <mt-popup v-model="popupVisible" class="evaluate-wrap" position="bottom">
                         <div class="land-detail-evaluate">
                             <!-- !!PS: 据0412需求修改, 金币>=200限定去掉, 所以这里不显示了 -->
@@ -179,7 +179,7 @@ export default {
     data() {
         return {
             selected: cache.getSession('landDetailSelected') || 'details', // 当前显示的标题,summarize=概况,details=详情
-            type: 0, // 0房产1地块
+            type: '0', // 0房产1地块 后台返回的是字符串
             partIn: true, // 是否参与true->参与false->未参与 !!!合接口后弃用
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮 !!!合接口后弃用
             popupVisible: false,
@@ -255,7 +255,7 @@ export default {
                 uid: this.$store.state.mine.user_id,
                 page: this.page
             }
-            console.log(params)
+            // console.log(params)
             getLandAbstract(params).then(res => {
                 if (res && res.Data) {
                     this.landAbstractJson = res.Data
@@ -353,7 +353,7 @@ export default {
         this.getLandDetail_data()
     },
     beforeRouteLeave (to, from, next) {
-        if (to.name === 'publish' && this.selected === 'summarize') {
+        if ((to.name === 'publish' && this.selected === 'summarize') || (to.name === 'momentDetail' && this.selected === 'summarize')) {
             cache.setSession('landDetailSelected', 'summarize')
         } else {
             cache.removeSession('landDetailSelected')
