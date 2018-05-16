@@ -16,14 +16,15 @@
                     <div class="land-detail-summarize">
                         <div class="lds-shows">
                             <div class="lds-shows-map" :key="0">
-                                <el-amap vid="amap-vue" :center="center">
+                                <!-- <el-amap vid="amap-vue" :center="center">
                                     <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position"></el-amap-marker>
-                                </el-amap>
+                                </el-amap> -->
+                                <baidu-map class="lds-baidu-map" ak="5fSAgLiaGcGH9Ff2qYRefFZF2zI1MIbG" :zoom="zoom" :center="center" @ready="handler"></baidu-map>
                             </div>
                         </div>
                         <div class="lds-desc">
                             <div class="lds-desc-title">{{landText}}概况</div>
-                            <div class="lds-desc-text">{{landAbstractJson.desc}}</div>
+                            <div class="lds-desc-text" v-html="landAbstractJson.desc"></div>
                         </div>
                     </div>
                     <block-slot class="land-detail-comments">
@@ -92,7 +93,7 @@
                         <div class="land-price-count land-detail-border">已估价{{landDetailJson.enum}}次，估价后可查看他人估价</div>
                         <div class="land-detail-tip land-detail-border">
                             <span class="ldt-icon my-icon-guanyuwomen"></span>
-                            截止时间前可修改估价；若地产流拍，以所有参与玩家的加权平均数作为结果公布
+                            截止时间前可修改估价；若地块流拍，以所有参与玩家的加权平均数作为结果公布
                         </div>
                     </div>
                     <template v-if="partIn">
@@ -167,6 +168,8 @@
     </div>
 </template>
 <script>
+import BaiduMap from 'vue-baidu-map/components/Map/Map.vue'
+// import VueUeditorWrap from 'vue-ueditor-wrap'
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
 import { getLandAbstract, getLandDetail, postLandEvaluation } from '@/api'
@@ -175,7 +178,7 @@ import { formatDate } from '@/utils/utils'
 import cache from '@/utils/cache'
 export default {
     name: 'landDetail',
-    components: { blockSlot, momentList },
+    components: { BaiduMap, blockSlot, momentList },
     data() {
         return {
             selected: cache.getSession('landDetailSelected') || 'details', // 当前显示的标题,summarize=概况,details=详情
@@ -193,12 +196,15 @@ export default {
             bottomLock: false,
             loading: false,
             deadlineYN: 'N',
-            center: [121.59996, 31.197646],
-            markers: [
-                {
-                    position: [121.59996, 31.197646]
-                }
-            ]
+            center: {lng: 0, lat: 0},
+            zoom: 3,
+            landAbstractJsonDesc: ''
+            // center: [121.59996, 31.197646],
+            // markers: [
+            //     {
+            //         position: [121.59996, 31.197646]
+            //     }
+            // ]
         }
     },
     computed: {
@@ -247,6 +253,11 @@ export default {
             this.operation = operation
             this.popupVisible = !this.popupVisible
         },
+        handler({BMap, map}) {
+            this.center.lng = 116.404
+            this.center.lat = 39.915
+            this.zoom = 15
+        },
         getLandAbstract_data() {
             this.loading = true
             this.bottomLock = true
@@ -261,9 +272,13 @@ export default {
                     this.landAbstractJson = res.Data
                     let lng = Number(res.Data.longitude)
                     let lat = Number(res.Data.latitude)
+                    this.landAbstractJsonDesc = res.Data.desc
                     if (lng && lat) {
-                        this.center = [lng, lat]
-                        this.markers[0].position = [lng, lat]
+                        // console.log(lng, lat)
+                        // this.center = [lng, lat]
+                        // this.markers[0].position = [lng, lat]
+                        this.center.lng = lng
+                        this.center.lat = lat
                     }
                     if (res.Data.comment && res.Data.comment.length > 0) {
                         this.comment.push(...res.Data.comment)
@@ -357,7 +372,7 @@ export default {
                 })
             } else if (type === 'set') {
                 let scrollTop = $('#landDetail').scrollTop()
-                console.log(scrollTop)
+                // console.log(scrollTop)
                 if (scrollTop >= 0) {
                     cache.setSession('landDetailLocation', scrollTop)
                 }
@@ -449,6 +464,10 @@ export default {
                     left: 0;
                     width: 100%;
                     height: 100%;
+                    .lds-baidu-map {
+                        width: 100%;
+                        height: 100%;
+                    }
                 }
             }
             .lds-desc {
