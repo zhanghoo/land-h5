@@ -24,10 +24,7 @@
                         </div>
                         <div class="lds-desc">
                             <div class="lds-desc-title">{{landText}}概况</div>
-                            <div class="lds-desc-text">
-                                <!-- {{landAbstractJson.desc}} -->
-                                <vue-ueditor-wrap v-model="landAbstractJsonDesc"></vue-ueditor-wrap>
-                            </div>
+                            <div class="lds-desc-text" v-html="landAbstractJson.desc"></div>
                         </div>
                     </div>
                     <block-slot class="land-detail-comments">
@@ -172,7 +169,7 @@
 </template>
 <script>
 import BaiduMap from 'vue-baidu-map/components/Map/Map.vue'
-import VueUeditorWrap from 'vue-ueditor-wrap'
+// import VueUeditorWrap from 'vue-ueditor-wrap'
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
 import { getLandAbstract, getLandDetail, postLandEvaluation } from '@/api'
@@ -181,7 +178,7 @@ import { formatDate } from '@/utils/utils'
 import cache from '@/utils/cache'
 export default {
     name: 'landDetail',
-    components: { BaiduMap, VueUeditorWrap, blockSlot, momentList },
+    components: { BaiduMap, blockSlot, momentList },
     data() {
         return {
             selected: cache.getSession('landDetailSelected') || 'details', // 当前显示的标题,summarize=概况,details=详情
