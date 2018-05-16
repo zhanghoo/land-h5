@@ -56,3 +56,9 @@ export async function postPublish({ pid, uid, title, text, is_pay, money, images
     })
     return res.data
 }
+
+// 发布的金额选项
+export function getPublishMoneyOptions() {
+    let res = request('home/dynamic/getTemplate', 'POST')
+    return res
+}
