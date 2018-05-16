@@ -1,6 +1,6 @@
 <template>
     <div id="landEevaluate">
-        <div class="loadMore" v-infinite-scroll="getSearchDetail_more_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="0" infinite-scroll-immediate-check="false">
+        <div class="loadMore" v-infinite-scroll="getSearchDetail_more_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
             <div class="search">
                 <div class="search-input-wrapper">
                     <i class="my-icon-search my-icon-sousuosearch82"></i>
@@ -44,28 +44,35 @@
                     </template>
                 </div>
             </div>
-            <div class="list">
-                <div class="list-title">全平台预估均为
-                    <i class="my-icon-zuanshi"></i>100/次</div>
-                <div class="list-item" v-for="(item, index) in landList" :key="index" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">
-                    <div class="item-title">{{item.name}}</div>
-                    <div class="item-adress">
-                        <i class="my-icon-adress"></i>{{item.province}}</div>
-                    <div class="item-label">
-                        <!-- 出售方式 sold_type -->
-                        <mt-button class="label" plain type="primary">{{item.sold_type}}</mt-button>
-                        <!-- 用途 purpose 1商住 2商办 3工业 -->
-                        <mt-button class="label" plain type="primary">{{item.purpose | purposeToString}}</mt-button>
-                        <!-- 面积 sold_area -->
-                        <mt-button class="label" plain type="primary">{{item.sold_area}}平方米</mt-button>
+            <mt-loadmore :top-method="getSearchDetail_data" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false'>
+                <div slot="top" class="mint-loadmore-top">
+                    <span v-show="topStatus == 'pull'">下拉刷新↓</span>
+                    <span v-show="topStatus == 'drop'">释放更新↑</span>
+                    <span v-show="topStatus == 'loading'">加载中...</span>
+                </div>
+                <div class="list">
+                    <div class="list-title">全平台预估均为
+                        <i class="my-icon-zuanshi"></i>100/次</div>
+                    <div class="list-item" v-for="(item, index) in landList" :key="index" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">
+                        <div class="item-title">{{item.name}}</div>
+                        <div class="item-adress">
+                            <i class="my-icon-adress"></i>{{item.province}}</div>
+                        <div class="item-label">
+                            <!-- 出售方式 sold_type -->
+                            <mt-button class="label" plain type="primary">{{item.sold_type}}</mt-button>
+                            <!-- 用途 purpose 1商住 2商办 3工业 -->
+                            <mt-button class="label" plain type="primary">{{item.purpose | purposeToString}}</mt-button>
+                            <!-- 面积 sold_area -->
+                            <mt-button class="label" plain type="primary">{{item.sold_area}}平方米</mt-button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <!-- 底部提示 -->
-            <div class="bottomLoad" v-if="landList.length > 5">
-                <div class="loading" v-show="loading === true">加载中...</div>
-                <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
-            </div>
+                <!-- 底部提示 -->
+                <div class="bottomLoad" v-if="landList.length > 5">
+                    <div class="loading" v-show="loading === true">加载中...</div>
+                    <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
+                </div>
+            </mt-loadmore>
         </div>
         <div class="v-modal" v-if="selectVisible" @click="selectVisible = false"></div>
     </div>
@@ -88,6 +95,7 @@ export default {
             typeSelectedIndex: 0,
             landList: [],
             hotList: [],
+            topStatus: '',
             page: 1,
             bottomLock: false,
             loading: true
@@ -145,11 +153,11 @@ export default {
                 type: this.typeSelected,
                 page: this.page
             }
-            // console.log(params)
             getSearchDetail(params).then(res => {
                 if (res && res.Data) {
                     this.landList = res.Data
                 }
+                this.$refs.loadmore.onTopLoaded()
             })
         },
         getSearchDetail_more_data() {
@@ -158,14 +166,13 @@ export default {
                     keyWord: this.keyWord || 0,
                     cityID: this.citySelected,
                     type: this.typeSelected,
-                    page: this.page
+                    page: ++this.page
                 }
                 this.loading = true
                 this.bottomLock = true
                 getSearchDetail(params).then(res => {
                     if (res && res.Data && res.Data.length > 0) {
                         this.landList.push(...res.Data)
-                        this.page++
                         this.loading = false
                     } else {
                         this.loading = 'nothing'
@@ -197,6 +204,9 @@ export default {
             }
             this.selectVisible = false
             this.getSearchDetail_data()
+        },
+        handleTopChange(status) {
+            this.topStatus = status
         }
     },
     mounted() {

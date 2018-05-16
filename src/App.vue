@@ -43,6 +43,10 @@ export default {
 </script>
 <style lang='stylus'>
 #app {
+    .mint-loadmore-top {
+        font-size: toRem(14);
+        color: #999;
+    }
     .label {
         font-size: inherit;
         height: inherit;
