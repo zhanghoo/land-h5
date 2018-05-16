@@ -1,63 +1,70 @@
 <template>
     <div id="landEevaluate">
-        <div class="search">
-            <div class="search-input-wrapper">
-                <i class="my-icon-search my-icon-sousuosearch82"></i>
-                <form @submit.prevent="getSearchDetail_data">
-                    <input class="search-input" type="search" placeholder="搜索地产名称" v-model="keyWord">
-                </form>
-            </div>
-            <div class="search-btn" @click="getSearchDetail_data">搜索</div>
-        </div>
-        <div class="select">
-            <div class="select-action">
-                <div class="action-item action-city" :class="{'active': selectType === 'city' && selectVisible === true}" @click="openSelectList('city')">
-                    <span>{{citySelectedStr}}</span>
-                    <i class="my-icon-jiantoushang" v-if="selectType === 'city' && selectVisible === true"></i>
-                    <i class="my-icon-jiantouxia" v-else></i>
+        <div class="loadMore" v-infinite-scroll="getSearchDetail_more_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="0" infinite-scroll-immediate-check="false">
+            <div class="search">
+                <div class="search-input-wrapper">
+                    <i class="my-icon-search my-icon-sousuosearch82"></i>
+                    <form @submit.prevent="getSearchDetail_data">
+                        <input class="search-input" type="search" placeholder="搜索地产名称" v-model="keyWord">
+                    </form>
                 </div>
-                <div class="action-item action-type" :class="{'active': selectType === 'type' && selectVisible === true}" @click="openSelectList('type')">
-                    <span>{{typeSelectedStr}}</span>
-                    <i class="my-icon-jiantoushang" v-if="selectType === 'type' && selectVisible === true"></i>
-                    <i class="my-icon-jiantouxia" v-else></i>
-                </div>
+                <div class="search-btn" @click="getSearchDetail_data">搜索</div>
             </div>
-            <div class="select-list" v-if="selectVisible">
-                <!-- city -->
-                <template v-if="selectType === 'city'">
-                    <div class="list-title">热门城市</div>
-                    <div class="list-wrapper">
-                        <div class="list-item" :class="{ 'on' : citySelectedIndex === 0 }" @click="selected(0, '选择城市', 0)">全部</div>
-                        <template v-for="(item, index) in hotList">
-                            <div class="list-item" :class="{ 'on' : citySelectedIndex === index + 1 }" :key="index" @click="selected(item.id, item.city, index + 1)">{{item.city}}</div>
-                        </template>
+            <div class="select">
+                <div class="select-action">
+                    <div class="action-item action-city" :class="{'active': selectType === 'city' && selectVisible === true}" @click="openSelectList('city')">
+                        <span>{{citySelectedStr}}</span>
+                        <i class="my-icon-jiantoushang" v-if="selectType === 'city' && selectVisible === true"></i>
+                        <i class="my-icon-jiantouxia" v-else></i>
                     </div>
-                </template>
-                <!-- type -->
-                <template v-if="selectType === 'type'">
-                    <div class="list-wrapper">
-                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 0 }" @click="selected(2, '全部', 0)">全部</div>
-                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 1 }" @click="selected(1, '地块', 1)">地块</div>
-                        <div class="list-item" :class="{ 'on' : typeSelectedIndex === 2 }" @click="selected(0, '房产', 2)">房产</div>
+                    <div class="action-item action-type" :class="{'active': selectType === 'type' && selectVisible === true}" @click="openSelectList('type')">
+                        <span>{{typeSelectedStr}}</span>
+                        <i class="my-icon-jiantoushang" v-if="selectType === 'type' && selectVisible === true"></i>
+                        <i class="my-icon-jiantouxia" v-else></i>
                     </div>
-                </template>
-            </div>
-        </div>
-        <div class="list">
-            <div class="list-title">全平台预估均为
-                <i class="my-icon-zuanshi"></i>100/次</div>
-            <div class="list-item" v-for="(item, index) in landList" :key="index" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">
-                <div class="item-title">{{item.name}}</div>
-                <div class="item-adress">
-                    <i class="my-icon-adress"></i>{{item.province}}</div>
-                <div class="item-label">
-                    <!-- 出售方式 sold_type -->
-                    <mt-button class="label" plain type="primary">{{item.sold_type}}</mt-button>
-                    <!-- 用途 purpose 1商住 2商办 3工业 -->
-                    <mt-button class="label" plain type="primary">{{item.purpose | purposeToString}}</mt-button>
-                    <!-- 面积 sold_area -->
-                    <mt-button class="label" plain type="primary">{{item.sold_area}}平方米</mt-button>
                 </div>
+                <div class="select-list" v-if="selectVisible">
+                    <!-- city -->
+                    <template v-if="selectType === 'city'">
+                        <div class="list-title">热门城市</div>
+                        <div class="list-wrapper">
+                            <div class="list-item" :class="{ 'on' : citySelectedIndex === 0 }" @click="selected(0, '选择城市', 0)">全部</div>
+                            <template v-for="(item, index) in hotList">
+                                <div class="list-item" :class="{ 'on' : citySelectedIndex === index + 1 }" :key="index" @click="selected(item.id, item.city, index + 1)">{{item.city}}</div>
+                            </template>
+                        </div>
+                    </template>
+                    <!-- type -->
+                    <template v-if="selectType === 'type'">
+                        <div class="list-wrapper">
+                            <div class="list-item" :class="{ 'on' : typeSelectedIndex === 0 }" @click="selected(2, '全部', 0)">全部</div>
+                            <div class="list-item" :class="{ 'on' : typeSelectedIndex === 1 }" @click="selected(1, '地块', 1)">地块</div>
+                            <div class="list-item" :class="{ 'on' : typeSelectedIndex === 2 }" @click="selected(0, '房产', 2)">房产</div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div class="list">
+                <div class="list-title">全平台预估均为
+                    <i class="my-icon-zuanshi"></i>100/次</div>
+                <div class="list-item" v-for="(item, index) in landList" :key="index" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})">
+                    <div class="item-title">{{item.name}}</div>
+                    <div class="item-adress">
+                        <i class="my-icon-adress"></i>{{item.province}}</div>
+                    <div class="item-label">
+                        <!-- 出售方式 sold_type -->
+                        <mt-button class="label" plain type="primary">{{item.sold_type}}</mt-button>
+                        <!-- 用途 purpose 1商住 2商办 3工业 -->
+                        <mt-button class="label" plain type="primary">{{item.purpose | purposeToString}}</mt-button>
+                        <!-- 面积 sold_area -->
+                        <mt-button class="label" plain type="primary">{{item.sold_area}}平方米</mt-button>
+                    </div>
+                </div>
+            </div>
+            <!-- 底部提示 -->
+            <div class="bottomLoad" v-if="landList.length > 5">
+                <div class="loading" v-show="loading === true">加载中...</div>
+                <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
             </div>
         </div>
         <div class="v-modal" v-if="selectVisible" @click="selectVisible = false"></div>
@@ -73,8 +80,6 @@ export default {
             keyWord: '',
             selectVisible: false,
             selectType: '',
-            cityJson: [],
-            typeJson: [],
             citySelected: 0,
             citySelectedStr: '选择城市',
             citySelectedIndex: 0,
@@ -82,7 +87,10 @@ export default {
             typeSelectedStr: '选择类型',
             typeSelectedIndex: 0,
             landList: [],
-            hotList: []
+            hotList: [],
+            page: 1,
+            bottomLock: false,
+            loading: true
         }
     },
     filters: {
@@ -97,6 +105,29 @@ export default {
             }
         }
     },
+    watch: {
+        $route(to, from) {
+            if (from.name === 'home') {
+                $('#landEevaluate').scrollTop(0)
+                this.keyWord = ''
+                this.selectVisible = false
+                this.selectType = ''
+                this.citySelected = 0
+                this.citySelectedStr = '选择城市'
+                this.citySelectedIndex = 0
+                this.typeSelected = 2
+                this.typeSelectedStr = '选择类型'
+                this.typeSelectedIndex = 0
+                this.landList = []
+                this.hotList = []
+                this.page = 1
+                this.bottomLock = false
+                this.loading = true
+                this.getHotCity_date()
+                this.getSearchDetail_data()
+            }
+        }
+    },
     methods: {
         getHotCity_date() {
             getHotCity().then(res => {
@@ -107,11 +138,12 @@ export default {
         },
         getSearchDetail_data() {
             // 全传0时 默认返回第一进入时所展示内容
+            this.page = 1
             let params = {
                 keyWord: this.keyWord || 0,
                 cityID: this.citySelected,
                 type: this.typeSelected,
-                page: 1
+                page: this.page
             }
             // console.log(params)
             getSearchDetail(params).then(res => {
@@ -119,6 +151,28 @@ export default {
                     this.landList = res.Data
                 }
             })
+        },
+        getSearchDetail_more_data() {
+            if (this.loading !== 'nothing') {
+                let params = {
+                    keyWord: this.keyWord || 0,
+                    cityID: this.citySelected,
+                    type: this.typeSelected,
+                    page: this.page
+                }
+                this.loading = true
+                this.bottomLock = true
+                getSearchDetail(params).then(res => {
+                    if (res && res.Data && res.Data.length > 0) {
+                        this.landList.push(...res.Data)
+                        this.page++
+                        this.loading = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
+                    this.bottomLock = false
+                })
+            }
         },
         openSelectList(val) {
             if (this.selectType === val) {
@@ -153,6 +207,9 @@ export default {
 </script>
 <style lang='stylus'>
 #landEevaluate {
+    position: relative;
+    width: 100%;
+    height: 100vh;
     .search {
         display: flex;
         align-items: center;
@@ -266,6 +323,8 @@ export default {
         }
     }
     .list {
+        width: 100%;
+        height: 100%;
         color: #333;
         background: #fff;
         .list-title {

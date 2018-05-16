@@ -46,14 +46,14 @@
     </div>
 </template>
 <script>
-import { postPublish, getCommentLevel } from '@/api/moment'
+import { postPublish, getCommentLevel, getPublishMoneyOptions } from '@/api/moment'
 import { mapState } from 'vuex'
 export default {
     name: 'publish',
     data() {
         return {
             chargeVisible: false,
-            moneyBtnList: [50, 100, 200, 300],
+            moneyBtnList: [],
             moneyActive: 50,
             title: '',
             content: '',
@@ -292,6 +292,10 @@ export default {
     },
     mounted() {
         this.get_CommentLevel()
+        getPublishMoneyOptions().then(res => {
+            console.log(res)
+            this.moneyBtnList = res.Data
+        })
         this.type = this.$route.query.type
     }
 }
