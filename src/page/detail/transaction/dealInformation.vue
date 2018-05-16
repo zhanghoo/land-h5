@@ -4,7 +4,7 @@
             <span slot="title">交易信息</span>
             <span slot="more"></span>
             <div slot="conent">
-                <div class="block-slot-item">
+                <div v-if="json.is_end === 0" class="block-slot-item" :key="1">
                     <dl>
                         <dt>房产名称</dt>
                         <dd>{{json.name}}</dd>
@@ -38,6 +38,9 @@
                         <dd>{{json.remark}}</dd>
                     </dl>
                 </div>
+                <div v-else class="block-slot-item" :key="0">
+                    很抱歉，该地产已流拍。本次预估以所有参与玩家的加权平均数作为结果公布。
+                </div>
             </div>
         </block-slot>
     </div>
@@ -58,7 +61,7 @@ export default {
     },
     methods: {
         getLandBusinessTransaction_data() {
-            console.log(this.$route.query.bid)
+            // console.log(this.$route.query.bid)
             getLandBusinessTransaction(this.$route.query.bid).then(res => {
                 // console.log(res)
                 if (res && res.Data) {

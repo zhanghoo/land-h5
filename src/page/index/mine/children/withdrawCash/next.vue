@@ -6,7 +6,7 @@
             提示：提现会扣除一定积分
         </div>
         <p class="w-n-btn-next">
-            <mt-button class="wnbn-btn" type="primary" @click="get_money">提现</mt-button>
+            <mt-button class="wnbn-btn" type="primary" @click="get_money">1~3天到账，确认提现</mt-button>
         </p>
     </div>
 </template>
