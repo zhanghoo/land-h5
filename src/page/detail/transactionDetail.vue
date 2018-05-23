@@ -75,7 +75,7 @@
         <template v-else-if="json.estatus == 3">
             <!-- 已关闭 -->
             <div class="trans-detail-tips close">
-                <span class="tdt-icon my-icon-guanyuwomen"></span>很抱歉本次竞猜活动因不可抗力关闭了，大师币已退回你的账户
+                <span class="tdt-icon my-icon-guanyuwomen"></span>很抱歉本次估价因不可抗力关闭了
             </div>
         </template>
         <mt-popup v-model="popupVisible2" position="center">

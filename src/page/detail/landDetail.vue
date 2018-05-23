@@ -19,7 +19,9 @@
                                 <!-- <el-amap vid="amap-vue" :center="center">
                                     <el-amap-marker v-for="(marker, index) in markers" :key="index" :position="marker.position"></el-amap-marker>
                                 </el-amap> -->
-                                <baidu-map class="lds-baidu-map" ak="5fSAgLiaGcGH9Ff2qYRefFZF2zI1MIbG" :zoom="zoom" :center="center" @ready="handler"></baidu-map>
+                                <baidu-map class="lds-baidu-map" :zoom="zoom" :center="center" @ready="handler">
+                                    <bm-marker :position="position" :dragging="true"></bm-marker>
+                                </baidu-map>
                             </div>
                         </div>
                         <div class="lds-desc">
@@ -93,7 +95,7 @@
                         <div class="land-price-count land-detail-border">已估价{{landDetailJson.enum}}次，估价后可查看他人估价</div>
                         <div class="land-detail-tip land-detail-border">
                             <span class="ldt-icon my-icon-guanyuwomen"></span>
-                            截止时间前可修改估价；若地块流拍，以所有参与玩家的加权平均数作为结果公布
+                            截止时间前可修改估价；若地产流拍，以所有参与玩家的加权平均数作为结果公布
                         </div>
                     </div>
                     <template v-if="partIn">
@@ -168,7 +170,8 @@
     </div>
 </template>
 <script>
-import BaiduMap from 'vue-baidu-map/components/Map/Map.vue'
+// import BaiduMap from 'vue-baidu-map/components/Map/Map.vue'
+// import BmMarker from 'vue-baidu-map/components/overlays/Marker.vue'
 // import VueUeditorWrap from 'vue-ueditor-wrap'
 import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
@@ -178,10 +181,11 @@ import { formatDate } from '@/utils/utils'
 import cache from '@/utils/cache'
 export default {
     name: 'landDetail',
-    components: { BaiduMap, blockSlot, momentList },
+    components: { blockSlot, momentList },
     data() {
         return {
             selected: cache.getSession('landDetailSelected') || 'details', // 当前显示的标题,summarize=概况,details=详情
+            showFlag: false, // 用于第一次切换
             type: '0', // 0房产1地块 后台返回的是字符串
             partIn: true, // 是否参与true->参与false->未参与 !!!合接口后弃用
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮 !!!合接口后弃用
@@ -196,9 +200,12 @@ export default {
             bottomLock: false,
             loading: false,
             deadlineYN: 'N',
+            firstIn: true, // 第一次进入的时候不触发 getLandAbstract_data 概况的请求 解决百度地图异步渲染的问题
             center: {lng: 0, lat: 0},
-            zoom: 3,
-            landAbstractJsonDesc: ''
+            position: {lng: 0, lat: 0},
+            zoom: 15,
+            landAbstractJsonDesc: '',
+            map: null
             // center: [121.59996, 31.197646],
             // markers: [
             //     {
@@ -230,6 +237,15 @@ export default {
         }
     },
     watch: {
+        selected() {
+            // 第一次点击切换的时候 初始化概览
+            // 百度地图渲染标记 div 初始显示的时候是详情, 概览页是 display:none div 也是 none 所以终点标记也是none
+            // 所以会出现中心点在左上角的情况
+            if (!this.showFlag) {
+                this.showFlag = true
+                this.getLandAbstract_data()
+            }
+        },
         $route(to, from) {
             if (from.name === 'publish') {
                 this.selected = 'summarize'
@@ -254,11 +270,13 @@ export default {
             this.popupVisible = !this.popupVisible
         },
         handler({BMap, map}) {
-            this.center.lng = 116.404
-            this.center.lat = 39.915
-            this.zoom = 15
+            this.center.lng = 0
+            this.center.lat = 0
+            this.position.lng = 0
+            this.position.lat = 0
         },
         getLandAbstract_data() {
+            let _self = this
             this.loading = true
             this.bottomLock = true
             let params = {
@@ -274,11 +292,13 @@ export default {
                     let lat = Number(res.Data.latitude)
                     this.landAbstractJsonDesc = res.Data.desc
                     if (lng && lat) {
-                        // console.log(lng, lat)
+                        // console.log('getLandAbstract = ', lng, lat)
                         // this.center = [lng, lat]
                         // this.markers[0].position = [lng, lat]
-                        this.center.lng = lng
-                        this.center.lat = lat
+                        _self.center.lng = lng
+                        _self.center.lat = lat
+                        _self.position.lng = lng
+                        _self.position.lat = lat
                     }
                     if (res.Data.comment && res.Data.comment.length > 0) {
                         this.comment.push(...res.Data.comment)
@@ -291,10 +311,10 @@ export default {
                     }
                 }
             })
-                .catch(err => {
-                    console.log(err)
-                    this.loading = false
-                })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
+            })
         },
         getLandAbstract__more_data() {
             if (this.selected === 'summarize') {
@@ -380,8 +400,12 @@ export default {
         }
     },
     mounted() {
-        this.getLandAbstract_data()
+        // 详情
         this.getLandDetail_data()
+        // this.$nextTick(() => {
+        //     // 概况 百度地图会异步加载
+        //     this.getLandAbstract_data()
+        // })
     },
     beforeRouteLeave(to, from, next) {
         this.handleLocaltion('set')
@@ -480,13 +504,20 @@ export default {
                     color: #666;
                     font-size: toRem(13);
                     line-height: toRem(18);
+                    img {
+                        max-width: 100%;
+                    }
+                    p {
+                        word-wrap: break-word;
+                        word-break: normal;
+                    }
                 }
             }
         }
         .land-detail-info {
             background: $panelBg;
             padding: 0 toRem(18.5);
-            margin-bottom: toRem(10);
+            margin-bottom: toRem(49);
             .ldi-table {
                 padding: toRem(20) 0;
                 .ldi-col {

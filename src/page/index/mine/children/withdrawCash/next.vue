@@ -17,7 +17,7 @@ export default {
     name: 'withdrawCashNext',
     data() {
         return {
-            money: ''
+            money: null
         }
     },
     computed: {
@@ -30,14 +30,19 @@ export default {
             if (!this.money) {
                 this.$toast('请填写要提现的金额')
             } else {
-                getMoney(this.money).then(res => {
-                    if (res) {
-                        this.$toast(res.Msg)
-                        setTimeout(function() {
-                            location.reload()
-                        }, 1500)
-                    }
-                })
+                // console.log(Number(this.money).toFixed(2) !== '1.00') 0.99 -> 1.00 字符串
+                if (Math.floor(Number(this.money).toFixed(2)) < 1 || Number(this.money).toFixed(2) === '1.00') {
+                    this.$toast('微信提现金额需大于1元，请重新输入')
+                } else {
+                    getMoney(this.money).then(res => {
+                        if (res) {
+                            this.$toast(res.Msg)
+                            setTimeout(function() {
+                                location.reload()
+                            }, 1500)
+                        }
+                    })
+                }
             }
         }
     },
