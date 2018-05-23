@@ -141,8 +141,9 @@ export default {
         },
         // 支付查看内容
         confirmWatch() {
-            if (this.$store.state.mine.master_coin > this.payToWatchItem.money) {
+            if (this.$store.state.mine.master_coin >= this.payToWatchItem.money) {
                 this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.money)
+                this.payToWatchItem.is_pay = '0'
                 this.$toast(`-${this.payToWatchItem.money}大师币`)
                 this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
             }

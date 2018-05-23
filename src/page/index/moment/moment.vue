@@ -108,6 +108,14 @@ export default {
         } else {
             this.handleLocaltion('get')
         }
+        if (this.$store.state.momentLike && this.moments.length > 0) {
+            this.moments.forEach(item => {
+                if (item.cid === this.$store.state.momentLike) {
+                    item.is_like = '1'
+                    item.lnum++
+                }
+            })
+        }
     },
     beforeRouteLeave(to, from, next) {
         this.handleLocaltion('set')

@@ -12,7 +12,8 @@ const state = {
     wxConfig: '', // 使用JSSDK, config接口注入权限验证配置时用到的配置
     shareLink: '', // 分享的链接
     shareInfoDesc: '', // 分享的描述
-    playingAudioCId: 0 // 正在播放的音频cid
+    playingAudioCId: 0, // 正在播放的音频cid
+    momentLike: ''
 }
 
 const getters = {
@@ -43,6 +44,9 @@ const mutations = {
     },
     setPlayingAudioCId(state, val) {
         state.playingAudioCId = val
+    },
+    setMomentLike(state, val) {
+        state.momentLike = val
     }
 }
 
