@@ -1,46 +1,54 @@
 <template>
     <div id="idAuth">
-        <p class="desc">地产行业相关人士身份验证成功后可获得
-            <span class="icon my-icon-zuanshi"></span>
-            <span class="num">1000</span>
-        </p>
-        <div class="idAuth-form">
-            <mt-field class="form-title" placeholder="请填写所在公司" v-model="company"></mt-field>
-            <div class="publish-upload">
-                <div class="upload-title">上传相关证明
-                    <span>（证书、工牌等）</span>
-                </div>
-                <div class="upload-preview">
-                    <div class="picture_preview" v-for="(item, index) in picture_preview" :key="index" v-if="item">
-                        <img class="preview-img" :src="item">
-                        <input class="preview-input" :id="`preview-${index}`" type="file" accept="image/*" @change="changePreview($event,index)">
-                        <label class="preview-label" :for="`preview-${index}`"></label>
-                        <span class="preview-close my-icon-baocuo" @click="deletePic(index)"></span>
+        <!-- auth_status：1（已审核，我这里直接点击验证显示，成功的页面）； -->
+        <div v-if="mine.auth_status === 1" class="authed">
+            <div class="text">恭喜你！<br>已完成地产相关人士认证</div>
+        </div>
+        <template v-else>
+            <p class="desc">地产行业相关人士身份验证成功后可获得
+                <span class="icon my-icon-zuanshi"></span>
+                <span class="num">1000</span>
+            </p>
+            <div class="idAuth-form">
+                <mt-field class="form-title" placeholder="请填写所在公司" v-model="company"></mt-field>
+                <div class="publish-upload">
+                    <div class="upload-title">上传相关证明
+                        <span>（证书、工牌等）</span>
                     </div>
-                    <input id="upload" type="file" accept="image/*" multiple="multiple" @change="upload($event)">
-                    <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
+                    <div class="upload-preview">
+                        <div class="picture_preview" v-for="(item, index) in picture_preview" :key="index" v-if="item">
+                            <img class="preview-img" :src="item">
+                            <input class="preview-input" :id="`preview-${index}`" type="file" accept="image/*" @change="changePreview($event,index)">
+                            <label class="preview-label" :for="`preview-${index}`"></label>
+                            <span class="preview-close my-icon-baocuo" @click="deletePic(index)"></span>
+                        </div>
+                        <input id="upload" type="file" accept="image/*" multiple="multiple" @change="upload($event)">
+                        <label class="upload-btn my-icon-add1" for="upload" v-if="!(picture_preview.length >=3)"></label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="button">
-            <mt-button @click="postIdAuth">提交</mt-button>
-        </div>
-        <mt-popup v-model="popupVisible" position="right" :modal="false">
-            <div class="text">恭喜你！<br>已完成地产相关人士认证</div>
-        </mt-popup>
+            <div class="button">
+                <mt-button @click="postIdAuth">提交</mt-button>
+            </div>
+        </template>
     </div>
 </template>
 <script>
 import { postAuthValidate } from '@/api/mine'
+import { mapState } from 'vuex'
 export default {
     name: 'idAuth',
     data() {
         return {
             company: '',
             pictureFile: [],
-            picture_preview: [],
-            popupVisible: false
+            picture_preview: []
         }
+    },
+    computed: {
+        ...mapState([
+            'mine'
+        ])
     },
     methods: {
         upload(ev) {
@@ -83,14 +91,19 @@ export default {
             if (!this.company) {
                 this.$toast('请填写公司名称')
             } else {
-                let params = {
-                    company: this.company,
-                    file: this.pictureFile
+                if (this.auth_status === 2) {
+                    // auth_status：2（表示不能提交验证，已提交）
+                    this.$toast('申请已提交，请勿频繁操作')
+                } else {
+                    // auth_status：3（表示可提交验证，未提交或者未审核通过可再提交验证的状态）
+                    let params = {
+                        company: this.company,
+                        file: this.pictureFile
+                    }
+                    postAuthValidate(params).then(res => {
+                        console.log(res)
+                    })
                 }
-                postAuthValidate(params).then(res => {
-                    console.log(res)
-                    this.popupVisible = !this.popupVisible
-                })
             }
         }
     }
@@ -105,6 +118,17 @@ export default {
     left: 0;
     z-index: 200;
     background: $appBg;
+    .authed {
+        .text {
+            width: 100%;
+            height: 100%;
+            padding-top: toRem(255);
+            text-align: center;
+            color: #666;
+            font-size: toRem(18);
+            line-height: toRem(25);
+        }
+    }
     .desc {
         padding: toRem(15) toRem(18);
         font-size: toRem(14);
@@ -209,20 +233,6 @@ export default {
             font-size: toRem(15);
             color: #fff;
             background: $appColor;
-        }
-    }
-    .mint-popup {
-        width: 100%;
-        height: 100%;
-        background: $appBg;
-        .text {
-            width: 100%;
-            height: 100%;
-            padding-top: toRem(255);
-            text-align: center;
-            color: #666;
-            font-size: toRem(18);
-            line-height: toRem(25);
         }
     }
 }

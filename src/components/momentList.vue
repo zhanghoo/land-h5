@@ -3,9 +3,12 @@
         <ul class="moment-list" v-if="json">
             <li class="list-item" v-for="(item, index) in json" :key="index">
                 <div class="item-user">
-                    <img class="user-avatar" v-if="item.avatar" :src="item.avatar" @click="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
-                    <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
-                    <span class="user-label" v-if="item.level">{{item.level.level_name}}</span>
+                    <span v-if="item.is_real_user === 0" class="user-label sys">{{item.nick_name}}</span>
+                    <template v-else>
+                        <img class="user-avatar" v-if="item.avatar" :src="item.avatar" @click="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
+                        <span class="user-name" v-if="item.nick_name">{{item.nick_name}}</span>
+                        <span class="user-label" v-if="item.level">{{item.level.level_name}}</span>
+                    </template>
                 </div>
                 <div class="item-content">
                     <!-- 需支付 -->
@@ -203,6 +206,9 @@ $subText = #666;
                 border: 1px solid $appColor;
                 border-radius: toRem(3);
                 vertical-align: middle;
+                &.sys {
+                    margin-left: 0;
+                }
             }
         }
         .item-title {

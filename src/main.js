@@ -14,6 +14,7 @@ import MintUI, { MessageBox, Toast, Indicator } from 'mint-ui'
 import 'mint-ui/lib/style.css'
 import VueProgressBar from 'vue-progressbar'
 // import VueAMap from 'vue-amap'
+import BaiduMap from 'vue-baidu-map'
 // import VueWechatTitle from 'vue-wechat-title'
 
 import '@/utils/permission'
@@ -31,6 +32,10 @@ Vue.use(VueProgressBar, {
     color: '#369BFF',
     failedColor: 'red',
     height: '2px'
+})
+Vue.use(BaiduMap, {
+  // ak 是在百度地图开发者平台申请的密钥 详见 http://lbsyun.baidu.com/apiconsole/key */
+  ak: '5fSAgLiaGcGH9Ff2qYRefFZF2zI1MIbG'
 })
 // Vue.use(VueAMap)
 // VueAMap.initAMapApiLoader({

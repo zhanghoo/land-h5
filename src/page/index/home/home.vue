@@ -236,6 +236,7 @@ export default {
                     // this.newestList = res.Data.alice(0, this.newestListNum)
                     var _list = res.Data
                     var _len = _list.length > this.newestListNum ? this.newestListNum : _list.length
+                    // console.log(_list, _list.length)
                     for (var i = 0; i < _len; i++) {
                         this.newestList.push(_list[i])
                     }
@@ -247,6 +248,7 @@ export default {
                 if (res && res.Data) {
                     var _list = res.Data
                     var _len = _list.length > this.announceListNum ? this.announceListNum : _list.length
+                    // console.log(_list, _list.length)
                     for (var i = 0; i < _len; i++) {
                         this.announceList.push(_list[i])
                     }

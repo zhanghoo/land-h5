@@ -1,3 +1,4 @@
+// 格式化时间
 export function formatDate(date, fmt) {
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
@@ -16,6 +17,11 @@ export function formatDate(date, fmt) {
     }
   }
   return fmt
+}
+
+// 去掉空格
+export function trim(str) {
+  return str.replace(/(^\s*)|(\s*$)/g, '')
 }
 
 function padLeftZero(str) {

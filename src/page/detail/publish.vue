@@ -47,6 +47,7 @@
 </template>
 <script>
 import { postPublish, getCommentLevel, getPublishMoneyOptions } from '@/api/moment'
+import { trim } from '@/utils/utils'
 import { mapState } from 'vuex'
 export default {
     name: 'publish',
@@ -146,37 +147,64 @@ export default {
                 _self._postPublish()
             }
         },
-        _postPublish() {
+        _publishVerify() {
+            // 发布校验
             let _self = this
-            // 房产id为空传0
-            let params = {
-                pid: _self.$route.query.pid || 0,
-                uid: _self.$store.state.mine.user_id,
-                title: _self.title,
-                text: this.contentFormatter(_self.content),
-                is_pay: _self.chargeVisible ? 1 : 0,
-                money: _self.chargeVisible ? _self.moneyActive : 0,
-                images: _self.pictureFile,
-                voice_id: _self.serverId
-            }
-            // alert('发布动态传params的voice_id = ' + params.voice_id + ' 本地获得的serverId = ' + _self.serverId)
-            // console.log(params)
-            postPublish(params).then(res => {
-                // console.log(typeof (res.Code)) -> string
-                if (res.Code === '0') {
-                    this.$toast('发布成功')
-                    if (!this.$route.query.pid) {
-                        // 操作为发布动态时, 成功 3s 跳转到回动态页面
-                        setTimeout(function() {
-                            _self.$router.push({name: 'moment', params: {'json': res.Data}})
-                        }, 2000)
+            let t = false
+            if (trim(_self.title)) {
+                if (trim(_self.content)) {
+                    if (_self.localId !== '') {
+                        // 如果点击了录音, 则必须停止, 否则提示
+                        // 注意不是两个都不为空, localId 可以为空, 即没有点击录音
+                        if (_self.serverId !== '') {
+                            t = true
+                        } else {
+                            _self.$toast('请停止录音后再发布')
+                        }
                     } else {
-                        _self.go(-1)
+                        t = true
                     }
                 } else {
-                    this.$toast(res.Msg)
+                    _self.$toast('请输入内容')
                 }
-            })
+            } else {
+                _self.$toast('请输入标题')
+            }
+            return t
+        },
+        _postPublish() {
+            let _self = this
+            if (_self._publishVerify()) {
+                // 房产id为空传0
+                let params = {
+                    pid: _self.$route.query.pid || 0,
+                    uid: _self.$store.state.mine.user_id,
+                    title: _self.title,
+                    text: this.contentFormatter(_self.content),
+                    is_pay: _self.chargeVisible ? 1 : 0,
+                    money: _self.chargeVisible ? _self.moneyActive : 0,
+                    images: _self.pictureFile,
+                    voice_id: _self.serverId
+                }
+                // alert('发布动态传params的voice_id = ' + params.voice_id + ' 本地获得的serverId = ' + _self.serverId)
+                // console.log(params)
+                postPublish(params).then(res => {
+                    // console.log(typeof (res.Code)) -> string
+                    if (res.Code === '0') {
+                        this.$toast('发布成功')
+                        if (!this.$route.query.pid) {
+                            // 操作为发布动态时, 成功 3s 跳转到回动态页面
+                            setTimeout(function() {
+                                _self.$router.push({name: 'moment', params: {'json': res.Data}})
+                            }, 2000)
+                        } else {
+                            _self.$router.go(-1)
+                        }
+                    } else {
+                        this.$toast(res.Msg)
+                    }
+                })
+            }
         },
         record() {
             var _self = this
@@ -293,8 +321,10 @@ export default {
     mounted() {
         this.get_CommentLevel()
         getPublishMoneyOptions().then(res => {
-            console.log(res)
+            // console.log(res)
             this.moneyBtnList = res.Data
+            // 默认选择第一个
+            this.moneyActive = this.moneyBtnList[0]
         })
         this.type = this.$route.query.type
     }
