@@ -98,6 +98,7 @@ export default {
             })
         },
         addZan(item) {
+            this.$store.commit('setMomentLike', item.cid)
             if (item.is_like === '0') {
                 let params = {
                     cid: item.cid,
