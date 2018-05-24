@@ -327,6 +327,7 @@ export default {
             .home-rank-item {
                 display: flex;
                 flex: 1;
+                width: 33.33%;
                 align-items: center;
                 justify-content: center;
                 flex-direction: column;
@@ -334,9 +335,12 @@ export default {
                 line-height: 1;
                 .home-rank-name {
                     margin: toRem(12) 0 toRem(6);
+                    width: 100%;
+                    text-align: center;
                     color: #333;
                     font-weight: 700;
                     font-size: toRem(14);
+                    text-ellipsis();
                 }
                 .home-rank-num {
                     color: #333;

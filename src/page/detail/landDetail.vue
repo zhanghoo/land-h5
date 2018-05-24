@@ -186,7 +186,7 @@ export default {
         return {
             selected: cache.getSession('landDetailSelected') || 'details', // 当前显示的标题,summarize=概况,details=详情
             showFlag: false, // 用于第一次切换
-            type: '0', // 0房产1地块 后台返回的是字符串
+            type: '0', // 0地块1房产 后台返回的是字符串
             partIn: true, // 是否参与true->参与false->未参与 !!!合接口后弃用
             deadline: 1523229861000, // 截止时间时间戳判断是否显示下方按钮 !!!合接口后弃用
             popupVisible: false,
@@ -232,7 +232,7 @@ export default {
         //     return t
         // },
         landText() {
-            var t = this.type === '0' ? '房产' : '地块'
+            var t = this.type === '0' ? '地块' : '房产'
             return t
         }
     },
@@ -249,6 +249,7 @@ export default {
         $route(to, from) {
             if (from.name === 'publish') {
                 this.selected = 'summarize'
+                this.getLandAbstract_data()
             }
         }
     },
@@ -274,6 +275,9 @@ export default {
             this.center.lat = 0
             this.position.lng = 0
             this.position.lat = 0
+            if (cache.getSession('landDetailSelected') === 'summarize') {
+                this.getLandAbstract_data()
+            }
         },
         getLandAbstract_data() {
             let _self = this

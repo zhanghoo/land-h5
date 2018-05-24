@@ -113,7 +113,7 @@ export default {
                                     // alert(res.err_msg)
                                     if (res.err_msg === 'get_brand_wcpay_request:ok') {
                                         _self.$toast('微信支付成功')
-                                        setTiemout(() => {
+                                        setTimeout(() => {
                                           _self.$router.go(-1)
                                           _self.$store.dispatch('get_mineInfo', _self.$store.state.mine.user_id)
                                         }, 1500)
