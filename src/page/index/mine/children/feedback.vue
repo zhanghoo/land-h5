@@ -17,12 +17,16 @@ export default {
     },
     methods: {
         postFeddBackContent() {
-            if (!this.content) {
-                this.$toast('请填写反馈信息')
+            let _self = this
+            if (!_self.content) {
+                _self.$toast('请填写反馈信息')
             } else {
-                postFeedBack(this.content).then(res => {
+                postFeedBack(_self.content).then(res => {
                     if (res) {
-                        this.$toast('提交成功')
+                        _self.$toast('提交成功')
+                        setTimeout(function() {
+                            _self.$router.go(-1)
+                        }, 1500)
                     }
                 })
             }

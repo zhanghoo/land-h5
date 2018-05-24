@@ -14,8 +14,8 @@
             <div class="announce-panel-landinfo" @click="$router.push({path: '/transactionDetail', query: {'id': item.id}})">
                 <div class="apl-address">{{item.name}}</div>
                 <div class="apl-prices">
-                    <div class="apl-prices-tags">成交楼面价<mt-button class="apl-tag" plain type="primary">{{item.evaluate_num}}元/m²</mt-button></div>
-                    <div class="apl-prices-tags">预估楼面价<mt-button class="apl-tag" plain type="primary">{{item.starting_price}}元/m²</mt-button></div>
+                    <div class="apl-prices-tags">成交楼面价<mt-button class="apl-tag" plain type="primary">{{item.closing_cost}}元/m²</mt-button></div>
+                    <div class="apl-prices-tags">预估楼面价<mt-button class="apl-tag" plain type="primary">{{item.evaluate_num}}元/m²</mt-button></div>
                 </div>
             </div>
             <div class="announce-panel-date">{{item.evaluate_time}}</div>

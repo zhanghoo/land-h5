@@ -7,7 +7,7 @@
             </div>
             <div class="trans-detail-status">{{json.estatus | statusToString}}</div>
         </div>
-        <div class="trans-detail-land" @click="$router.push({path: '/landDetail', query: { 'pid': json.product_id}})">
+        <div class="trans-detail-land" @click="$router.push({path: '/landDetail', query: { 'pid': json.product_id, 'type': json.tstatus}})">
             <p class="tdl-title">{{json.name}}</p>
             <p class="tdl-local">
                 <span class="tdl-local-icon my-icon-adress"></span>{{json.province}}</p>

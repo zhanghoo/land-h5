@@ -2,7 +2,7 @@
     <div>
         <ul class="moment-list" v-if="json">
             <li class="list-item" v-for="(item, index) in json" :key="index">
-                <div class="item-user">
+                <div v-if="item.nick_name" class="item-user">
                     <span v-if="item.is_real_user === 0" class="user-label sys">{{item.nick_name}}</span>
                     <template v-else>
                         <img class="user-avatar" v-if="item.avatar" :src="item.avatar" @click="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
@@ -46,7 +46,7 @@
                 </div>
                 <!-- 概览 -->
                 <template v-if="item.product_moment && item.product_moment !== 'null'">
-                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose}}" tag="div">
+                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose, 'type': item.product_moment.tstatus}}" tag="div">
                         <div class="overview-title">{{item.product_moment.name}}</div>
                         <div class="overview-adress">
                             <i class="my-icon-adress"></i>{{item.product_moment.province}}

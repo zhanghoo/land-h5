@@ -65,7 +65,7 @@
             </span>
             <div slot="conent">
                 <template v-for="(item, index) in newestList">
-                    <div class="block-slot-item" @click="$router.push({path: '/landDetail', query: { 'pid': item.id}})" :key="index">
+                    <div class="block-slot-item" @click="$router.push({path: '/landDetail', query: { 'pid': item.id, 'type': item.tstatus}})" :key="index">
                         {{item.name}}
                     </div>
                 </template>
@@ -83,10 +83,10 @@
                             <p class="bsi-title">{{item.name}}</p>
                             <p class="bsi-type">{{item.purpose | purposeToString}}</p>
                             <p class="bsi-price">成交楼面价
-                                <span class="bsi-price-num">{{item.evaluate_num}}元/m²</span>
+                                <span class="bsi-price-num">{{item.closing_cost}}元/m²</span>
                             </p>
                             <p class="bsi-price">预估楼面价
-                                <span class="bsi-price-num">{{item.starting_price}}元/m²</span>
+                                <span class="bsi-price-num">{{item.evaluate_num}}元/m²</span>
                             </p>
                         </div>
                         <div class="bsi-panel-c">
@@ -180,6 +180,14 @@ export default {
                     return '商办'
                 case '3':
                     return '工业'
+            }
+        }
+    },
+    watch: {
+        $route(to, from) {
+            if (to.name === 'home') {
+                // console.log('回退到首页, 刷新排行榜')
+                this.getRankList_data()
             }
         }
     },

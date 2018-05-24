@@ -232,7 +232,8 @@ export default {
         //     return t
         // },
         landText() {
-            var t = this.type === '0' ? '地块' : '房产'
+            console.log(parseInt(this.$route.query.type))
+            var t = parseInt(this.$route.query.type) === 0 ? '地块' : '房产'
             return t
         }
     },
