@@ -61,6 +61,7 @@ export default {
             pictureFile: [],
             picture_preview: [],
             voiceTip: '发表语音信息',
+            voiceFlag: false, // 录音状态
             localId: '',
             serverId: '',
             recordStep: 0, // 录音操作 0 开始录音 1 结束录音
@@ -125,21 +126,26 @@ export default {
             if (_self.isWeiXin) {
                 // alert('isWeiXin')
                 // 微信端
-                if (_self.localId) {
-                    // alert('localId = ' + _self.localId)
-                    // 如果 localId 存在 获取微信端 serverId
-                    wx.uploadVoice({
-                        localId: _self.localId,
-                        success: function (res) {
-                            _self.serverId = res.serverId
-                            // alert('上传语音成功，serverId 为' + _self.serverId)
-                            // 获得serverId
-                            _self._postPublish()
-                        }
-                    })
+                // 如果正在录音 提示停止录音后再发布
+                if (_self.recordStep === 1) {
+                    _self.$toast('请停止录音后再发布')
                 } else {
-                    // 不存在 直接上传
-                    _self._postPublish()
+                    if (_self.localId) {
+                        // alert('localId = ' + _self.localId)
+                        // 如果 localId 存在 获取微信端 serverId
+                            wx.uploadVoice({
+                                localId: _self.localId,
+                                success: function (res) {
+                                    _self.serverId = res.serverId
+                                    // alert('上传语音成功，serverId 为' + _self.serverId)
+                                    // 获得serverId
+                                    _self._postPublish()
+                                }
+                            })
+                    } else {
+                        // 不存在 直接上传
+                        _self._postPublish()
+                    }
                 }
             } else {
                 // alert('非微信')
@@ -156,10 +162,12 @@ export default {
                     if (_self.localId !== '') {
                         // 如果点击了录音, 则必须停止, 否则提示
                         // 注意不是两个都不为空, localId 可以为空, 即没有点击录音
-                        if (_self.serverId !== '') {
-                            t = true
-                        } else {
+                        // if (_self.serverId !== '') {
+                        // 20180527: 不是用serverId 而是用 recordStep 判断
+                        if (_self.recordStep === 1) {
                             _self.$toast('请停止录音后再发布')
+                        } else {
+                            t = true
                         }
                     } else {
                         t = true
@@ -186,6 +194,7 @@ export default {
                     images: _self.pictureFile,
                     voice_id: _self.serverId
                 }
+                console.log(params)
                 // alert('发布动态传params的voice_id = ' + params.voice_id + ' 本地获得的serverId = ' + _self.serverId)
                 // console.log(params)
                 postPublish(params).then(res => {

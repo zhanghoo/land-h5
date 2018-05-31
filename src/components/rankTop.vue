@@ -9,9 +9,10 @@
         <div class="rt-user">
             <img class="rtu-avatar" :src="avatar">
         </div>
-        <div class="rt-huangguan my-icon-huangguan" :style="{ color: color }">
+        <!-- 0530 去掉皇冠 -->
+        <!-- <div class="rt-huangguan my-icon-huangguan" :style="{ color: color }">
             <span class="rank-no">{{rankNo}}</span>
-        </div>
+        </div> -->
         <div class="ribbon-box">
             <div class="ribbon-c" :style="{ 'border-top-color': color }">
                 <div class="ribbon-c-l"></div>

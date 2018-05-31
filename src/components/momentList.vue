@@ -46,7 +46,7 @@
                 </div>
                 <!-- 概览 -->
                 <template v-if="item.product_moment && item.product_moment !== 'null'">
-                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.product_moment.purpose, 'type': item.product_moment.tstatus}}" tag="div">
+                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': item.pid, 'type': item.product_moment.tstatus}}" tag="div">
                         <div class="overview-title">{{item.product_moment.name}}</div>
                         <div class="overview-adress">
                             <i class="my-icon-adress"></i>{{item.product_moment.province}}

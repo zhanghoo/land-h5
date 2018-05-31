@@ -106,7 +106,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: toRem(18) toRem(100);
+        padding: toRem(18) toRem(92);
         color: #666;
         font-size: toRem(17);
         line-height: 1;
