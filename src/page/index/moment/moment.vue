@@ -14,9 +14,9 @@
                 </div>
                 <momentList :json="moments"></momentList>
                 <!-- 底部提示 -->
-                <div class="bottomLoad" v-if="moments.length > 0">
-                    <div class="loading" v-show="loading === true">加载中...</div>
-                    <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
+                <div class="bottomLoad">
+                    <div class="loading" v-if="loading === 'loading'">加载中...</div>
+                    <div class="noData" v-else-if="loading === 'nothing'">没有更多了</div>
                 </div>
             </mt-loadmore>
         </div>
@@ -26,6 +26,7 @@
 import momentList from '@/components/momentList'
 import { getMomentList } from '@/api/moment'
 import cache from '@/utils/cache'
+import { mapState } from 'vuex'
 export default {
     name: 'moment',
     components: { momentList },
@@ -38,6 +39,21 @@ export default {
             topStatus: ''
         }
     },
+    watch: {
+        paidItem(val) {
+            console.log('paidItem', val)
+            this.moments.forEach(item => {
+                if (item.cid === val) {
+                    item.is_pay = '0'
+                }
+            })
+        }
+    },
+    computed: {
+        ...mapState([
+            'paidItem'
+        ])
+    },
     methods: {
         loadTopAjax() {
             this.page = 1
@@ -46,7 +62,7 @@ export default {
                 uid: this.$store.state.mine.user_id
             }
             getMomentList(params).then(res => {
-                if (res && res.Data) {
+                if (res && res.Data && res.Data !== 'null') {
                     this.moments = res.Data
                 }
                 this.$refs.loadmore.onTopLoaded()
@@ -59,26 +75,28 @@ export default {
         },
         // 获取动态列表
         getMomentList_data() {
-            this.loading = true
-            this.bottomLock = true
-            let params = {
-                page: this.page,
-                uid: this.$store.state.mine.user_id
-            }
-            getMomentList(params).then(res => {
-                if (res && res.Data) {
-                    this.moments.push(...res.Data)
-                    this.page++
-                    this.loading = false
-                    this.bottomLock = false
-                } else {
-                    this.loading = 'nothing'
+            if (this.loading !== 'nothing') {
+                this.loading = 'loading'
+                this.bottomLock = true
+                this.page++
+                let params = {
+                    page: this.page,
+                    uid: this.$store.state.mine.user_id
                 }
-            })
-                .catch(err => {
+                getMomentList(params).then(res => {
+                    if (res && res.Data && res.Data.length > 0 && res.Data !== 'null') {
+                        this.moments.push(...res.Data)
+                        this.loading = false
+                    } else {
+                        this.loading = 'nothing'
+                    }
+                    this.bottomLock = false
+                }).catch(err => {
                     console.log(err)
                     this.loading = false
+                    this.bottomLock = false
                 })
+            }
         },
         handleTopChange(status) {
             this.topStatus = status
@@ -99,7 +117,7 @@ export default {
         }
     },
     mounted() {
-        this.getMomentList_data()
+        this.loadTopAjax()
     },
     activated() {
         if (this.$route.params.json) {

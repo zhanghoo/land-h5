@@ -13,8 +13,8 @@ export function getMomentDetail({ cid, uid }) {
 }
 
 // 查看评论
-export function getCommentDetails({ commentID, userID }) {
-    let res = request('/home/dynamic/lookCommentDetails', 'POST', { 'cid': commentID, 'uid': userID })
+export function getCommentDetails({ commentID, uid }) {
+    let res = request('/home/dynamic/lookCommentDetails', 'POST', { 'cid': commentID, 'uid': uid })
     return res
 }
 
@@ -25,8 +25,8 @@ export function postZan({ cid, uid }) {
 }
 
 // 是否显示收费勾选项
-export function getCommentLevel({ userID }) {
-    let res = request('/home/dynamic/commentLevel', 'POST', { 'uid': userID })
+export function getCommentLevel({ uid }) {
+    let res = request('/home/dynamic/commentLevel', 'POST', { 'uid': uid })
     return res
 }
 

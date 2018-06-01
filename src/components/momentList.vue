@@ -144,6 +144,7 @@ export default {
             if (this.$store.state.mine.master_coin >= this.payToWatchItem.money) {
                 this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.money)
                 this.payToWatchItem.is_pay = '0'
+                this.$store.commit('setPaid', this.payToWatchItem.cid)
                 this.$toast(`-${this.payToWatchItem.money}大师币`)
                 this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
             }
@@ -216,6 +217,8 @@ $subText = #666;
             color: $mainText;
             font-size: toRem(16);
             margin-bottom: toRem(10);
+            word-wrap:break-word ;
+            word-break: break-all;
         }
         .item-content {
             margin-bottom: toRem(12);
@@ -268,6 +271,8 @@ $subText = #666;
                 margin-bottom: toRem(10);
                 color: $subText;
                 font-size: toRem(16);
+                text-align: justify;
+                line-height: 1.5em;
                 a {
                     color: $appColor;
                 }

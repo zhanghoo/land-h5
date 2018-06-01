@@ -158,22 +158,26 @@ export default {
             let _self = this
             let t = false
             if (trim(_self.title)) {
-                if (trim(_self.content)) {
-                    if (_self.localId !== '') {
-                        // 如果点击了录音, 则必须停止, 否则提示
-                        // 注意不是两个都不为空, localId 可以为空, 即没有点击录音
-                        // if (_self.serverId !== '') {
-                        // 20180527: 不是用serverId 而是用 recordStep 判断
-                        if (_self.recordStep === 1) {
-                            _self.$toast('请停止录音后再发布')
+                if (trim(_self.title).length > 64) {
+                    if (trim(_self.content)) {
+                        if (_self.localId !== '') {
+                            // 如果点击了录音, 则必须停止, 否则提示
+                            // 注意不是两个都不为空, localId 可以为空, 即没有点击录音
+                            // if (_self.serverId !== '') {
+                            // 20180527: 不是用serverId 而是用 recordStep 判断
+                            if (_self.recordStep === 1) {
+                                _self.$toast('请停止录音后再发布')
+                            } else {
+                                t = true
+                            }
                         } else {
                             t = true
                         }
                     } else {
-                        t = true
+                        _self.$toast('请输入内容')
                     }
                 } else {
-                    _self.$toast('请输入内容')
+                    _self.$toast('标题字符不能超过64个字符')
                 }
             } else {
                 _self.$toast('请输入标题')

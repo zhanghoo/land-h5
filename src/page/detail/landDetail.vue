@@ -167,6 +167,8 @@
         <div v-if="goldDrop" class="gold-drop-box" @click="goldDrop = false">
             <img class="home-box-close-img" src="~@/assets/img/golddrop.gif">
         </div>
+
+        <div class="backHome my-icon-home" @click="$router.push('/')"></div>
     </div>
 </template>
 <script>
@@ -726,6 +728,22 @@ export default {
             width: toRem(390);
             transform: translateX(-50%) translateY(-50%);
         }
+    }
+    .backHome{
+        position: fixed;
+        right: toRem(20);
+        bottom: toRem(200);
+        z-index: 9;
+        width: toRem(50);
+        height toRem(50);
+        background: $appColor;
+        border-radius: 100%;
+        box-shadow: 0 0 toRem(10) rgba($appColorRGB, .7);
+        font-size: 36px;
+        color #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 </style>

@@ -1,25 +1,37 @@
 <template>
     <div id="announcement">
-        <div class="announce-panel" v-for="(item, index) in json" :key="index">
-            <div class="announce-panel-user">
-                <div class="announce-panel-userinfo">
-                    <div class="apu-avatar" @click.stop="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
-                        <img class="apu-avatar-img" :src="item.avatar">
+        <mt-loadmore :top-method="getLandBusinessList_data" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false'>
+            <div slot="top" class="mint-loadmore-top">
+                <span v-show="topStatus == 'pull'">下拉刷新↓</span>
+                <span v-show="topStatus == 'drop'">释放更新↑</span>
+                <span v-show="topStatus == 'loading'">加载中...</span>
+            </div>
+            <div class="announce-panel" v-for="(item, index) in json" :key="index">
+                <div class="announce-panel-user">
+                    <div class="announce-panel-userinfo">
+                        <div class="apu-avatar" @click.stop="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
+                            <img class="apu-avatar-img" :src="item.avatar">
+                        </div>
+                        <span class="apu-name">{{item.nick_name}}</span>
+                        <mt-button class="apu-tag" plain type="primary">{{item.level}}</mt-button>
                     </div>
-                    <span class="apu-name">{{item.nick_name}}</span>
-                    <mt-button class="apu-tag" plain type="primary">{{item.level}}</mt-button>
+                    <img class="announce-panel-win" src="~@/assets/img/win@2x.png">
                 </div>
-                <img class="announce-panel-win" src="~@/assets/img/win@2x.png">
-            </div>
-            <div class="announce-panel-landinfo" @click="$router.push({path: '/transactionDetail', query: {'id': item.id}})">
-                <div class="apl-address">{{item.name}}</div>
-                <div class="apl-prices">
-                    <div class="apl-prices-tags">成交楼面价<mt-button class="apl-tag" plain type="primary">{{item.closing_cost}}元/m²</mt-button></div>
-                    <div class="apl-prices-tags">预估楼面价<mt-button class="apl-tag" plain type="primary">{{item.evaluate_num}}元/m²</mt-button></div>
+                <div class="announce-panel-landinfo" @click="$router.push({path: '/transactionDetail', query: {'id': item.id}})">
+                    <div class="apl-address">{{item.name}}</div>
+                    <div class="apl-prices">
+                        <div class="apl-prices-tags">成交楼面价
+                            <mt-button class="apl-tag" plain type="primary">{{item.closing_cost}}元/m²</mt-button>
+                        </div>
+                        <div class="apl-prices-tags">预估楼面价
+                            <mt-button class="apl-tag" plain type="primary">{{item.evaluate_num}}元/m²</mt-button>
+                        </div>
+                    </div>
                 </div>
+                <div class="announce-panel-date">{{item.evaluate_time}}</div>
             </div>
-            <div class="announce-panel-date">{{item.evaluate_time}}</div>
-        </div>
+        </mt-loadmore>
+
     </div>
 </template>
 <script>
@@ -29,17 +41,21 @@ export default {
     data() {
         return {
             page: 1,
-            json: []
+            json: [],
+            topStatus: ''
         }
     },
     methods: {
         getLandBusinessList_data() {
             getLandBusinessList(this.page).then(res => {
-                if (res && res.Data) {
+                if (res && res.Data && res.Data !== 'null') {
                     this.json = res.Data
                 }
-                // console.log(res)
+                this.$refs.loadmore.onTopLoaded()
             })
+        },
+        handleTopChange(status) {
+            this.topStatus = status
         }
     },
     mounted() {
@@ -101,16 +117,16 @@ export default {
                 margin-top: toRem(10);
                 width: 100%;
                 color: #666;
-                display flex
-                align-items center
+                display: flex;
+                align-items: center;
                 margin-right: toRem(4.5);
                 .apl-prices-tags {
-                    font-size toRem(14)
+                    font-size: toRem(14);
                     .apl-tag {
                         padding: toRem(5) toRem(8);
                         height: auto;
                         font-size: toRem(12);
-                        transform scale(0.82)
+                        transform: scale(0.82);
                         line-height: 1;
                     }
                 }
