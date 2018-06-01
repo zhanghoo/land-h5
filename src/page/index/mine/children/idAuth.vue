@@ -88,20 +88,29 @@ export default {
             }
         },
         postIdAuth() {
-            if (!this.company) {
-                this.$toast('请填写公司名称')
+            var _self = this
+            if (!_self.company) {
+                _self.$toast('请填写公司名称')
             } else {
-                if (this.auth_status === 2) {
+                if (_self.mine.auth_status === 2) {
                     // auth_status：2（表示不能提交验证，已提交）
-                    this.$toast('申请已提交，请勿频繁操作')
+                    _self.$toast('申请已提交，请勿频繁操作')
                 } else {
                     // auth_status：3（表示可提交验证，未提交或者未审核通过可再提交验证的状态）
                     let params = {
-                        company: this.company,
-                        file: this.pictureFile
+                        company: _self.company,
+                        file: _self.pictureFile
                     }
                     postAuthValidate(params).then(res => {
-                        console.log(res)
+                        if (res.Code === 0) {
+                            _self.$toast('申请提交成功')
+                            _self.$store.commit('setAuthStatus', 2)
+                            setTimeout(() => {
+                                _self.$router.go(-1)
+                            }, 1500)
+                        } else {
+                            _self.$toast(res.Msg)
+                        }
                     })
                 }
             }

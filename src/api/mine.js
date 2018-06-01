@@ -85,8 +85,11 @@ export function getMoney(money) {
 // 身份验证
 export async function postAuthValidate({ company, file }) {
     let params = {
-        'company': company,
-        'file': file
+        'company': company
+    }
+    // 将图片以字段形式将文件上传, form-data对数组可能解析有问题
+    for (let i = 0, len = file.length; i < len; i++) {
+        params[`file[${i}]`] = file[i]
     }
     let form = new FormData()
     Object.keys(params).forEach(key => {

@@ -128,16 +128,17 @@ export default {
                 .base-wrapper {
                     margin-bottom: toRem(8.5);
                     .user-name {
-                        display: inline-block;
                         color: #333;
                         margin-right: toRem(12);
+                        height: toRem(20);
                         font-size: toRem(18);
                     }
                     .user-label {
-                        padding: toRem(3.5) toRem(6.5);
+                        padding: 0 toRem(6.5);
                         margin-left: toRem(4.5);
                         font-size: toRem(10);
-                        height: inherit;
+                        height: toRem(20);
+                        line-height: toRem(20);
                         color: $appColor;
                         border: 1px solid $appColor;
                         border-radius: toRem(3);
@@ -161,6 +162,7 @@ export default {
             padding: 0;
         }
         .list-item {
+            margin-bottom: 0;
             .item-info{
                 border-1px-top(#f5f5f5)
             }

@@ -39,8 +39,8 @@
         <div class="mine-rank-wrap">
             <div class="mine-rank">
                 <div class="item item-index" :class="`item-index-${mineRank.rank > 3 ? 4 : mineRank.rank}`">
-                    <i :class="{'my-icon-huangguan': mineRank.rank <= 3}">
-                        <span :style="{'absolute': mineRank.rank <= 3}">{{mineRank.rank === 0 ? '未进入排名' : mineRank.rank}}</span>
+                    <i :class="{'my-icon-huangguan': mineRank.rank <= 3 && mineRank.rank !== 0}">
+                        <span :style="{'absolute':mineRank.rank <= 3}">{{mineRank.rank === 0 ? '未进入排名' : mineRank.rank}}</span>
                     </i>
                 </div>
                 <div class="item item-name">
@@ -106,7 +106,7 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: toRem(18) toRem(100);
+        padding: toRem(18) toRem(92);
         color: #666;
         font-size: toRem(17);
         line-height: 1;

@@ -42,6 +42,9 @@ const mutations = {
     reduceUserMoney(state, val) {
         state.mine.master_coin -= val
     },
+    setAuthStatus(state, val) {
+        state.mine.auth_status = val
+    },
     setPlayingAudioCId(state, val) {
         state.playingAudioCId = val
     },

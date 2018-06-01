@@ -29,6 +29,18 @@
                     <mt-spinner v-show="showLoading" type="fading-circle" color="#99999"></mt-spinner>
                 </mt-popup>
             </template>
+            <!-- 概览 -->
+            <template v-if="json.product && json.product !== 'null'">
+                <div class="content-overview-wrap">
+                    <router-link class="content-overview" :to="{path: '/landDetail', query: { 'pid': json.product.pid, 'type': json.product.tstatus}}" tag="div">
+                        <div class="overview-title">{{json.product.name}}</div>
+                        <div class="overview-adress">
+                            <i class="my-icon-adress"></i>{{json.product.province}}
+                        </div>
+                        <mt-button class="overview-type" plain type="primary">{{json.product.sold_type}}</mt-button>
+                    </router-link>
+                </div>
+            </template>
         </template>
     </div>
 </template>
@@ -180,13 +192,12 @@ export default {
             margin-bottom: toRem(10);
         }
         .content-text {
-            margin-bottom: toRem(15);
+            margin-bottom: toRem(7);
             color: #666;
-            font-size: toRem(14);
+            font-size: toRem(16);
             text-align: justify;
             word-break: break-all;
             word-wrap: break-word;
-            line-height: 2em;
             a {
                 color: $appColor;
             }
@@ -194,7 +205,7 @@ export default {
     }
     .content-audio {
         padding: 0 toRem(18);
-        margin-bottom: toRem(15);
+        margin-bottom: toRem(14);
     }
     .content-preview {
         display: flex;
@@ -216,12 +227,14 @@ export default {
             }
         }
         &.content-preview-2 {
-            width: 50%;
-            &:nth-child(1) {
-                padding-right: 0.5%;
-            }
-            &:nth-child(2) {
-                padding-left: 0.5%;
+            .preview-item {
+                width: 50%;
+                &:nth-child(1) {
+                    padding-right: 0.5%;
+                }
+                &:nth-child(2) {
+                    padding-left: 0.5%;
+                }
             }
         }
         &.content-preview-3 {
@@ -229,6 +242,41 @@ export default {
                 width: 33%;
                 &:nth-child(2) {
                     margin: 0 0.5%;
+                }
+            }
+        }
+    }
+    .content-overview-wrap {
+        margin-top: toRem(14);
+        padding: 0 toRem(18);
+        .content-overview {
+            padding: toRem(14) toRem(12);
+            background: #f5f5f5;
+            .overview-title {
+                color: $mainText;
+                font-size: toRem(15);
+                text-align: justify;
+                margin-bottom: toRem(10);
+            }
+            .overview-adress {
+                display: flex;
+                align-items: center;
+                color: $subText;
+                font-size: toRem(14);
+                margin-bottom: toRem(10);
+                i {
+                    color: $appColor;
+                    margin-right: toRem(5);
+                }
+            }
+            .overview-type {
+                margin: 0 toRem(5) 0 0;
+                height: toRem(20);
+                line-height: toRem(20);
+                border-radius: toRem(2);
+                font-size: toRem(12);
+                .mint-button-text {
+                    line-height: toRem(20);
                 }
             }
         }
