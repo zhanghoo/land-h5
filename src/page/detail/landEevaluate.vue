@@ -161,24 +161,26 @@ export default {
             })
         },
         getSearchDetail_more_data() {
-            if (this.loading !== 'nothing') {
-                let params = {
-                    keyWord: this.keyWord || 0,
-                    cityID: this.citySelected,
-                    type: this.typeSelected,
-                    page: ++this.page
-                }
-                this.loading = true
-                this.bottomLock = true
-                getSearchDetail(params).then(res => {
-                    if (res && res.Data && res.Data.length > 0) {
-                        this.landList.push(...res.Data)
-                        this.loading = false
-                    } else {
-                        this.loading = 'nothing'
+            if (this.$route.name === 'landEevaluate') {
+                if (this.loading !== 'nothing') {
+                    let params = {
+                        keyWord: this.keyWord || 0,
+                        cityID: this.citySelected,
+                        type: this.typeSelected,
+                        page: ++this.page
                     }
-                    this.bottomLock = false
-                })
+                    this.loading = true
+                    this.bottomLock = true
+                    getSearchDetail(params).then(res => {
+                        if (res && res.Data && res.Data.length > 0) {
+                            this.landList.push(...res.Data)
+                            this.loading = false
+                        } else {
+                            this.loading = 'nothing'
+                        }
+                        this.bottomLock = false
+                    })
+                }
             }
         },
         openSelectList(val) {

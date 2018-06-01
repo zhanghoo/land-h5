@@ -1,41 +1,48 @@
 <template>
     <div id="rankList">
-        <div class="title">
-            <p class="line"></p>
-            <p>
-                <span>排行榜</span>
-                <span class="en">HOT</span>
-            </p>
-            <p class="line"></p>
-        </div>
-        <div class="rankList-content">
-            <div class="content-header">
-                <div class="header-item">排名</div>
-                <div class="header-item">昵称</div>
-                <div class="header-item">等级名称</div>
-                <div class="header-item">大师积分</div>
+        <mt-loadmore :top-method="getRankList_data" @top-status-change="handleTopChange" ref="loadmore" :auto-fill='false'>
+            <div slot="top" class="mint-loadmore-top">
+                <span v-show="topStatus == 'pull'">下拉刷新↓</span>
+                <span v-show="topStatus == 'drop'">释放更新↑</span>
+                <span v-show="topStatus == 'loading'">加载中...</span>
             </div>
-            <div class="content-body" v-infinite-scroll="getRankList_data" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
-                <div class="body-item" v-for="(item, index) in rankList" :key="index">
-                    <div class="item item-index">
-                        <i :class="{'my-icon-huangguan': index < 3}">
-                            <span :style="{'absolute': index < 3}">{{item.rank}}</span>
-                        </i>
-                    </div>
-                    <div class="item item-name">
-                        <img class="name-avatar" v-if="item.avatar" :src="item.avatar" @click="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
-                        <span class="name-text">{{item.nick_name}}</span>
-                    </div>
-                    <div class="item item-level">{{item.level_name}}</div>
-                    <div class="item item-score">{{item.master_score}}</div>
+            <div class="title">
+                <p class="line"></p>
+                <p>
+                    <span>排行榜</span>
+                    <span class="en">HOT</span>
+                </p>
+                <p class="line"></p>
+            </div>
+            <div class="rankList-content">
+                <div class="content-header">
+                    <div class="header-item">排名</div>
+                    <div class="header-item">昵称</div>
+                    <div class="header-item">等级名称</div>
+                    <div class="header-item">大师积分</div>
                 </div>
-                <!-- 底部提示 -->
-                <div class="bottomLoad" v-if="rankList.length > 0">
-                    <div class="loading" v-show="loading === true">加载中...</div>
-                    <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
+                <div class="content-body" v-infinite-scroll="getRankList_more" infinite-scroll-disabled="bottomLock" infinite-scroll-distance="10" infinite-scroll-immediate-check="false">
+                    <div class="body-item" v-for="(item, index) in rankList" :key="index" @click="$router.push({path: '/userDetail', query: { userId: item.user_id }})">
+                        <div class="item item-index">
+                            <i :class="{'my-icon-huangguan': index < 3}">
+                                <span :style="{'absolute': index < 3}">{{item.rank}}</span>
+                            </i>
+                        </div>
+                        <div class="item item-name">
+                            <img class="name-avatar" v-if="item.avatar" :src="item.avatar">
+                            <span class="name-text">{{item.nick_name}}</span>
+                        </div>
+                        <div class="item item-level">{{item.level_name}}</div>
+                        <div class="item item-score">{{item.master_score}}</div>
+                    </div>
+                    <!-- 底部提示 -->
+                    <div class="bottomLoad" v-if="rankList.length > 0">
+                        <div class="loading" v-show="loading === true">加载中...</div>
+                        <div class="noData" v-if="loading === 'nothing'">没有更多了</div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </mt-loadmore>
         <div class="mine-rank-wrap">
             <div class="mine-rank">
                 <div class="item item-index" :class="`item-index-${mineRank.rank > 3 ? 4 : mineRank.rank}`">
@@ -64,11 +71,28 @@ export default {
             mineRank: {},
             page: 1,
             bottomLock: false,
-            loading: false
+            loading: false,
+            topStatus: ''
         }
     },
     methods: {
         getRankList_data() {
+            this.page = 1
+            getRankList(this.page).then(res => {
+                if (res && res.Data && res.Data !== 'null') {
+                    if (!this.mineRank.nick_name) {
+                        // 只赋值一次
+                        this.mineRank = res.Data.self
+                    }
+                    if (res.Data.all.length > 0) {
+                        this.rankList.push(...res.Data.all)
+                        this.page++
+                    }
+                }
+                this.$refs.loadmore.onTopLoaded()
+            })
+        },
+        getRankList_more() {
             this.loading = true
             this.bottomLock = true
             getRankList(this.page).then(res => {
@@ -89,10 +113,13 @@ export default {
                     this.loading = 'nothing'
                 }
             })
-            .catch(err => {
-                console.log(err)
-                this.loading = false
-            })
+                .catch(err => {
+                    console.log(err)
+                    this.loading = false
+                })
+        },
+        handleTopChange(status) {
+            this.topStatus = status
         }
     },
     mounted() {
@@ -260,7 +287,7 @@ export default {
                 &.item-index-3 i {
                     color: #D09168;
                 }
-                &.item-index-4 span{
+                &.item-index-4 span {
                     position: static;
                     font-weight: normal;
                 }

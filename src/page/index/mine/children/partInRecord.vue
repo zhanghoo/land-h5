@@ -5,8 +5,8 @@
             <mt-tab-item id="wait">待公布</mt-tab-item>
             <mt-tab-item id="success">估价成功</mt-tab-item>
         </mt-navbar>
-        <div class="page-infinite-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
-            <ul class="record-list" v-if="record">
+        <div id="partInRecord-wrapper" class="page-infinite-wrapper" ref="wrapper" :style="{ height: wrapperHeight + 'px' }">
+            <ul class="record-list" v-if="record.length > 0">
                 <!-- <li class="record-item">
                     <div class="record-item-panel" @click="$router.push({name: 'transactionDetail'})">
                         <div class="record-head">
@@ -37,19 +37,22 @@
                     </router-link>
                 </li>
             </ul>
+            <p class="nothing-record" v-else>没有参与记录...</p>
         </div>
     </div>
 </template>
 <script>
 import { getEvaluateRecord } from '@/api/mine'
+import cache from '@/utils/cache'
 export default {
     name: 'partInRecord',
     data() {
         return {
             selected: 'all',
-            record: '',
+            record: [],
             filterRecord: '',
-            wrapperHeight: 0
+            wrapperHeight: 0,
+            selectType: ''
         }
     },
     watch: {
@@ -58,16 +61,16 @@ export default {
         }
     },
     methods: {
-        getEvaluateRecord_data() {
-            getEvaluateRecord().then(res => {
-                if (res && res.Data) {
+        async getEvaluateRecord_data() {
+            await getEvaluateRecord().then(res => {
+                if (res && res.Data && res.Data !== 'null') {
                     this.filterRecord = this.record = res.Data
                 }
             })
         },
         filterRecord_data(type) {
             let selectType = type
-            switch (selectType) {
+            switch (type) {
                 case 'wait': selectType = '0'
                     break
                 case 'success': selectType = '1'
@@ -79,11 +82,40 @@ export default {
             } else {
                 this.filterRecord = this.record
             }
+        },
+        handleLocaltion(type) {
+            if (type === 'get') {
+                this.$nextTick(() => {
+                    let location = cache.getSession('partInRecord')
+                    if (location) {
+                        $('#partInRecord-wrapper').scrollTop(location)
+                    }
+                })
+            } else if (type === 'set') {
+                let scrollTop = $('#partInRecord-wrapper').scrollTop()
+                if (scrollTop >= 0) {
+                    cache.setSession('partInRecord', scrollTop)
+                }
+            }
+        },
+        async init() {
+            await this.getEvaluateRecord_data()
         }
     },
     mounted() {
-        this.getEvaluateRecord_data()
+        this.init()
         this.wrapperHeight = document.documentElement.clientHeight - this.$refs.wrapper.getBoundingClientRect().top
+    },
+    activated() {
+        this.handleLocaltion('get')
+    },
+    beforeRouteLeave(to, from, next) {
+        if (to.name === 'transactionDetail') {
+            this.handleLocaltion('set')
+        } else {
+            cache.removeSession('partInRecord')
+        }
+        next()
     }
 }
 </script>
@@ -154,6 +186,12 @@ export default {
                 }
             }
         }
+    }
+    .nothing-record {
+        text-align: center;
+        font-size: 16px;
+        color: #999;
+        margin-top: toRem(50);
     }
 }
 </style>

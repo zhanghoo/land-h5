@@ -35,6 +35,7 @@ import blockSlot from '@/components/blockSlot'
 import momentList from '@/components/momentList'
 import { mapState } from 'vuex'
 import { getUserDetail } from '@/api/mine'
+import cache from '@/utils/cache'
 export default {
     name: 'userDetail',
     components: { blockSlot, momentList },
@@ -54,15 +55,14 @@ export default {
         ])
     },
     methods: {
-        getUserMoment_data() {
-            // console.log(this.$route.params.userId)
+        async getUserMoment_data() {
             this.loading = true
             this.bottomLock = true
             let params = {
                 user_id: this.$route.query.userId,
                 page: this.page
             }
-            getUserDetail(params).then(res => {
+           await getUserDetail(params).then(res => {
                 // console.log(res)
                 if (res && res.Data && res.Data.userstate) {
                     if (!this.userinfo.nick_name) {
@@ -89,16 +89,43 @@ export default {
                 console.log(err)
                 this.loading = false
             })
+        },
+        handleLocaltion(type) {
+            if (type === 'get') {
+                this.$nextTick(() => {
+                    let location = cache.getSession('userDetail')
+                    if (location) {
+                        $('#userDetail').scrollTop(location)
+                    }
+                })
+            } else if (type === 'set') {
+                let scrollTop = $('#userDetail').scrollTop()
+                if (scrollTop >= 0) {
+                    cache.setSession('userDetail', scrollTop)
+                }
+            }
+        },
+        async init() {
+            await this.getUserMoment_data()
+            this.handleLocaltion('get')
         }
     },
     mounted() {
-        this.getUserMoment_data()
+        this.init()
+    },
+    beforeRouteLeave(to, from, next) {
+        if (to.name === 'momentDetail') {
+            this.handleLocaltion('set')
+        } else {
+            cache.removeSession('userDetail')
+        }
+        next()
     }
 }
 </script>
 <style lang='stylus'>
 #userDetail {
-    height 100vh
+    height 100vh;
     overflow-x: hidden;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;

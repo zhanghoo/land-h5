@@ -190,6 +190,8 @@ export default {
             color: #333;
             font-size: toRem(16);
             margin-bottom: toRem(10);
+            word-wrap:break-word ;
+            word-break: break-all;
         }
         .content-text {
             margin-bottom: toRem(7);
@@ -198,6 +200,8 @@ export default {
             text-align: justify;
             word-break: break-all;
             word-wrap: break-word;
+            text-align justify
+            line-height: 1.5em;
             a {
                 color: $appColor;
             }

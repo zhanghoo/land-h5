@@ -13,7 +13,8 @@ const state = {
     shareLink: '', // 分享的链接
     shareInfoDesc: '', // 分享的描述
     playingAudioCId: 0, // 正在播放的音频cid
-    momentLike: ''
+    momentLike: '',
+    paidItem: []
 }
 
 const getters = {
@@ -50,6 +51,9 @@ const mutations = {
     },
     setMomentLike(state, val) {
         state.momentLike = val
+    },
+    setPaid(state, val) {
+        state.paidItem = val
     }
 }
 

@@ -2,7 +2,7 @@
     <div id="app" v-if="$store.state.mine">
         <!-- 内容视口 -->
         <!-- <router-view v-wechat-title="$route.meta.title"></router-view> -->
-        <keep-alive include="index,landEevaluate">
+        <keep-alive include="index,landEevaluate,announcement,rankList">
             <router-view></router-view>
         </keep-alive>
         <!-- 页面加载进度条 -->
