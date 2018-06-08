@@ -66,7 +66,8 @@ export default {
             serverId: '',
             recordStep: 0, // 录音操作 0 开始录音 1 结束录音
             showRecharge: false,
-            type: ''
+            type: '',
+            publishClick: false
         }
     },
     computed: {
@@ -123,42 +124,48 @@ export default {
         },
         publish() {
             let _self = this
-            if (_self.isWeiXin) {
-                // alert('isWeiXin')
-                // 微信端
-                // 如果正在录音 提示停止录音后再发布
-                if (_self.recordStep === 1) {
-                    _self.$toast('请停止录音后再发布')
-                } else {
-                    if (_self.localId) {
-                        // alert('localId = ' + _self.localId)
-                        // 如果 localId 存在 获取微信端 serverId
-                            wx.uploadVoice({
-                                localId: _self.localId,
-                                success: function (res) {
-                                    _self.serverId = res.serverId
-                                    // alert('上传语音成功，serverId 为' + _self.serverId)
-                                    // 获得serverId
-                                    _self._postPublish()
-                                }
-                            })
+            if (!_self.publishClick) {
+                if (_self.isWeiXin) {
+                    // alert('isWeiXin')
+                    // 微信端
+                    // 如果正在录音 提示停止录音后再发布
+                    if (_self.recordStep === 1) {
+                        _self.$toast('请停止录音后再发布')
                     } else {
-                        // 不存在 直接上传
-                        _self._postPublish()
+                        if (_self.localId) {
+                            // alert('localId = ' + _self.localId)
+                            // 如果 localId 存在 获取微信端 serverId
+                                wx.uploadVoice({
+                                    localId: _self.localId,
+                                    success: function (res) {
+                                        _self.serverId = res.serverId
+                                        // alert('上传语音成功，serverId 为' + _self.serverId)
+                                        // 获得serverId
+                                        _self._postPublish()
+                                    }
+                                })
+                        } else {
+                            // 不存在 直接上传
+                            _self._postPublish()
+                        }
                     }
+                } else {
+                    // alert('非微信')
+                    // 其他端测试用
+                    _self._postPublish()
                 }
             } else {
-                // alert('非微信')
-                // 其他端测试用
-                _self._postPublish()
+                // _self.publishClick = false
+                _self.$toast('请不要重复点击提交')
             }
         },
         _publishVerify() {
             // 发布校验
             let _self = this
             let t = false
+            // console.log(trim(_self.title).length)
             if (trim(_self.title)) {
-                if (trim(_self.title).length > 64) {
+                if (trim(_self.title).length <= 64) {
                     if (trim(_self.content)) {
                         if (_self.localId !== '') {
                             // 如果点击了录音, 则必须停止, 否则提示
@@ -187,6 +194,9 @@ export default {
         _postPublish() {
             let _self = this
             if (_self._publishVerify()) {
+                // 在检验通过之后设置不能点击, 即此时已可提交
+                _self.publishClick = true
+
                 // 房产id为空传0
                 let params = {
                     pid: _self.$route.query.pid || 0,

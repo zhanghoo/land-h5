@@ -227,6 +227,9 @@ export default {
             getSystemNews().then(res => {
                 if (res && res.Data) {
                     this.systemNews = res.Data
+                    if (this.systemNews.length > 1) {
+                        this.initScroll()
+                    }
                 }
             })
         },
@@ -293,9 +296,6 @@ export default {
         this.getSystemNews_data()
         this.getLandEevaluate_data()
         this.getLandBusinessList_data()
-        this.$nextTick(function () {
-            this.initScroll()
-        })
     }
 }
 </script>
@@ -373,8 +373,12 @@ export default {
                         line-height: toRem(15);
                         .home-msg-a {
                             display: inline-block;
+                            width: 100%;
                             height: toRem(15);
                             line-height: toRem(15);
+                            white-space: pre;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
                     }
                 }

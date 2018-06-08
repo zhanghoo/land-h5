@@ -108,8 +108,8 @@ router.beforeEach((to, from, next) => {
             if (res && res.Data && res.Data.url) {
                 let url = res.Data.url
                 if (url) {
-                    document.location = 'http://localhost:8040/#/index/home?user_id=20205688'// 本地测试使用
-                    // document.location = url // 生产环境使用
+                    // document.location = 'http://localhost:8040/#/index/home?user_id=20205688'// 本地测试使用
+                    document.location = url // 生产环境使用
                 } else {
                     next('/')
                 }

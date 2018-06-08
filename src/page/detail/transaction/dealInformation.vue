@@ -27,7 +27,7 @@
                     </dl>
                     <dl>
                         <dt>溢价率</dt>
-                        <dd>{{json.premium_rate}}</dd>
+                        <dd>{{json.premium_rate}}%</dd>
                     </dl>
                     <dl>
                         <dt>成交日期</dt>

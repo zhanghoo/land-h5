@@ -42,11 +42,14 @@
                 </div>
             </template>
         </template>
+        <div class="backHome my-icon-home" @click="$router.push('/')"></div>
     </div>
 </template>
 <script>
 import audioPlayer from '@/components/audioPlayer'
 import { getMomentDetail, postZan } from '@/api/moment'
+import { mapState } from 'vuex'
+import { wxShare } from '@/api/wx'
 import $ from 'jquery'
 export default {
     name: 'momentDetail',
@@ -58,6 +61,13 @@ export default {
             showImg: '',
             showLoading: false
         }
+    },
+    computed: {
+        ...mapState([
+            'mine',
+            'shareInfoDesc',
+            'isWeiXin'
+        ])
     },
     methods: {
         clickPopupvisible(b_img) {
@@ -100,7 +110,7 @@ export default {
         getMomentsDetail_data() {
             let params = {
                 'cid': this.$route.query.cid,
-                'uid': this.$store.state.mine.user_id
+                'uid': this.mine.user_id
             }
             // console.log(params)
             getMomentDetail(params).then(res => {
@@ -114,7 +124,7 @@ export default {
             if (item.is_like === '0') {
                 let params = {
                     cid: item.cid,
-                    uid: this.$store.state.mine.user_id
+                    uid: this.mine.user_id
                 }
                 postZan(params).then(res => {
                     if (res.Code === '0' || res.Code === 0) {
@@ -126,10 +136,72 @@ export default {
                     }
                 })
             }
+        },
+        initShare() {
+            // transactionDetail页面 和 mine页面 分享需要重新设置 加上userid, 这里分享的是当前详情页面
+            // 其余页面分享的都是, empty入口界面
+            // 遗留分享问题, 在其他页面的分享应该是默认的全局默认的shareInfo 在 main.js 里面 每个router里面拼接一下链接, 在state 里面保存其他的微信参数
+            let url = `${window.location.href.split('#')[0]}#/momentDetail?cid=${this.$route.query.cid}&action=momentDetail&userid=${this.mine.user_id}`
+            // console.log(url)
+            wxShare(url).then(res => {
+                if (res && res.Data) {
+                    this.shareInfo = res.Data
+                    this.onWxMenuShare()
+                }
+            })
+        },
+        onWxMenuShare() {
+            let self = this
+            // 配置微信分享按钮
+            let _shareInfo = self.shareInfo
+            // console.log(_shareInfo)
+            if (self.isWeiXin) {
+                // alert('点击了分享, 开始config')
+                wx.config({
+                    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: _shareInfo.appId, // 必填，公众号的唯一标识
+                    timestamp: _shareInfo.timestamp, // 必填，生成签名的时间戳
+                    nonceStr: _shareInfo.nonceStr, // 必填，生成签名的随机串
+                    signature: _shareInfo.signature, // 必填，签名
+                    jsApiList: [
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'translateVoice',
+                        'startRecord',
+                        'stopRecord',
+                        'onVoiceRecordEnd',
+                        'playVoice',
+                        'onVoicePlayEnd',
+                        'pauseVoice',
+                        'stopVoice',
+                        'uploadVoice',
+                        'downloadVoice'
+                    ]
+                })
+                wx.ready(function () {
+                    // console.log('momentDetail wx.ready _shareInfo.url = ', _shareInfo.url)
+                    wx.onMenuShareTimeline({
+                        'title': self.shareInfoDesc.timeline_title,
+                        'imgUrl': self.shareInfoDesc.timeline_imgUrl,
+                        'link': _shareInfo.url
+                    })
+                    wx.onMenuShareAppMessage({
+                        'title': self.shareInfoDesc.appmessage_title,
+                        'desc': self.shareInfoDesc.appmessage_desc,
+                        'imgUrl': self.shareInfoDesc.appmessage_imgUrl,
+                        'link': _shareInfo.url
+                    })
+                })
+            } else {
+                // alert('呀T_T, 好像出错了~~快去微信朋友圈分享试试吧')
+            }
         }
     },
     mounted() {
         this.getMomentsDetail_data()
+        this.$nextTick(() => {
+            this.initShare()
+        })
     }
 }
 </script>
@@ -290,6 +362,22 @@ export default {
         overflow: hidden;
         white-space: nowrap;
         background: transparent;
+    }
+    .backHome{
+        position: fixed;
+        right: toRem(20);
+        bottom: toRem(200);
+        z-index: 9;
+        width: toRem(50);
+        height toRem(50);
+        background: $appColor;
+        border-radius: 100%;
+        box-shadow: 0 0 toRem(10) rgba($appColorRGB, .7);
+        font-size: 36px;
+        color #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 </style>

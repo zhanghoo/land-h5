@@ -23,7 +23,7 @@ export default {
 <style lang='stylus'>
 #index {
     position: relative;
-    height: 100vh;
+    height: 100%;
     padding-bottom: toRem(52);
 }
 </style>

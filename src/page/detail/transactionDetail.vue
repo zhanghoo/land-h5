@@ -8,17 +8,20 @@
             <div class="trans-detail-status">{{json.estatus | statusToString}}</div>
         </div>
         <div class="trans-detail-land" @click="$router.push({path: '/landDetail', query: { 'pid': json.product_id, 'type': json.tstatus}})">
-            <p class="tdl-title">{{json.name}}</p>
-            <p class="tdl-local">
-                <span class="tdl-local-icon my-icon-adress"></span>{{json.province}}</p>
-            <p class="tdl-tags">
-                <!-- 出售方式 sold_type -->
-                <mt-button class="label" plain>{{json.sold_type}}</mt-button>
-                <!-- 用途 purpose 1商住 2商办 3工业 -->
-                <mt-button class="label" plain>{{json.purpose | purposeToString}}</mt-button>
-                <!-- 面积 sold_area -->
-                <mt-button class="label" plain>{{json.sold_area}}平方米</mt-button>
-            </p>
+            <div class="tdl-box">
+                <p class="tdl-title">{{json.name}}</p>
+                <p class="tdl-local">
+                    <span class="tdl-local-icon my-icon-adress"></span>{{json.province}}</p>
+                <p class="tdl-tags">
+                    <!-- 出售方式 sold_type -->
+                    <mt-button class="label" plain>{{json.sold_type}}</mt-button>
+                    <!-- 用途 purpose 1商住 2商办 3工业 -->
+                    <mt-button class="label" plain>{{json.purpose | purposeToString}}</mt-button>
+                    <!-- 面积 sold_area -->
+                    <mt-button class="label" plain>{{json.sold_area}}平方米</mt-button>
+                </p>
+            </div>
+            <span class="my-icon-more"></span>
         </div>
         <div v-if="json.is_parp === '1'" class="trans-detail-dealinfo">
             <!-- PS: 据0412需求大师币改为大师积分, 是固定的 100 -->
@@ -101,6 +104,7 @@
                 </div>
             </div>
         </mt-popup>
+        <div class="backHome my-icon-home" @click="$router.push('/')"></div>
     </div>
 </template>
 <script>
@@ -152,7 +156,7 @@ export default {
     },
     methods: {
         getEvaluateDetail_data() {
-            // console.log(this.$route.query.id)
+            console.log(this.$route.query.id)
             getEvaluateDetail(this.$route.query.id).then(res => {
                 if (res && res.Data) {
                     this.json = res.Data
@@ -167,7 +171,7 @@ export default {
             // 其余页面分享的都是, empty入口界面
             // 遗留分享问题, 在其他页面的分享应该是默认的全局默认的shareInfo 在 main.js 里面 每个router里面拼接一下链接, 在state 里面保存其他的微信参数
             let url = `${window.location.href.split('#')[0]}#/transactionDetail?id=${this.$route.query.id}&action=transactionDetail&userid=${this.mine.user_id}`
-            console.log(url)
+            // console.log(url)
             wxShare(url).then(res => {
                 if (res && res.Data) {
                     this.shareInfo = res.Data
@@ -182,7 +186,7 @@ export default {
             let self = this
             // 配置微信分享按钮
             let _shareInfo = self.shareInfo
-            console.log(_shareInfo, self.shareInfoDesc)
+            // console.log(_shareInfo, self.shareInfoDesc)
             if (self.isWeiXin) {
                 // alert('点击了分享, 开始config')
                 wx.config({
@@ -207,6 +211,7 @@ export default {
                     ]
                 })
                 wx.ready(function () {
+                    // console.log('transactionDetail wx.ready _shareInfo.url = ', _shareInfo.url)
                     wx.onMenuShareTimeline({
                         'title': self.shareInfoDesc.timeline_title,
                         'imgUrl': self.shareInfoDesc.timeline_imgUrl,
@@ -255,28 +260,36 @@ export default {
         }
     }
     .trans-detail-land {
+        display: flex;
+        align-items: center;
         padding: toRem(14.5) toRem(18);
         margin-bottom: toRem(10);
         background: $panelBg;
         font-size: toRem(15);
         color: #333;
         line-height: 1;
-        .tdl-title {
-            margin-bottom: toRem(13);
-        }
-        .tdl-local {
-            margin-bottom: toRem(12.5);
-            color: #666;
-            .tdl-local-icon {
-                margin-right: toRem(5);
-                color: $appColor;
+        .tdl-box {
+            flex: 1;
+            .tdl-title {
+                margin-bottom: toRem(13);
+            }
+            .tdl-local {
+                margin-bottom: toRem(12.5);
+                color: #666;
+                .tdl-local-icon {
+                    margin-right: toRem(5);
+                    color: $appColor;
+                }
+            }
+            .tdl-tags {
+                .label {
+                    border: 1px solid $appColor;
+                    color: $appColor;
+                }
             }
         }
-        .tdl-tags {
-            .label {
-                border: 1px solid $appColor;
-                color: $appColor;
-            }
+        .my-icon-more {
+            font-size: toRem(18);
         }
     }
     .trans-detail-dealinfo {
@@ -501,6 +514,22 @@ export default {
                 }
             }
         }
+    }
+    .backHome{
+        position: fixed;
+        right: toRem(20);
+        bottom: toRem(200);
+        z-index: 9;
+        width: toRem(50);
+        height toRem(50);
+        background: $appColor;
+        border-radius: 100%;
+        box-shadow: 0 0 toRem(10) rgba($appColorRGB, .7);
+        font-size: 36px;
+        color #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 }
 </style>

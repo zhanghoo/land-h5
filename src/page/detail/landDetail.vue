@@ -234,7 +234,7 @@ export default {
         //     return t
         // },
         landText() {
-            console.log(parseInt(this.$route.query.type))
+            // console.log(parseInt(this.$route.query.type))
             var t = parseInt(this.$route.query.type) === 0 ? '地块' : '房产'
             return t
         }
@@ -270,8 +270,19 @@ export default {
     },
     methods: {
         clickInvitation(operation) {
-            this.operation = operation
-            this.popupVisible = !this.popupVisible
+            let _self = this
+            if (_self.mine.is_charge === '1') {
+                // 会员
+                _self.operation = operation
+                _self.popupVisible = !_self.popupVisible
+            } else {
+                // 0605增加, 非会员进行估价，提示会员才能估价后，要自动跳转到充值页面
+                // 非会员
+                _self.$toast('会员才能估价')
+                setTimeout(() => {
+                    _self.$router.push('recharge')
+                }, 1500)
+            }
         },
         handler({BMap, map}) {
             this.center.lng = 0

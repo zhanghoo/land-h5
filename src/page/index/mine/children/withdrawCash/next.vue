@@ -17,7 +17,8 @@ export default {
     name: 'withdrawCashNext',
     data() {
         return {
-            money: null
+            money: null,
+            withdrawClick: false
         }
     },
     computed: {
@@ -27,23 +28,30 @@ export default {
     },
     methods: {
         get_money() {
-            if (!this.money) {
-                this.$toast('请填写要提现的金额')
-            } else {
-                // console.log(Number(this.money).toFixed(2) !== '1.00') 0.99 -> 1.00 字符串
-                // console.log(Math.floor(Number(this.money)))
-                if (Math.floor(Number(this.money)) !== 1 && (Math.floor(Number(this.money).toFixed(2)) < 1 || Number(this.money).toFixed(2) === '1.00')) {
-                    this.$toast('微信提现金额不能少于1元，请重新输入')
+            if (!this.withdrawClick) {
+                if (!this.money) {
+                    this.$toast('请填写要提现的金额')
                 } else {
-                    getMoney(this.money).then(res => {
-                        if (res) {
-                            this.$toast(res.Msg)
-                            setTimeout(function() {
-                                location.reload()
-                            }, 1500)
-                        }
-                    })
+                    // console.log(Number(this.money).toFixed(2) !== '1.00') 0.99 -> 1.00 字符串
+                    // console.log(Math.floor(Number(this.money)))
+                    if (Math.floor(Number(this.money)) !== 1 && (Math.floor(Number(this.money).toFixed(2)) < 1 || Number(this.money).toFixed(2) === '1.00')) {
+                        this.$toast('微信提现金额不能少于1元，请重新输入')
+                    } else {
+                        this.withdrawClick = true
+                        getMoney(this.money).then(res => {
+                            if (res) {
+                                this.$toast(res.Msg)
+                                setTimeout(function() {
+                                    this.withdrawClick = false
+                                    location.reload()
+                                }, 1500)
+                            }
+                        })
+                    }
                 }
+            } else {
+                // this.withdrawClick = false
+                this.$toast('请不要重复点击提现')
             }
         }
     },
