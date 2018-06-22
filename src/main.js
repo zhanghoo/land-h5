@@ -17,7 +17,11 @@ import VueProgressBar from 'vue-progressbar'
 import BaiduMap from 'vue-baidu-map'
 // import VueWechatTitle from 'vue-wechat-title'
 
+import FastClick from 'fastclick'
+
 import '@/utils/permission'
+
+FastClick.attach(document.body)
 
 // Vue.use(VueWechatTitle)
 
