@@ -118,3 +118,10 @@ router.beforeEach((to, from, next) => {
         })
     }
 })
+
+router.afterEach((to, from) => {
+    if (store.state.mine.status === '0') {
+        // 用户被封禁
+        document.location = 'http://di.php0.jxcraft.net/land-h5/empty.html'
+    }
+})

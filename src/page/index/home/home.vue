@@ -187,9 +187,9 @@ export default {
     watch: {
         $route(to, from) {
             // console.log(from.name)
-            if (from.name === 'momentDetail' || from.name === 'transactionDetail') {
-                this.initShare()
-            }
+            // if (from.name === 'momentDetail' || from.name === 'transactionDetail') {
+            //     this.initShare()
+            // }
             if (to.name === 'home') {
                 // console.log('回退到首页, 刷新排行榜')
                 this.getRankList_data()
@@ -214,7 +214,7 @@ export default {
                             // 2. (index.html中引入) 引入JS文件
                             // let wx = require('@/assets/js/jweixin-1.2.0.js').default
                             // 3. 通过config接口注入权限验证配置
-                            console.log(_self.$store.state.wxConfig, _self.$store.state.shareInfoDesc)
+                            // console.log(_self.$store.state.wxConfig, _self.$store.state.shareInfoDesc)
                             wx.config(_self.$store.state.wxConfig)
                             // 4. 通过ready接口处理成功验证
                             wx.ready(function () {
@@ -338,6 +338,7 @@ export default {
     mounted() {
         // let t = this.mine.is_sign === 1 ? '今日已签到' : '今日未签到'
         // alert(this.mine.is_sign + '=>' + t)
+        this.initShare()
         this.getRankList_data()
         this.getSystemNews_data()
         this.getLandEevaluate_data()

@@ -137,12 +137,14 @@ export default {
             }
             // console.log(params)
             checkShare(params).then(res => {
+                console.log(res)
                 if (res && res.Data) {
                     this.payToWatchItem.cid = this.$route.query.cid
                     this.payToWatchItem.money = res.Data.coin
                     if (res.Data.coin !== 0) {
                         // 付费金额
                         if (res.Data.is_pay === '1') {
+                            console.log('this.payMsgBox = true')
                             // 需要付费
                             this.payMsgBox = true
                         } else {
