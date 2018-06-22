@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+const empty = () => import('@/page/empty')
 const index = () => import('@/page/index/index')
 // moment
 const moment = () => import('@/page/index/moment/moment')
@@ -83,22 +84,6 @@ export default new Router({
                     },
                     children: [
                         {
-                            name: 'myInfo',
-                            path: 'myInfo',
-                            component: myInfo,
-                            meta: {
-                                title: '地产大师'
-                            }
-                        },
-                        {
-                            name: 'mineGold',
-                            path: 'mineGold',
-                            component: mineGold,
-                            meta: {
-                                title: '大师币'
-                            }
-                        },
-                        {
                             name: 'mineScore',
                             path: 'mineScore',
                             component: mineScore,
@@ -112,14 +97,6 @@ export default new Router({
                             component: partInRecord,
                             meta: {
                                 title: '参与记录'
-                            }
-                        },
-                        {
-                            name: 'mineWithdrawCash',
-                            path: 'mineWithdrawCash',
-                            component: mineWithdrawCash,
-                            meta: {
-                                title: '提现'
                             }
                         },
                         {
@@ -140,29 +117,61 @@ export default new Router({
                             ]
                         },
                         {
-                            name: 'feedback',
-                            path: 'feedback',
-                            component: feedback,
-                            meta: {
-                                title: '反馈'
-                            }
-                        },
-                        {
-                            name: 'idAuth',
-                            path: 'idAuth',
-                            component: idAuth,
-                            meta: {
-                                title: '地产大师'
-                            }
-                        },
-                        {
                             name: 'vipVerify',
                             path: 'vipVerify',
                             component: vipVerify
                         }
                     ]
+                },
+                {
+                    name: 'mineGold',
+                    path: 'mineGold',
+                    component: mineGold,
+                    meta: {
+                        title: '大师币'
+                    }
+                },
+                {
+                    name: 'myInfo',
+                    path: 'myInfo',
+                    component: myInfo,
+                    meta: {
+                        title: '地产大师'
+                    }
+                },
+                {
+                    name: 'mineWithdrawCash',
+                    path: 'mineWithdrawCash',
+                    component: mineWithdrawCash,
+                    meta: {
+                        title: '提现'
+                    }
+                },
+                {
+                    name: 'feedback',
+                    path: 'feedback',
+                    component: feedback,
+                    meta: {
+                        title: '反馈'
+                    }
+                },
+                {
+                    name: 'idAuth',
+                    path: 'idAuth',
+                    component: idAuth,
+                    meta: {
+                        title: '地产大师'
+                    }
                 }
             ]
+        },
+        {
+            name: 'empty',
+            path: '/empty',
+            component: empty,
+            meta: {
+                title: '地产大师'
+            }
         },
         {
             name: 'recharge',

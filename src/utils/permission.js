@@ -2,6 +2,7 @@ import router from '@/router'
 import store from '@/store'
 import { wxLogin } from '@/api/wx'
 import cache from '@/utils/cache'
+import { getQueryString } from '@/utils/utils'
 
 // 全局路由登录验证
 router.beforeEach((to, from, next) => {
@@ -117,18 +118,3 @@ router.beforeEach((to, from, next) => {
         })
     }
 })
-
-function getQueryString(name) {
-    var reg = new RegExp('(^|&amp;)' + name + '=([^&amp;]*)(&amp;|$)', 'i')
-    var r = window.location.hash.split('?')
-    if (r[1]) {
-        let result = r[1].match(reg)
-        if (result != null) {
-            return unescape(result[2])
-        } else {
-            return null
-        }
-    } else {
-        return null
-    }
-}

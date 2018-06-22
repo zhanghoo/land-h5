@@ -43,22 +43,82 @@
             </template>
         </template>
         <div class="backHome my-icon-home" @click="$router.push('/')"></div>
+        <!-- 支付弹框 -->
+        <div ref="msgbox" class="pay-msgbox-wrapper" v-if="payMsgBox">
+            <transition name="bounce">
+                <div class="pay-msgbox" v-if="payMsgBox">
+                    <div class="pay-msgbox-header">确认支付</div>
+                    <div class="pay-msgbox-content">
+                        <div class="content-message">查看需支付{{payToWatchItem.money}}大师币,是否确认查看?</div>
+                        <div class="content-money">
+                            剩余：
+                            <i class="my-icon-tongqian"></i>
+                            <span class="text">{{$store.state.mine.master_coin}}</span>
+                            <router-link :to="{name: 'recharge'}" class="my-icon-add"></router-link>
+                        </div>
+                    </div>
+                    <div class="pay-msgbox-btns">
+                        <div class="pay-msgbox-btn cancle" @click="$router.push('/')">不看了</div>
+                        <!-- 判断余额是否能查看 -->
+                        <template v-if="$store.state.mine.master_coin >= payToWatchItem.money">
+                            <div class="pay-msgbox-btn confirm" @click="confirmWatch">确认查看</div>
+                        </template>
+                        <template v-else>
+                            <div class="pay-msgbox-btn cancle" @click="watchNoMoney">确认查看</div>
+                        </template>
+                    </div>
+                </div>
+            </transition>
+            <div class="pay-msgbox-modal" v-show="payMsgBox"></div>
+        </div>
     </div>
 </template>
 <script>
 import audioPlayer from '@/components/audioPlayer'
-import { getMomentDetail, postZan } from '@/api/moment'
+import { getMomentDetail, postZan, checkShare } from '@/api/moment'
 import { mapState } from 'vuex'
 import { wxShare } from '@/api/wx'
 import $ from 'jquery'
+import { getQueryString } from '@/utils/utils'
 export default {
     name: 'momentDetail',
     components: { audioPlayer },
+    beforeRouteEnter (to, from, next) {
+        // console.log(to.name, from.name)
+        if (from.name === 'moment' || from.name === 'userDetail' || from.name === 'homePage') {
+            // 点击动态进入
+            next()
+        } else if (from.name === null) {
+            // 从链接直接进入
+            if (getQueryString('action') === 'momentDetail') {
+                // 从动态页分享链接进入
+                next()
+                // // 弹出弹框
+                // next(vm => {
+                //     // 通过 `vm` 访问组件实例
+                //     vm.$refs.msgbox.style.display = 'block'
+                // })
+            } else {
+                next(vm => {
+                    // 通过 `vm` 访问组件实例
+                    vm.$router.push({ path: '/index/home' })
+                })
+            }
+        } else {
+            // 其他
+            next(vm => {
+                // 通过 `vm` 访问组件实例
+                vm.$router.push({ path: '/index/home' })
+            })
+        }
+    },
     data() {
         return {
             json: '',
             popupVisible: false,
             showImg: '',
+            payMsgBox: false,
+            payToWatchItem: {},
             showLoading: false
         }
     },
@@ -70,6 +130,47 @@ export default {
         ])
     },
     methods: {
+        checkPay() {
+            let params = {
+                'cid': this.$route.query.cid,
+                'user_id': this.mine.user_id
+            }
+            // console.log(params)
+            checkShare(params).then(res => {
+                if (res && res.Data) {
+                    this.payToWatchItem.cid = this.$route.query.cid
+                    this.payToWatchItem.money = res.Data.coin
+                    if (res.Data.coin !== 0) {
+                        // 付费金额
+                        if (res.Data.is_pay === '1') {
+                            // 需要付费
+                            this.payMsgBox = true
+                        } else {
+                            this.getMomentsDetail_data()
+                        }
+                    } else {
+                        this.getMomentsDetail_data()
+                    }
+                }
+            })
+        },
+        // 确认查看余额不足
+        watchNoMoney() {
+            this.$toast('大师币不足')
+        },
+        // 支付查看内容
+        confirmWatch() {
+            if (this.$store.state.mine.master_coin >= this.payToWatchItem.money) {
+                this.$store.dispatch('post_reduceUserMoney', this.payToWatchItem.money)
+                this.payToWatchItem.is_pay = '0'
+                this.$store.commit('setPaid', this.payToWatchItem.cid)
+                this.$toast(`-${this.payToWatchItem.money}大师币`)
+                this.$router.push({ path: '/momentDetail', query: { 'cid': this.payToWatchItem.cid } })
+            }
+            this.$refs.msgbox.style.display = 'none'
+            this.payMsgBox = false
+            this.getMomentsDetail_data()
+        },
         clickPopupvisible(b_img) {
             let _self = this
             _self.showImg = b_img
@@ -198,7 +299,13 @@ export default {
         }
     },
     mounted() {
-        this.getMomentsDetail_data()
+        if (getQueryString('action') !== 'momentDetail') {
+            // 非分享链接进入
+            this.getMomentsDetail_data()
+        } else {
+            // 从分享链接进入
+            this.checkPay()
+        }
         this.$nextTick(() => {
             this.initShare()
         })
@@ -366,18 +473,106 @@ export default {
     .backHome{
         position: fixed;
         right: toRem(20);
-        bottom: toRem(200);
+        bottom: toRem(20);
         z-index: 9;
-        width: toRem(50);
-        height toRem(50);
+        width: toRem(40);
+        height toRem(40);
         background: $appColor;
         border-radius: 100%;
         box-shadow: 0 0 toRem(10) rgba($appColorRGB, .7);
-        font-size: 36px;
+        font-size: toRem(28);
         color #fff;
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+    .pay-msgbox-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 3000;
+        .pay-msgbox {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            background-color: #fff;
+            width: 80%;
+            border-radius: toRem(5);
+            font-size: toRem(15);
+            overflow: hidden;
+            backface-visibility: hidden;
+            padding: toRem(15) toRem(10);
+            z-index: 3002;
+            transform: translate3d(-50%, -50%, 0);
+            .pay-msgbox-header {
+                font-size: toRem(16);
+                font-weight: 700;
+                color: #666;
+                text-align: center;
+                padding-bottom: toRem(15);
+                border-1px-bottom(#eee);
+            }
+            .pay-msgbox-content {
+                position: relative;
+                color: #000;
+                padding: toRem(25) toRem(10);
+                .content-message {
+                    font-size: toRem(15);
+                    margin-bottom: toRem(10);
+                }
+                .content-money {
+                    .my-icon-tongqian {
+                        color: #f9c546;
+                    }
+                    .text {
+                        color: #666;
+                        margin: 0 toRem(10) 0 toRem(5);
+                    }
+                    .my-icon-add {
+                        color: $appColor;
+                    }
+                }
+            }
+            .pay-msgbox-btns {
+                display: flex;
+                height: 40px;
+                line-height: 40px;
+                justify-content: space-around;
+                .pay-msgbox-btn {
+                    display: block;
+                    background-color: #fff;
+                    flex: 1;
+                    text-align: center;
+                    color: #fff;
+                    border-radius: toRem(5);
+                }
+                .cancle {
+                    width: 50%;
+                    background: #ccc;
+                    margin-right: toRem(5);
+                }
+                .confirm {
+                    width: 50%;
+                    background: $appColor;
+                    margin-left: toRem(5);
+                }
+            }
+        }
+        .pay-msgbox-modal {
+            position: fixed;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.5;
+            background: #000;
+            z-index: 3001;
+            transition: all 0.2s;
+        }
     }
 }
 </style>

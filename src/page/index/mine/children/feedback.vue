@@ -12,23 +12,38 @@ export default {
     name: 'feedback',
     data() {
         return {
-            content: ''
+            content: '',
+            clickFlag: false
         }
     },
     methods: {
         postFeddBackContent() {
             let _self = this
-            if (!_self.content) {
-                _self.$toast('请填写反馈信息')
+            if (!this.clickFlag) {
+                if (!_self.content) {
+                    _self.$toast('请填写反馈信息')
+                } else {
+                    this.clickFlag = true
+                    postFeedBack(_self.content).then(res => {
+                        if (res && res.Code === 0) {
+                            _self.$toast('提交成功')
+                            setTimeout(function() {
+                                _self.$router.go(-1)
+                                _self.clickFlag = false
+                            }, 500)
+                        } else {
+                            _self.clickFlag = false
+                            _self.$toast(res.Msg)
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        // 上传失败 可再次点击
+                        this.clickFlag = false
+                    })
+                }
             } else {
-                postFeedBack(_self.content).then(res => {
-                    if (res) {
-                        _self.$toast('提交成功')
-                        setTimeout(function() {
-                            _self.$router.go(-1)
-                        }, 1500)
-                    }
-                })
+                this.$toast('请勿重复点击提交')
             }
         }
     }

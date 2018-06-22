@@ -2,7 +2,7 @@
     <div id="mineScore">
         <div class="m-score-count">
             <p class="count">当前大师积分：
-                <span class="num">{{mine.master_score}}</span>
+                <span class="num">{{score}}</span>
             </p>
             <p class="rule" @click="openScoreRule">
                 <span class="icon my-icon-tishi"></span>&nbsp;规则</p>
@@ -64,6 +64,7 @@ export default {
     data() {
         return {
             popupVisible: false,
+            score: 0,
             scoreRecord: [],
             scoreRule: '',
             page: 1,
@@ -97,6 +98,7 @@ export default {
             }
             getScoreRecord(params).then(res => {
                 if (res && res.Data && res.Data.record) {
+                    this.score = res.Data.count
                     if (res.Data.record.length > 0) {
                         this.scoreRecord.push(...res.Data.record)
                         this.page++

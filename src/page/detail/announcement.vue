@@ -52,17 +52,24 @@ export default {
             json: [],
             bottomLock: false,
             loading: false,
-            topStatus: ''
+            topStatus: '',
+            dragRefresh: false
         }
     },
     methods: {
         loadTopAjax() {
+            // 上拉刷新
+            this.dragRefresh = true
             this.page = 1
             getLandBusinessList(this.page).then(res => {
                 if (res && res.Data && res.Data !== 'null') {
                     this.json = res.Data
                 }
                 this.loading = false
+                if (res.Data.length < 10) {
+                    // 小于10条的情况
+                    this.loading = 'nothing'
+                }
                 this.$refs.loadmore.onTopLoaded()
             })
                 .catch(err => {
@@ -72,6 +79,11 @@ export default {
                 })
         },
         getLandBusinessList_data() {
+            if (this.dragRefresh) {
+                // 如果是下拉刷新, 加载第二页的即可, 因为用的是push
+                this.page = 2
+                this.dragRefresh = false
+            }
             if (this.loading !== 'nothing') {
                 this.loading = 'loading'
                 this.bottomLock = true
@@ -79,6 +91,10 @@ export default {
                     if (res && res.Data && res.Data.length > 0 && res.Data !== 'null') {
                         this.json.push(...res.Data)
                         this.loading = false
+                        if (res.Data.length < 10) {
+                            // 小于10条的情况
+                            this.loading = 'nothing'
+                        }
                     } else {
                         this.loading = 'nothing'
                     }

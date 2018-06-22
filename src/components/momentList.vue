@@ -136,6 +136,7 @@ export default {
         },
         // 打开支付msgBox
         openPayMsgBox(item) {
+            // console.log(item)
             this.payMsgBox = true
             this.payToWatchItem = item
         },

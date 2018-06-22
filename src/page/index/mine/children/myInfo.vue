@@ -34,7 +34,8 @@ export default {
             avatar_preview: '',
             avatar: '',
             username: '',
-            phone: ''
+            phone: '',
+            clickFlag: false
         }
     },
     computed: {
@@ -52,34 +53,50 @@ export default {
             }
         },
         changeUserInfo() {
-            // 0425反馈修改 头像、昵称、手机号可以分开修改
-            if (!this.username) {
-                this.$toast('昵称不能为空')
-            } else if (this.username.length < 2) {
-                this.$toast('昵称长度不能少于2个字符')
-            } else if (this.username.length > 8) {
-                this.$toast('昵称长度不能大于16个字符')
-            } else if (!this.phone) {
-                this.$toast('手机号码不能为空')
-            } else if (this.phone.length !== 11 || !(/^(1[3,4,5,6,7,8,9])\d{9}$/.test(this.phone))) {
-                this.$toast('请填写正确的手机号码！')
-            } else if (!this.avatar && this.username === this.mine.nick_name && this.phone === this.mine.phone) {
-                this.$toast('请至少修改一项后再提交')
-            } else {
-                let params = {
-                    userid: this.mine.user_id,
-                    username: this.username,
-                    phone: this.phone,
-                    avatar: this.avatar
-                }
-                postUserInfo(params).then(res => {
-                    if (res && (res.Code === 0 || res.data.Code === 0)) {
-                        this.$toast('修改成功')
-                        setTimeout(function() {
-                            location.reload()
-                        }, 1000)
+            if (!this.clickFlag) {
+                // 0425反馈修改 头像、昵称、手机号可以分开修改
+                if (!this.username) {
+                    this.$toast('昵称不能为空')
+                } else if (this.username.length < 2) {
+                    this.$toast('昵称长度不能少于2个字符')
+                } else if (this.username.length > 8) {
+                    this.$toast('昵称长度不能大于16个字符')
+                } else if (!this.phone) {
+                    this.$toast('手机号码不能为空')
+                } else if (this.phone.length !== 11 || !(/^(1[3,4,5,6,7,8,9])\d{9}$/.test(this.phone))) {
+                    this.$toast('请填写正确的手机号码！')
+                } else if (!this.avatar && this.username === this.mine.nick_name && this.phone === this.mine.phone) {
+                    this.$toast('请至少修改一项后再提交')
+                } else {
+                    this.clickFlag = true
+                    let params = {
+                        userid: this.mine.user_id,
+                        username: this.username,
+                        phone: this.phone,
+                        avatar: this.avatar
                     }
-                })
+                    postUserInfo(params).then(res => {
+                        let _self = this
+                        if (res && (res.Code === 0 || res.data.Code === 0)) {
+                            _self.$toast('修改成功')
+                            setTimeout(function() {
+                                // location.reload()
+                                _self.$router.push({ path: '/index/mine' })
+                                _self.clickFlag = false
+                            }, 500)
+                        } else {
+                            _self.clickFlag = false
+                            _self.$toast(res.Msg)
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        // 上传失败 可再次点击
+                        this.clickFlag = false
+                    })
+                }
+            } else {
+                this.$toast('请勿重复点击提交')
             }
         }
     },
@@ -110,9 +127,12 @@ export default {
             overflow: hidden;
             margin: 0 auto toRem(12);
             .avatar-img {
+                position: absolute;
+                top: 50%;
+                left: 0;
                 display: block;
                 width: 100%;
-                height: 100%;
+                transform: translateY(-50%);
             }
             label {
                 position: absolute;

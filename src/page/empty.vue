@@ -1,8 +1,9 @@
 <template>
-    <div id="empty"></div>
+    <div id="empty">
+        <div class="tip">用户已被封禁<br>请联系管理员</div>
+    </div>
 </template>
 <script>
-import { wxLogin } from '@/api'
 export default {
     name: 'empty',
     data() {
@@ -14,23 +15,22 @@ export default {
 
     },
     methods: {
-        getWxLogin_data() {
-            wxLogin().then(res => {
-                // console.log(res)
-                if (res && res.Data && res.Data.url) {
-                    document.location = res.Data.url
-                }
-            })
-        }
+
     },
     mounted() {
-        this.getWxLogin_data()
-        // document.location = 'http://localhost:8040/#/index/home'
+
     }
 }
 </script>
 <style lang='stylus'>
 #empty {
-
+    .tip {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        transform: translateY(-50%);
+        text-align: center;
+    }
 }
 </style>

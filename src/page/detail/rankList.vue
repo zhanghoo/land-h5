@@ -72,11 +72,14 @@ export default {
             page: 1,
             bottomLock: false,
             loading: false,
-            topStatus: ''
+            topStatus: '',
+            dragRefresh: false
         }
     },
     methods: {
         getRankList_data() {
+            // 上拉刷新
+            this.dragRefresh = true
             this.page = 1
             getRankList(this.page).then(res => {
                 if (res && res.Data && res.Data !== 'null') {
@@ -84,17 +87,30 @@ export default {
                         // 只赋值一次
                         this.mineRank = res.Data.self
                     }
+
                     if (res.Data.all.length > 0) {
-                        this.rankList.push(...res.Data.all)
-                        this.page++
+                        this.rankList = res.Data.all
                     }
                 }
+                this.loading = false
+                if (res.Data.length < 10) {
+                    // 小于10条的情况
+                    this.loading = 'nothing'
+                }
+                this.bottomLock = false
                 this.$refs.loadmore.onTopLoaded()
             })
         },
         getRankList_more() {
+            if (this.dragRefresh) {
+                // 如果是下拉刷新, 加载第二页的即可, 因为用的是push
+                this.page = 2
+                this.dragRefresh = false
+            }
+            // console.log(this.page)
             this.loading = true
             this.bottomLock = true
+            // console.log(this.page)
             getRankList(this.page).then(res => {
                 if (res && res.Data) {
                     if (!this.mineRank.nick_name) {
@@ -103,9 +119,12 @@ export default {
                     }
                     if (res.Data.all.length > 0) {
                         this.rankList.push(...res.Data.all)
-                        this.page++
                         this.loading = false
                         this.bottomLock = false
+                        if (res.Data.length < 10) {
+                            // 小于10条的情况
+                            this.loading = 'nothing'
+                        }
                     } else {
                         this.loading = 'nothing'
                     }
@@ -113,17 +132,18 @@ export default {
                     this.loading = 'nothing'
                 }
             })
-                .catch(err => {
-                    console.log(err)
-                    this.loading = false
-                })
+            .catch(err => {
+                console.log(err)
+                this.loading = false
+            })
+            this.page++
         },
         handleTopChange(status) {
             this.topStatus = status
         }
     },
     mounted() {
-        this.getRankList_data()
+        this.getRankList_more()
     }
 }
 </script>

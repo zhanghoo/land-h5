@@ -177,14 +177,18 @@ export default {
             display: flex;
             align-items: center;
             .avatar {
+                position: relative;
                 width: toRem(64);
                 height: toRem(64);
                 border-radius: 100%;
                 overflow: hidden;
                 background: #eee;
                 .avatar-img {
+                    position: absolute;
+                    top: 50%;
+                    left: 0;
                     width: 100%;
-                    height: 100%;
+                    transform: translateY(-50%);
                 }
             }
             .info {

@@ -42,7 +42,8 @@ export default {
         return {
             company: '',
             pictureFile: [],
-            picture_preview: []
+            picture_preview: [],
+            clickFlag: false
         }
     },
     computed: {
@@ -88,31 +89,43 @@ export default {
             }
         },
         postIdAuth() {
-            var _self = this
-            if (!_self.company) {
-                _self.$toast('请填写公司名称')
-            } else {
-                if (_self.mine.auth_status === 2) {
-                    // auth_status：2（表示不能提交验证，已提交）
-                    _self.$toast('申请已提交，请勿频繁操作')
+            let _self = this
+            if (!this.clickFlag) {
+                if (!_self.company) {
+                    _self.$toast('请填写公司名称')
                 } else {
-                    // auth_status：3（表示可提交验证，未提交或者未审核通过可再提交验证的状态）
-                    let params = {
-                        company: _self.company,
-                        file: _self.pictureFile
-                    }
-                    postAuthValidate(params).then(res => {
-                        if (res.Code === 0) {
-                            _self.$toast('申请提交成功')
-                            _self.$store.commit('setAuthStatus', 2)
-                            setTimeout(() => {
-                                _self.$router.go(-1)
-                            }, 1500)
-                        } else {
-                            _self.$toast(res.Msg)
+                    if (_self.mine.auth_status === 2) {
+                        // auth_status：2（表示不能提交验证，已提交）
+                        _self.$toast('申请已提交，请勿频繁操作')
+                    } else {
+                        this.clickFlag = true
+                        // auth_status：3（表示可提交验证，未提交或者未审核通过可再提交验证的状态）
+                        let params = {
+                            company: _self.company,
+                            file: _self.pictureFile
                         }
-                    })
+                        postAuthValidate(params).then(res => {
+                            if (res.Code === 0) {
+                                _self.$toast('申请提交成功')
+                                _self.$store.commit('setAuthStatus', 2)
+                                setTimeout(() => {
+                                    _self.$router.go(-1)
+                                    _self.clickFlag = false
+                                }, 500)
+                            } else {
+                                _self.clickFlag = false
+                                _self.$toast(res.Msg)
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            // 上传失败 可再次点击
+                            this.clickFlag = false
+                        })
+                    }
                 }
+            } else {
+                this.$toast('请勿重复点击提交')
             }
         }
     }

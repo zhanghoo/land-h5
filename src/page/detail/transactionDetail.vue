@@ -156,7 +156,7 @@ export default {
     },
     methods: {
         getEvaluateDetail_data() {
-            console.log(this.$route.query.id)
+            // console.log(this.$route.query.id)
             getEvaluateDetail(this.$route.query.id).then(res => {
                 if (res && res.Data) {
                     this.json = res.Data
@@ -518,14 +518,14 @@ export default {
     .backHome{
         position: fixed;
         right: toRem(20);
-        bottom: toRem(200);
+        bottom: toRem(20);
         z-index: 9;
-        width: toRem(50);
-        height toRem(50);
+        width: toRem(40);
+        height toRem(40);
         background: $appColor;
         border-radius: 100%;
         box-shadow: 0 0 toRem(10) rgba($appColorRGB, .7);
-        font-size: 36px;
+        font-size: toRem(28);
         color #fff;
         display: flex;
         align-items: center;

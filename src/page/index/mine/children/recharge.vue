@@ -46,7 +46,8 @@ export default {
         return {
             rechargeMoneys: [],
             selectMoney: 0,
-            account: null
+            account: null,
+            clickFlag: false
         }
     },
     computed: {
@@ -65,75 +66,102 @@ export default {
         },
         post_Recharge() {
             let _self = this
-            if (_self.selectMoney > 0) {
-                if (_self.isWeiXin) {
-                    postRecharge(_self.selectMoney).then(res => {
-                        if (res && res.Data) {
-                            let wxPayConfig = res.Data
-                            alert(wxPayConfig.package)
-                            wx.chooseWXPay({
-                                timestamp: wxPayConfig.timeStamp,
-                                nonceStr: wxPayConfig.nonceStr,
-                                package: wxPayConfig.package,
-                                signType: wxPayConfig.signType,
-                                paySign: wxPayConfig.paySign,
-                                success(res) {
-                                    // _self.$toast('充值成功')
-                                }
-                            })
-                        } else {
-                            _self.$toast(res.Msg)
-                        }
-                    })
+            if (!_self.clickFlag) {
+                if (_self.selectMoney > 0) {
+                    if (_self.isWeiXin) {
+                        _self.clickFlag = true
+                        postRecharge(_self.selectMoney).then(res => {
+                            if (res && res.Data) {
+                                let wxPayConfig = res.Data
+                                // alert(wxPayConfig.package)
+                                wx.chooseWXPay({
+                                    timestamp: wxPayConfig.timeStamp,
+                                    nonceStr: wxPayConfig.nonceStr,
+                                    package: wxPayConfig.package,
+                                    signType: wxPayConfig.signType,
+                                    paySign: wxPayConfig.paySign,
+                                    success(res) {
+                                        _self.clickFlag = false
+                                        // _self.$toast('充值成功')
+                                    }
+                                })
+                            } else {
+                                _self.$toast(res.Msg)
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            // 上传失败 可再次点击
+                            _self.clickFlag = false
+                        })
+                    } else {
+                        _self.$toast('请在微信客户端打开链接')
+                    }
                 } else {
-                    _self.$toast('请在微信客户端打开链接')
+                    _self.$toast('请选择充值金额')
                 }
             } else {
-                _self.$toast('请选择充值金额')
+                _self.$toast('请勿重复点击提交')
             }
         },
         onBridgeReady: function () {
             let _self = this
-            if (_self.selectMoney > 0) {
-                postRecharge(_self.selectMoney).then(res => {
-                    if (res && res.Data) {
-                        let wxPayConfig = res.Data
-                        console.log(wxPayConfig)
-                        if (typeof WeixinJSBridge !== 'undefined') {
-                            WeixinJSBridge.invoke(
-                                'getBrandWCPayRequest', {
-                                    'appId': wxPayConfig.appId,
-                                    'timeStamp': wxPayConfig.timeStamp,
-                                    'nonceStr': wxPayConfig.nonceStr,
-                                    'package': wxPayConfig.package,
-                                    'signType': wxPayConfig.signType,
-                                    'paySign': wxPayConfig.paySign
-                                },
-                                function (res) {
-                                    // alert(res.err_msg)
-                                    if (res.err_msg === 'get_brand_wcpay_request:ok') {
-                                        _self.$toast('微信支付成功')
-                                        setTimeout(() => {
-                                          _self.$router.go(-1)
-                                          _self.$store.dispatch('get_mineInfo', _self.$store.state.mine.user_id)
-                                        }, 1500)
-                                    } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
-                                        _self.$toast('用户取消支付')
-                                        // window.location.href = 'gift_failview.do?out_trade_no=' + this.orderId
-                                    } else if (res.err_msg === 'get_brand_wcpay_request:fail') {
-                                        _self.$toast('网络异常，请重试')
+            if (!_self.clickFlag) {
+                if (_self.selectMoney > 0) {
+                    _self.clickFlag = true
+                    postRecharge(_self.selectMoney).then(res => {
+                        if (res && res.Data) {
+                            let wxPayConfig = res.Data
+                            console.log(wxPayConfig)
+                            if (typeof WeixinJSBridge !== 'undefined') {
+                                WeixinJSBridge.invoke(
+                                    'getBrandWCPayRequest', {
+                                        'appId': wxPayConfig.appId,
+                                        'timeStamp': wxPayConfig.timeStamp,
+                                        'nonceStr': wxPayConfig.nonceStr,
+                                        'package': wxPayConfig.package,
+                                        'signType': wxPayConfig.signType,
+                                        'paySign': wxPayConfig.paySign
+                                    },
+                                    function (res) {
+                                        // alert(res.err_msg)
+                                        if (res.err_msg === 'get_brand_wcpay_request:ok') {
+                                            _self.$toast('微信支付成功')
+                                            setTimeout(() => {
+                                                _self.$router.push({ path: '/index/mine' })
+                                                // _self.$router.go(-1)
+                                                _self.$store.dispatch('get_mineInfo', _self.$store.state.mine.user_id)
+                                                _self.clickFlag = false
+                                            }, 1500)
+                                        } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
+                                            _self.$toast('用户取消支付')
+                                            _self.clickFlag = false
+                                            // window.location.href = 'gift_failview.do?out_trade_no=' + this.orderId
+                                        } else if (res.err_msg === 'get_brand_wcpay_request:fail') {
+                                            _self.clickFlag = false
+                                            _self.$toast('网络异常，请重试')
+                                        }
                                     }
-                                }
-                            )
+                                )
+                            } else {
+                                _self.$toast('请在微信客户端打开链接')
+                                _self.clickFlag = false
+                            }
                         } else {
-                             _self.$toast('请在微信客户端打开链接')
+                            _self.$toast(res.Msg)
+                            _self.clickFlag = false
                         }
-                    } else {
-                        _self.$toast(res.Msg)
-                    }
-                })
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        // 上传失败 可再次点击
+                        _self.clickFlag = false
+                    })
+                } else {
+                    _self.$toast('请选择充值金额')
+                }
             } else {
-                _self.$toast('请选择充值金额')
+                _self.$toast('请勿重复点击提交')
             }
         },
         callpay() {

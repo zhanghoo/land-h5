@@ -19,6 +19,24 @@ export function formatDate(date, fmt) {
   return fmt
 }
 
+// 查询链接参数
+export function getQueryString(name) {
+    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i')
+    var r = window.location.hash.split('?')
+    // console.log(r[1])
+    if (r[1]) {
+        let result = r[1].match(reg)
+        // console.log(result, reg)
+        if (result != null) {
+            return unescape(result[2])
+        } else {
+            return null
+        }
+    } else {
+        return null
+    }
+}
+
 // 去掉空格
 export function trim(str) {
   return str.replace(/(^\s*)|(\s*$)/g, '')

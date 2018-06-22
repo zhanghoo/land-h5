@@ -147,6 +147,7 @@ import { getRankList, getSystemNews, postSign, getLandBusinessList } from '@/api
 import { getSearchDetail } from '@/api'
 import { mapState } from 'vuex'
 import $ from 'jquery'
+
 export default {
     name: 'home',
     components: { rankTop, blockSlot },
@@ -185,6 +186,10 @@ export default {
     },
     watch: {
         $route(to, from) {
+            // console.log(from.name)
+            if (from.name === 'momentDetail' || from.name === 'transactionDetail') {
+                this.initShare()
+            }
             if (to.name === 'home') {
                 // console.log('回退到首页, 刷新排行榜')
                 this.getRankList_data()
@@ -192,6 +197,47 @@ export default {
         }
     },
     methods: {
+        initShare() {
+            let _self = this
+            let userId = _self.$store.state.mine.user_id
+            let href = window.location.href.split('#')[0] // => http://localhost:8040/
+            let shareURL = userId ? `${href}#/index/home?userid=${userId}` : href
+            // 获取微信配置
+            _self.$store.dispatch('get_WxConfig', shareURL).then(res => {
+                if (_self.$store.state.isWeiXin && _self.$store.state.wxConfig) {
+                    // 获取微信分享描述
+                    _self.$store.dispatch('get_shareInfoDesc').then(res => {
+                        if (_self.$store.state.shareInfoDesc) {
+                            // 微信端
+                            // JSSDK使用步骤
+                            // 1. 绑定域名 先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。
+                            // 2. (index.html中引入) 引入JS文件
+                            // let wx = require('@/assets/js/jweixin-1.2.0.js').default
+                            // 3. 通过config接口注入权限验证配置
+                            console.log(_self.$store.state.wxConfig, _self.$store.state.shareInfoDesc)
+                            wx.config(_self.$store.state.wxConfig)
+                            // 4. 通过ready接口处理成功验证
+                            wx.ready(function () {
+                                // 朋友圈
+                                wx.onMenuShareTimeline({
+                                    'title': _self.$store.state.shareInfoDesc.timeline_title,
+                                    'imgUrl': _self.$store.state.shareInfoDesc.timeline_imgUrl,
+                                    'link': _self.$store.state.shareLink
+                                })
+                                // 微信好友
+                                wx.onMenuShareAppMessage({
+                                    'title': _self.$store.state.shareInfoDesc.appmessage_title,
+                                    'desc': _self.$store.state.shareInfoDesc.appmessage_desc,
+                                    'imgUrl': _self.$store.state.shareInfoDesc.appmessage_imgUrl,
+                                    'link': _self.$store.state.shareLink
+                                })
+                            })
+                            // 5. (省略)通过error接口处理失败验证 wx.error(function(res){})
+                        }
+                    })
+                }
+            })
+        },
         initScroll() {
             // ul
             let $ulList = $('#homeMsgList')

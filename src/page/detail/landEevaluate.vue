@@ -98,7 +98,8 @@ export default {
             topStatus: '',
             page: 1,
             bottomLock: false,
-            loading: true
+            loading: true,
+            dragRefresh: false
         }
     },
     filters: {
@@ -156,6 +157,10 @@ export default {
             getSearchDetail(params).then(res => {
                 if (res && res.Data) {
                     this.landList = res.Data
+                }
+                this.loading = false
+                if (res.Data.length < 10) {
+                    this.loading = 'nothing'
                 }
                 this.$refs.loadmore.onTopLoaded()
             })

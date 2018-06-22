@@ -36,7 +36,8 @@ export default {
             page: 1,
             bottomLock: false,
             loading: false,
-            topStatus: ''
+            topStatus: '',
+            dragRefresh: false
         }
     },
     watch: {
@@ -56,6 +57,8 @@ export default {
     },
     methods: {
         loadTopAjax() {
+            // 上拉刷新
+            this.dragRefresh = true
             this.page = 1
             let params = {
                 page: this.page,
@@ -64,6 +67,10 @@ export default {
             getMomentList(params).then(res => {
                 if (res && res.Data && res.Data !== 'null') {
                     this.moments = res.Data
+                }
+                this.loading = false
+                if (res.Data.length < 10) {
+                    this.loading = 'nothing'
                 }
                 this.$refs.loadmore.onTopLoaded()
             })
@@ -75,10 +82,15 @@ export default {
         },
         // 获取动态列表
         getMomentList_data() {
+            if (this.dragRefresh) {
+                // 如果是下拉刷新, 加载第二页的即可, 因为用的是push
+                this.page = 2
+                this.dragRefresh = false
+            }
+            // console.log(this.page)
             if (this.loading !== 'nothing') {
                 this.loading = 'loading'
                 this.bottomLock = true
-                this.page++
                 let params = {
                     page: this.page,
                     uid: this.$store.state.mine.user_id
@@ -87,6 +99,10 @@ export default {
                     if (res && res.Data && res.Data.length > 0 && res.Data !== 'null') {
                         this.moments.push(...res.Data)
                         this.loading = false
+                        if (res.Data.length < 10) {
+                            // 小于10条的情况
+                            this.loading = 'nothing'
+                        }
                     } else {
                         this.loading = 'nothing'
                     }
@@ -96,6 +112,7 @@ export default {
                     this.loading = false
                     this.bottomLock = false
                 })
+                this.page++
             }
         },
         handleTopChange(status) {
@@ -117,7 +134,7 @@ export default {
         }
     },
     mounted() {
-        this.loadTopAjax()
+        this.getMomentList_data()
     },
     activated() {
         if (this.$route.params.json) {

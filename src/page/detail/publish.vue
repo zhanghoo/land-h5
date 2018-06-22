@@ -67,7 +67,8 @@ export default {
             recordStep: 0, // 录音操作 0 开始录音 1 结束录音
             showRecharge: false,
             type: '',
-            publishClick: false
+            publishClick: false,
+            voiceClick: false
         }
     },
     computed: {
@@ -156,7 +157,7 @@ export default {
                 }
             } else {
                 // _self.publishClick = false
-                _self.$toast('请不要重复点击提交')
+                _self.$toast('请勿重复点击提交')
             }
         },
         _publishVerify() {
@@ -208,7 +209,7 @@ export default {
                     images: _self.pictureFile,
                     voice_id: _self.serverId
                 }
-                console.log(params)
+                // console.log(params)
                 // alert('发布动态传params的voice_id = ' + params.voice_id + ' 本地获得的serverId = ' + _self.serverId)
                 // console.log(params)
                 postPublish(params).then(res => {
@@ -219,42 +220,59 @@ export default {
                             // 操作为发布动态时, 成功 3s 跳转到回动态页面
                             setTimeout(function() {
                                 _self.$router.push({name: 'moment', params: {'json': res.Data}})
-                            }, 2000)
+                                _self.publishClick = false
+                            }, 500)
                         } else {
                             _self.$router.go(-1)
                         }
                     } else {
+                        _self.publishClick = false
                         this.$toast(res.Msg)
                     }
+                })
+                .catch(err => {
+                    console.log(err)
+                    // 上传失败 可再次点击
+                    _self.publishClick = false
                 })
             }
         },
         record() {
             var _self = this
-            let _setT = null
+            // let _setT = null
             if (_self.isWeiXin) {
                 if (_self.recordStep === 0) {
-                    // 开始录音
-                    wx.startRecord({
-                        cancel() {
-                            _self.recordStep = 0
-                            _self.voiceTip = '您已拒绝授权录音，无法为您录音'
-                        },
-                        success() {
-                            _self.recordStep = 1
-                            _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
-                        }
-                    })
-                    // 相当下面的setTimeout函数
-                    wx.onVoiceRecordEnd({
-                        // 录音时间超过一分钟没有停止的时候会执行 complete 回调
-                        complete(res) {
-                            _self.localId = res.localId
-                            // alert('onVoiceRecordEnd, localId = ' + _self.localId)
-                            _self.recordStep = 2
-                            _self.voiceTip = '已停止录音，再次点击可试听录音'
-                        }
-                    })
+                    if (!_self.voiceClick) {
+                        _self.voiceClick = true
+                        // 开始录音
+                        wx.startRecord({
+                            cancel() {
+                                _self.recordStep = 0
+                                _self.voiceClick = false
+                                _self.voiceTip = '您已拒绝授权录音，无法为您录音'
+                            },
+                            success() {
+                                setTimeout(() => {
+                                    _self.recordStep = 1
+                                    _self.voiceClick = false
+                                }, 5000)
+                                _self.voiceTip = '正在录音...5秒后可再次点击停止录音或将在1分钟后自动停止录音'
+                            }
+                        })
+                        // 相当下面的setTimeout函数
+                        wx.onVoiceRecordEnd({
+                            // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+                            complete(res) {
+                                _self.localId = res.localId
+                                // alert('onVoiceRecordEnd, localId = ' + _self.localId)
+                                _self.recordStep = 2
+                                _self.voiceClick = false
+                                _self.voiceTip = '已停止录音，再次点击可试听录音'
+                            }
+                        })
+                    } else {
+                        _self.$toast('正在录音，请勿重复点击')
+                    }
                 } else if (_self.recordStep === 1) {
                     // 停止录音
                     wx.stopRecord({
@@ -293,32 +311,32 @@ export default {
                     _self.voiceTip = '停止播放，再次点击可重新录音'
                 }
             } else {
-                clearTimeout(_setT)
-                if (_self.recordStep === 0) {
-                    // 开始录音
-                    _self.recordStep = 1
-                    _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
-                    _setT = setTimeout(function() {
-                        if (_self.recordStep === 1) {
-                            // 处在录音状态才能停止录音
-                            _self.recordStep = 2
-                            _self.voiceTip = '已停止录音，再次点击可试听录音'
-                        }
-                    }, 6000)
-                } else if (_self.recordStep === 1) {
-                    clearTimeout(_setT)
-                    // 停止录音
-                    _self.recordStep = 2
-                    _self.voiceTip = '已停止录音，再次点击可试听录音'
-                } else if (_self.recordStep === 2) {
-                    // 播放录音
-                    _self.recordStep = 3
-                    _self.voiceTip = '正在播放，再次点击可停止播放'
-                } else if (_self.recordStep === 3) {
-                    // 停止播放
-                    _self.recordStep = 0
-                    _self.voiceTip = '停止播放，再次点击可重新录音'
-                }
+                // clearTimeout(_setT)
+                // if (_self.recordStep === 0) {
+                //     // 开始录音
+                //     _self.recordStep = 1
+                //     _self.voiceTip = '正在录音...再次点击停止录音或将在1分钟后自动停止录音'
+                //     _setT = setTimeout(function() {
+                //         if (_self.recordStep === 1) {
+                //             // 处在录音状态才能停止录音
+                //             _self.recordStep = 2
+                //             _self.voiceTip = '已停止录音，再次点击可试听录音'
+                //         }
+                //     }, 6000)
+                // } else if (_self.recordStep === 1) {
+                //     clearTimeout(_setT)
+                //     // 停止录音
+                //     _self.recordStep = 2
+                //     _self.voiceTip = '已停止录音，再次点击可试听录音'
+                // } else if (_self.recordStep === 2) {
+                //     // 播放录音
+                //     _self.recordStep = 3
+                //     _self.voiceTip = '正在播放，再次点击可停止播放'
+                // } else if (_self.recordStep === 3) {
+                //     // 停止播放
+                //     _self.recordStep = 0
+                //     _self.voiceTip = '停止播放，再次点击可重新录音'
+                // }
             }
         },
         get_CommentLevel() {
@@ -326,6 +344,7 @@ export default {
                 // 排名前18%的用户发布动态可设置收费查看。
                 // v8 排名18%-22%   地产大师五级
                 if (res && res.Data && res.Data) {
+                    // this.showRecharge = true
                     if (res.Data.level >= 8) {
                         this.showRecharge = true
                     } else {

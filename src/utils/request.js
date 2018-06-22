@@ -27,9 +27,13 @@ instance.interceptors.response.use(response => {
     return response
 }, error => {
     Indicator.close()
+    // Toast({
+    //     message: '请求失败',
+    //     iconClass: 'my-icon-close'
+    // })
     Toast({
-        message: '请求失败',
-        iconClass: 'my-icon-close'
+        message: '网络故障，烦请重新操作吧^_^',
+        iconClass: 'my-icon-tishi'
     })
     return Promise.reject(error)
 })

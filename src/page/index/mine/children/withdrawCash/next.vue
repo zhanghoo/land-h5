@@ -39,13 +39,22 @@ export default {
                     } else {
                         this.withdrawClick = true
                         getMoney(this.money).then(res => {
-                            if (res) {
-                                this.$toast(res.Msg)
+                            let _self = this
+                            if (res && res.Code === 0) {
+                                _self.$toast(res.Msg)
                                 setTimeout(function() {
-                                    this.withdrawClick = false
                                     location.reload()
-                                }, 1500)
+                                    _self.withdrawClick = false
+                                }, 500)
+                            } else {
+                                _self.withdrawClick = false
+                                _self.$toast(res.Msg)
                             }
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            // 上传失败 可再次点击
+                            this.withdrawClick = false
                         })
                     }
                 }

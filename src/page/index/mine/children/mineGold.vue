@@ -67,7 +67,8 @@ export default {
             sendCoinReturnMsg: '请求失败',
             page: 1,
             bottomLock: false,
-            loading: false
+            loading: false,
+            clickFlag: false
         }
     },
     computed: {
@@ -109,48 +110,65 @@ export default {
         // 确认转赠
         confirmPresent() {
             var _self = this
-            if (!this.presentUserid || !this.presentNumber) {
-                this.$toast('请填写信息')
-            } else {
-                let params = {
-                    presentUserid: this.presentUserid,
-                    presentNumber: this.presentNumber
-                }
-                postSendCoin(params).then(res => {
-                    this.popupVisible = false
-                    _self.sendCoinReturnMsg = res.Msg
-                    _self.sendCoinReturnCode = res.Code
-                    this.tipVisible = true
-                    setTimeout(() => {
-                        this.tipVisible = false
-                    }, 3000)
-                    if (res.Code === 0 || res.Code === '0') {
-                        this.page = 1
+            if (!this.clickFlag) {
+                if (!this.presentUserid || !this.presentNumber) {
+                    this.$toast('请填写信息')
+                } else {
+                    // console.log(Number(this.presentNumber), Number(this.coin), Number(this.presentNumber) <= Number(this.coin))
+                    if (Number(this.presentNumber) <= Number(this.coin)) {
+                        this.clickFlag = true
                         let params = {
-                            userid: this.$store.state.mine.user_id,
-                            page: this.page
+                            presentUserid: this.presentUserid,
+                            presentNumber: this.presentNumber
                         }
-                        getCoinRecord(params).then(res => {
-                            if (res && res.Data && res.Data.record) {
-                                if (res.Data.record.length > 0) {
-                                    this.coinRecord = res.Data.record
-                                    this.coin = res.Data.count
-                                    this.page++
-                                    this.loading = false
-                                    this.bottomLock = false
-                                } else {
-                                    this.loading = 'nothing'
+                        postSendCoin(params).then(res => {
+                            this.popupVisible = false
+                            _self.sendCoinReturnMsg = res.Msg
+                            _self.sendCoinReturnCode = res.Code
+                            this.tipVisible = true
+                            this.clickFlag = false
+                            setTimeout(() => {
+                                this.tipVisible = false
+                            }, 3000)
+                            if (res.Code === 0 || res.Code === '0') {
+                                this.$store.dispatch('post_reduceUserMoney', this.presentNumber)
+                                this.page = 1
+                                let params = {
+                                    userid: this.$store.state.mine.user_id,
+                                    page: this.page
                                 }
-                            } else {
-                                this.loading = 'nothing'
+                                getCoinRecord(params).then(res => {
+                                    if (res && res.Data && res.Data.record) {
+                                        if (res.Data.record.length > 0) {
+                                            this.coinRecord = res.Data.record
+                                            this.coin = res.Data.count
+                                            this.page++
+                                            this.loading = false
+                                            this.bottomLock = false
+                                        } else {
+                                            this.loading = 'nothing'
+                                        }
+                                    } else {
+                                        this.loading = 'nothing'
+                                    }
+                                })
+                                .catch(err => {
+                                    console.log(err)
+                                    this.loading = false
+                                })
                             }
                         })
                         .catch(err => {
                             console.log(err)
-                            this.loading = false
+                            // 上传失败 可再次点击
+                            this.clickFlag = false
                         })
+                    } else {
+                        this.$toast('大师币不足')
                     }
-                })
+                }
+            } else {
+                this.$toast('请勿重复点击提交')
             }
         }
     },

@@ -62,3 +62,9 @@ export function getPublishMoneyOptions() {
     let res = request('home/dynamic/getTemplate', 'POST')
     return res
 }
+
+// 从分享链接进入动态页面, 检查是否需要付费
+export function checkShare({ cid, user_id }) {
+    let res = request('home/Dynamic/checkShare', 'POST', { 'cid': cid, 'user_id': user_id })
+    return res
+}
