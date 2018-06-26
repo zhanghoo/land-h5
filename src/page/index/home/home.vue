@@ -193,6 +193,8 @@ export default {
             if (to.name === 'home') {
                 // console.log('回退到首页, 刷新排行榜')
                 this.getRankList_data()
+                // 刷新分享
+                this.initShare()
             }
         }
     },
@@ -204,10 +206,12 @@ export default {
             let shareURL = userId ? `${href}#/index/home?userid=${userId}` : href
             // 获取微信配置
             _self.$store.dispatch('get_WxConfig', shareURL).then(res => {
-                if (_self.$store.state.isWeiXin && _self.$store.state.wxConfig) {
+                // _self.$store.state.isWeiXin &&
+                if (_self.$store.state.wxConfig) {
                     // 获取微信分享描述
                     _self.$store.dispatch('get_shareInfoDesc').then(res => {
                         if (_self.$store.state.shareInfoDesc) {
+                            console.log(_self.$store.state.wxConfig, _self.$store.state.shareLink)
                             // 微信端
                             // JSSDK使用步骤
                             // 1. 绑定域名 先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。
@@ -338,7 +342,6 @@ export default {
     mounted() {
         // let t = this.mine.is_sign === 1 ? '今日已签到' : '今日未签到'
         // alert(this.mine.is_sign + '=>' + t)
-        this.initShare()
         this.getRankList_data()
         this.getSystemNews_data()
         this.getLandEevaluate_data()
