@@ -6,9 +6,12 @@ import { getQueryString } from '@/utils/utils'
 
 // 全局路由登录验证
 router.beforeEach((to, from, next) => {
+    // console.log(to, from)
     if (store.state.mine) {
+        // console.log('store.state.mine = ', store.state.mine)
         next()
     } else if (cache.getToken()) {
+        // console.log('cache.getToken() = ', cache.getToken())
         let user_id = cache.getToken()
         store.dispatch('get_mineInfo', user_id).then(res => {
             // next()
@@ -56,6 +59,7 @@ router.beforeEach((to, from, next) => {
             })
         })
     } else if (getQueryString('user_id')) {
+        // console.log('getQueryString("user_id")', getQueryString('user_id'))
         let user_id = getQueryString('user_id')
         if (user_id) {
             store.dispatch('get_mineInfo', user_id).then(res => {
@@ -105,12 +109,18 @@ router.beforeEach((to, from, next) => {
             })
         }
     } else {
+        // console.log('wxLogin = ')
         wxLogin().then(res => {
             if (res && res.Data && res.Data.url) {
                 let url = res.Data.url
+                // console.log('url, ', url)
                 if (url) {
-                    // document.location = 'http://localhost:8040/#/index/home?user_id=20205688'// 本地测试使用
-                    document.location = url // 生产环境使用
+                    // console.log('document.location = ')
+                    // location.replace('http://localhost:8040/#/index/home?user_id=11703491') // 本地测试使用
+                    location.replace(url) // 生产环境使用
+                    location.reload()
+                    // document.location = 'http://localhost:8040/#/index/home?user_id=11703491'// 本地测试使用
+                    // // document.location = url // 生产环境使用
                 } else {
                     next('/')
                 }
@@ -122,6 +132,6 @@ router.beforeEach((to, from, next) => {
 router.afterEach((to, from) => {
     if (store.state.mine.status === '0') {
         // 用户被封禁
-        document.location = 'http://di.php0.jxcraft.net/land-h5/empty.html'
+        document.location = 'http://dcds.soudi.cnt/land-h5/empty.html'
     }
 })

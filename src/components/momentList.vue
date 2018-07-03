@@ -273,6 +273,9 @@ $subText = #666;
                 color: $subText;
                 font-size: toRem(16);
                 text-align: justify;
+                word-break: break-all;
+                word-wrap: break-word;
+                text-align justify;
                 line-height: 1.5em;
                 a {
                     color: $appColor;

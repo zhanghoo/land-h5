@@ -381,7 +381,7 @@ export default {
             text-align: justify;
             word-break: break-all;
             word-wrap: break-word;
-            text-align justify
+            text-align justify;
             line-height: 1.5em;
             a {
                 color: $appColor;

@@ -4,7 +4,7 @@ import { Toast, Indicator } from 'mint-ui'
 
 // 创建axios实例
 export const instance = axios.create({
-    baseURL: 'http://di.php0.jxcraft.net/public/index.php',
+    baseURL: 'http://dcds.soudi.cn/public/index.php',
     timeout: 10 * 1000
 })
 
