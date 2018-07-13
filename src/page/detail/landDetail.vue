@@ -167,7 +167,6 @@
         <div v-if="goldDrop" class="gold-drop-box" @click="goldDrop = false">
             <img class="home-box-close-img" src="~@/assets/img/golddrop.gif">
         </div>
-
         <div class="backHome my-icon-home" @click="$router.push('/')"></div>
     </div>
 </template>

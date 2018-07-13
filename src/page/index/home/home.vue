@@ -211,7 +211,7 @@ export default {
                     // 获取微信分享描述
                     _self.$store.dispatch('get_shareInfoDesc').then(res => {
                         if (_self.$store.state.shareInfoDesc) {
-                            console.log(_self.$store.state.wxConfig, _self.$store.state.shareLink)
+                            // console.log(_self.$store.state.wxConfig, _self.$store.state.shareLink)
                             // 微信端
                             // JSSDK使用步骤
                             // 1. 绑定域名 先登录微信公众平台进入“公众号设置”的“功能设置”里填写“JS接口安全域名”。

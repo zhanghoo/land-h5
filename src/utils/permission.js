@@ -116,9 +116,11 @@ router.beforeEach((to, from, next) => {
                 // console.log('url, ', url)
                 if (url) {
                     // console.log('document.location = ')
-                    // location.replace('http://localhost:8040/#/index/home?user_id=11703491') // 本地测试使用
+                    // location.replace('http://localhost:8040/#/index/home?user_id=20712280') // 本地测试使用
                     location.replace(url) // 生产环境使用
-                    location.reload()
+                    next()
+                    // alert(url)
+                    // location.reload()
                     // document.location = 'http://localhost:8040/#/index/home?user_id=11703491'// 本地测试使用
                     // // document.location = url // 生产环境使用
                 } else {

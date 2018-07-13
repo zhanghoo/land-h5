@@ -302,7 +302,7 @@ export default {
                         }
                     })
                 } else if (_self.recordStep === 3) {
-                    // 停止录音
+                    // 停止试听
                     wx.stopVoice({
                         localId: _self.localId
                     })
@@ -369,6 +369,27 @@ export default {
             this.moneyActive = this.moneyBtnList[0]
         })
         this.type = this.$route.query.type
+    },
+    beforeRouteLeave(to, from, next) {
+        // 导航离开该组件的对应路由时调用
+        // 可以访问组件实例 `this`
+        let _self = this
+        // let _setT = null
+        if (_self.isWeiXin && _self.voiceClick) {
+            // 微信端且点击了录音
+            wx.stopRecord({
+                success(res) {
+                    _self.localId = ''
+                    _self.voiceClick = false
+                    _self.recordStep = 0
+                    _self.voiceTip = '发表语音信息'
+                },
+                fail(res) {
+                    alert(JSON.stringify(res))
+                }
+            })
+        }
+        next()
     }
 }
 </script>
