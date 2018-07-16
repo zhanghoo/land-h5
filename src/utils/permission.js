@@ -6,7 +6,7 @@ import { getQueryString } from '@/utils/utils'
 
 // 全局路由登录验证
 router.beforeEach((to, from, next) => {
-    // console.log(to, from)
+    console.log(to, from)
     if (store.state.mine) {
         // console.log('store.state.mine = ', store.state.mine)
         next()
@@ -109,16 +109,19 @@ router.beforeEach((to, from, next) => {
             })
         }
     } else {
+        // 初始链接
         // console.log('wxLogin = ')
         wxLogin().then(res => {
             if (res && res.Data && res.Data.url) {
                 let url = res.Data.url
+                // 返回 user_id 放到cache里面
                 // console.log('url, ', url)
                 if (url) {
                     // console.log('document.location = ')
-                    // location.replace('http://localhost:8040/#/index/home?user_id=20712280') // 本地测试使用
+                    // cache.setToken('35034179')
+                    // location.replace('http://localhost:8040/#/index/home?user_id=35034179') // 本地测试使用
+                    // next('/#/index/home?user_id=35034179')
                     location.replace(url) // 生产环境使用
-                    next()
                     // alert(url)
                     // location.reload()
                     // document.location = 'http://localhost:8040/#/index/home?user_id=11703491'// 本地测试使用

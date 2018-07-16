@@ -56,7 +56,7 @@
                 </template>
                 <div class="item-info">
                     <i class="my-icon-zan" :class="{'active': item.is_like && item.is_like !== '0'}" @click="addZan(item)"> {{item.lnum || 0}}</i>
-                    <!-- <i class="my-icon-delete" v-if="isMySelf" @click="deleteMoment(item, index)">删除</i> -->
+                    <i class="my-icon-delete" v-if="isMySelf" @click="deleteMoment(item, index)">删除</i>
                     <span class="info-time">{{item.pub_time}}</span>
                 </div>
             </li>
